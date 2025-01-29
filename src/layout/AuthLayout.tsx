@@ -2,13 +2,8 @@ import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
   return (
-    <main className="grid grid-cols-2">
-      <div>
-        <p>Uaht</p>
-      </div>
-      <div>
+    <main className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
         <Outlet />
-      </div>
     </main>
   );
 };
