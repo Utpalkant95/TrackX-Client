@@ -1,17 +1,23 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { AuthLayout, MainLayout } from "./layout";
-import { Login, Register } from "./pages/auth";
+import { lazy, Suspense } from "react";
 
+const AuthLayout = lazy(() => import("./layout/AuthLayout"));
+const MainLayout = lazy(() => import("./layout/MainLayout"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const FallbackScreen = lazy(
+  () => import("./components/fallbackScreen/FallBackScreen")
+);
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    children : [
+    children: [
       {
         path: "/",
-        element: <h1>Home</h1>
-      }
-    ]
+        element: <h1>Home</h1>,
+      },
+    ],
   },
   {
     path: "/auth",
@@ -32,7 +38,9 @@ const appRouter = createBrowserRouter([
 const App = () => {
   return (
     <main>
-      <RouterProvider router={appRouter}></RouterProvider>
+      <Suspense fallback={<FallbackScreen />}>
+        <RouterProvider router={appRouter}></RouterProvider>
+      </Suspense>
     </main>
   );
 };
