@@ -9,7 +9,7 @@ import {
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,11 +22,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import MobileMenu from "./MobileNavBar";
-import { useMutation } from "@tanstack/react-query";
-import { Logout } from "@/Api/auth";
-import { IRES } from "@/Api/interfaces/Response";
-import { enqueueSnackbar } from "notistack";
-import { AxiosError } from "axios";
+import { useLogout } from "@/hooks";
 
 const navItems = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -38,19 +34,7 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = useLocation().pathname;
-  const navigate = useNavigate();
-
-  const { mutate } = useMutation({
-    mutationKey: ["logout"],
-    mutationFn: Logout,
-    onSuccess: (data: IRES) => {
-      window.location.reload();
-      enqueueSnackbar(data.message, { variant: "success" });
-      navigate("/auth/login");
-    },
-    onError: (error: AxiosError<IRES>) =>
-      enqueueSnackbar(error.response?.data.message, { variant: "error" }),
-  });
+  const {mutate} = useLogout();
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-[#121212] px-4 py-2">

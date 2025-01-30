@@ -7,7 +7,6 @@ import {
   Dumbbell,
   Zap,
   Flame,
-  Bell,
   Lock,
   LogOut,
   Trash2,
@@ -27,10 +26,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import { useLogout } from "@/hooks";
 
 export default function Profile() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { mutate } = useLogout();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -196,6 +197,7 @@ export default function Profile() {
               <Button
                 className="w-full bg-red-600 hover:bg-red-700"
                 variant="destructive"
+                onClick={() => mutate()}
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
