@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IREQLOGIN, IREQREGISTER } from "./interfaces/Request";
+import { IREQLOGIN, IREQREGISTER, IUPDATEPASSWORD } from "./interfaces/Request";
 import { IRES } from "./interfaces/Response";
 
 export const Register = async (data : IREQREGISTER) => {
@@ -28,4 +28,18 @@ export const CheckAuth = async () => {
         withCredentials : true
     });
     return response.data;
+}
+
+export const UpdatePassword = async (data : IUPDATEPASSWORD) => {
+    const response = await axios.put("http://localhost:3000/api/v1/auth/update-password", data, {
+        withCredentials : true
+    });
+    return response.data as IRES;
+}
+
+export const EraseAccount = async () => {
+    const response = await axios.delete("http://localhost:3000/api/v1/auth/erase-account", {
+        withCredentials : true
+    });
+    return response.data as IRES;
 }
