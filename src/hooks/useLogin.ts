@@ -24,6 +24,7 @@ const useLogin = () => {
     onSuccess: (data: IRES) => {
       formik.resetForm();
       enqueueSnackbar(data.message, { variant: "success" });
+      window.location.reload();
       navigate("/");
     },
     onError: (error: AxiosError<IRES>) => {

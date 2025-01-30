@@ -1,30 +1,23 @@
-
-import { Navbar } from "@/components/navbar"
-import { Outlet } from "react-router-dom"
-
-// const geistSans = Geist({
-//   subsets: ["latin"],
-//   variable: "--font-sans",
-// })
-// const geistMono = Geist_Mono({
-//   subsets: ["latin"],
-//   variable: "--font-mono",
-// })
-
-// export const metadata: Metadata = {
-//   title: "TrackX - Gym Tracking App",
-//   description: "Track your workouts and progress with TrackX",
-// }
+import { Navbar } from "@/components/navbar";
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { FallbackScreen } from "@/components";
 
 const MainLayout = () => {
-  return (
-      <main className={`font-sans antialiased bg-[#121212] text-white`}>
-        <Navbar />
-        <div className="pt-16">
-            <Outlet />
-        </div>
-      </main>
-  )
-}
+  const { isAuthenticated, isLoading } = useAuth();
 
-export default MainLayout
+  if (isLoading) return <FallbackScreen />;
+
+  return isAuthenticated ? (
+    <main className={`font-sans antialiased bg-[#121212] text-white`}>
+      <Navbar />
+      <div className="pt-16">
+        <Outlet />
+      </div>
+    </main>
+  ) : (
+    <Navigate to="/auth/login" replace />
+  );
+};
+
+export default MainLayout;

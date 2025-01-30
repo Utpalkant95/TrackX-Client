@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import AuthProvider from "./context/AuthContext";
 
 const AuthLayout = lazy(() => import("./layout/AuthLayout"));
 const MainLayout = lazy(() => import("./layout/MainLayout"));
@@ -37,11 +38,13 @@ const appRouter = createBrowserRouter([
 
 const App = () => {
   return (
-    <main>
-      <Suspense fallback={<FallbackScreen />}>
-        <RouterProvider router={appRouter}></RouterProvider>
-      </Suspense>
-    </main>
+    <AuthProvider>
+      <main>
+        <Suspense fallback={<FallbackScreen />}>
+          <RouterProvider router={appRouter}></RouterProvider>
+        </Suspense>
+      </main>
+    </AuthProvider>
   );
 };
 
