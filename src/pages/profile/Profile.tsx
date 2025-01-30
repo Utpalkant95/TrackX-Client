@@ -27,11 +27,26 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { useLogout } from "@/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { getUserProfile } from "@/Api/User";
 
 export default function Profile() {
+  const {data} = useQuery({
+    queryKey: ['get-user-profile'],
+    queryFn : getUserProfile
+  })
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { mutate } = useLogout();
+
+  const formattedDateTime = new Date(data?.data?.createdAt as string).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true, // 12-hour format
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -44,8 +59,8 @@ export default function Profile() {
             className="rounded-full bg-cover overflow-hidden h-32 w-32"
           />
         </div>
-        <h1 className="mb-2 text-3xl font-bold text-white">John Doe</h1>
-        <p className="mb-4 text-gray-300">john.doe@example.com</p>
+        <h1 className="mb-2 text-3xl font-bold text-white">{data?.data?.name}</h1>
+        <p className="mb-4 text-gray-300">{data?.data?.email}</p>
         {/* edit account wala form  */}
       </div>
 
@@ -60,15 +75,15 @@ export default function Profile() {
               <div className="grid gap-4">
                 <div className="flex items-center">
                   <User className="mr-2 h-5 w-5 text-[#00BFFF]" />
-                  <span>John Doe</span>
+                  <span>{data?.data?.name}</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="mr-2 h-5 w-5 text-[#00BFFF]" />
-                  <span>john.doe@example.com</span>
+                  <span>{data?.data?.email}</span>
                 </div>
                 <div className="flex items-center">
                   <Calendar className="mr-2 h-5 w-5 text-[#00BFFF]" />
-                  <span>Joined: January 1, 2023</span>
+                  <span>Joined: {formattedDateTime}</span>
                 </div>
               </div>
             </CardContent>
