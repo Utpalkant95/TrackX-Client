@@ -1,7 +1,16 @@
-import { Home, Dumbbell, LineChart, ClipboardList, Settings, User, LogIn, Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Link, useLocation } from "react-router-dom"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Home,
+  Dumbbell,
+  LineChart,
+  ClipboardList,
+  Settings,
+  User,
+  LogIn,
+  Menu,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +18,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
-import MobileMenu from "./MobileNavBar"
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import MobileMenu from "./MobileNavBar";
+import { useMutation } from "@tanstack/react-query";
+import { Logout } from "@/Api/auth";
+import { IRES } from "@/Api/interfaces/Response";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
 
 const navItems = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -20,11 +34,22 @@ const navItems = [
   { name: "Progress", href: "/progress", icon: LineChart },
   { name: "Templates", href: "/templates", icon: ClipboardList },
   { name: "Settings", href: "/settings", icon: Settings },
-]
+];
 
 export default function Navbar() {
-  const isLoggedIn = true // Replace with actual auth logic
-  const pathname = useLocation().pathname
+  const pathname = useLocation().pathname;
+  const navigate = useNavigate();
+  
+  const { mutate } = useMutation({
+    mutationKey: ["logout"],
+    mutationFn: Logout,
+    onSuccess: (data: IRES) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+      navigate("/auth/login");
+    },
+    onError: (error: AxiosError<IRES>) =>
+      enqueueSnackbar(error.response?.data.message, { variant: "error" }),
+  });
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-[#121212] px-4 py-2">
@@ -43,7 +68,7 @@ export default function Navbar() {
               to={item.href}
               className={cn(
                 "flex items-center space-x-1 rounded-md px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800",
-                pathname === item.href && "bg-gray-800 text-[#00BFFF]",
+                pathname === item.href && "bg-gray-800 text-[#00BFFF]"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -54,42 +79,34 @@ export default function Navbar() {
 
         {/* User Menu or Auth Buttons */}
         <div className="flex items-center space-x-4">
-          {isLoggedIn ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className="h-8 w-8 cursor-pointer">
-                  <AvatarImage src="/avatar.png" alt="User" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-gray-900 text-white">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogIn className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <>
-              <Button variant="ghost" size="sm" className="text-white">
-                Login
-              </Button>
-              <Button size="sm" className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-                Register
-              </Button>
-            </>
-          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src="/avatar.png" alt="User" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-56 bg-gray-900 text-white"
+            >
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => mutate()}>
+                <LogIn className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Mobile Menu Trigger */}
           <Sheet>
@@ -106,6 +123,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
-
