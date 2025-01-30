@@ -26,20 +26,24 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { useLogout } from "@/hooks";
+import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "@/Api/User";
 
 export default function Profile() {
-  const {data} = useQuery({
-    queryKey: ['get-user-profile'],
-    queryFn : getUserProfile
-  })
+  const { data } = useQuery({
+    queryKey: ["get-user-profile"],
+    queryFn: getUserProfile,
+  });
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { mutate } = useLogout();
+  const { formik, isPending } = useUpdatePassword();
+  const { isPending: erasePending, mutate: eraseMutate } = useEraseAccount();
 
-  const formattedDateTime = new Date(data?.data?.createdAt as string).toLocaleString("en-US", {
+  const formattedDateTime = new Date(
+    data?.data?.createdAt as string
+  ).toLocaleString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -59,7 +63,9 @@ export default function Profile() {
             className="rounded-full bg-cover overflow-hidden h-32 w-32"
           />
         </div>
-        <h1 className="mb-2 text-3xl font-bold text-white">{data?.data?.name}</h1>
+        <h1 className="mb-2 text-3xl font-bold text-white">
+          {data?.data?.name}
+        </h1>
         <p className="mb-4 text-gray-300">{data?.data?.email}</p>
         {/* edit account wala form  */}
       </div>
@@ -166,6 +172,8 @@ export default function Profile() {
                       />
                       <Input
                         type="password"
+                        value={formik.values.oldPassword}
+                        onChange={formik.handleChange}
                         placeholder="Old Password"
                         name="oldPassword"
                         autoComplete="off"
@@ -179,6 +187,8 @@ export default function Profile() {
                       />
                       <Input
                         type="password"
+                        value={formik.values.newPassword}
+                        onChange={formik.handleChange}
                         placeholder="New Password"
                         name="newPassword"
                         autoComplete="off"
@@ -193,8 +203,10 @@ export default function Profile() {
                       <AlertDialogAction
                         className=" bg-[#00BFFF] hover:bg-[#33CCFF] text-white"
                         type="submit"
+                        disabled={isPending}
+                        onClick={() => formik.handleSubmit()}
                       >
-                        Update Password
+                        {isPending ? "Updating..." : "Update Password"}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -238,8 +250,11 @@ export default function Profile() {
                     <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">
                       Cancel
                     </AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-600 text-white hover:bg-red-700">
-                      Delete Account
+                    <AlertDialogAction
+                      className="bg-red-600 text-white hover:bg-red-700"
+                      onClick={() => eraseMutate()}
+                    >
+                      {erasePending ? "Deleting..." : "Delete Account"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
