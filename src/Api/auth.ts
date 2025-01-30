@@ -15,3 +15,10 @@ export const Login = async (data : IREQLOGIN) => {
     });
     return response.data as IRES;
 }
+
+export const Logout = async () => {
+    const response = await axios.get("http://localhost:3000/api/v1/auth/logout", {
+        withCredentials : true
+    })
+    return response.data as IRES;
+}
