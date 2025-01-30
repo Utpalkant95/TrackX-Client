@@ -1,9 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { FallbackScreen } from "@/components";
 
 const AuthLayout = () => {
-  return (
+  const { isAuthenticated, isLoading } = useAuth();
+
+  console.log("isAuthenticated", isAuthenticated);
+  
+  if (isLoading) return <FallbackScreen />;
+  return isAuthenticated ? (
+    <Navigate to="/" replace />
+  ) : (
     <main className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
-        <Outlet />
+      <Outlet />
     </main>
   );
 };

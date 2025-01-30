@@ -39,11 +39,12 @@ const navItems = [
 export default function Navbar() {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
-  
+
   const { mutate } = useMutation({
     mutationKey: ["logout"],
     mutationFn: Logout,
     onSuccess: (data: IRES) => {
+      window.location.reload();
       enqueueSnackbar(data.message, { variant: "success" });
       navigate("/auth/login");
     },

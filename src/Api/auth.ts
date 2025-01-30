@@ -22,3 +22,10 @@ export const Logout = async () => {
     })
     return response.data as IRES;
 }
+
+export const CheckAuth = async () => {
+    const response = await axios.get("http://localhost:3000/api/v1/auth/check-auth", {
+        withCredentials : true
+    });
+    return response.data;
+}
