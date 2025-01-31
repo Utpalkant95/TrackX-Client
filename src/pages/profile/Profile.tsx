@@ -29,9 +29,10 @@ import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "@/Api/User";
+import { ProfileAvatarFrag } from "@/Fragments";
 
 export default function Profile() {
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["get-user-profile"],
     queryFn: getUserProfile,
   });
@@ -55,20 +56,10 @@ export default function Profile() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header Section (Profile Banner) */}
-      <div className="mb-8 rounded-lg bg-gradient-to-r from-gray-800 to-[#00BFFF] p-8 text-center">
-        <div className="relative mx-auto mb-4 h-32 w-32">
-          <img
-            src="https://images.unsplash.com/photo-1737885763392-0141b416ec1d?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="User Avatar"
-            className="rounded-full bg-cover overflow-hidden h-32 w-32"
-          />
-        </div>
-        <h1 className="mb-2 text-3xl font-bold text-white">
-          {data?.data?.name}
-        </h1>
-        <p className="mb-4 text-gray-300">{data?.data?.email}</p>
-        {/* edit account wala form  */}
-      </div>
+      <ProfileAvatarFrag
+        data={data}
+        refetch={refetch}
+      />
 
       <div className="grid gap-8 md:grid-cols-3">
         {/* User Information Section */}

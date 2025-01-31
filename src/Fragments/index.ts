@@ -1,0 +1,1 @@
+export {default as ProfileAvatarFrag} from "./ProfileAvatarFrag";
