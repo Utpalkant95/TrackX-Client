@@ -85,10 +85,12 @@ export default function Navbar() {
                   <span>Profile</span>
                 </DropdownMenuItem>
               </Link>
+              <Link to={"/settings"}>
               <DropdownMenuItem>
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => mutate()}>
                 <LogIn className="mr-2 h-4 w-4" />
