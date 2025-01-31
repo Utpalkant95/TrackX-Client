@@ -11,7 +11,10 @@ export interface IUserProfile {
     _id: string;
     name: string;
     email: string;
-    avatar: string;
+    avatar: {
+      public_id: string;
+      secure_url: string;
+    };
     createdAt: string;
   };
 }

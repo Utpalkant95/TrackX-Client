@@ -2,21 +2,32 @@ import { User, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRegister } from "@/hooks"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useRegister } from "@/hooks";
 
 export default function RegisterForm() {
-  const {formik, isPending} = useRegister();
+  const { formik, isPending } = useRegister();
 
   return (
     <Card className="w-full max-w-md bg-[#1E1E1E] text-white">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">Register</CardTitle>
-      </CardHeader> 
+        <CardTitle className="text-2xl font-bold text-center">
+          Register
+        </CardTitle>
+      </CardHeader>
       <CardContent>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <User
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <Input
               type="text"
               placeholder="Name"
@@ -27,7 +38,10 @@ export default function RegisterForm() {
             />
           </div>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Mail
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <Input
               type="email"
               placeholder="Email"
@@ -38,7 +52,10 @@ export default function RegisterForm() {
             />
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Lock
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <Input
               type="password"
               placeholder="Password"
@@ -50,7 +67,10 @@ export default function RegisterForm() {
             />
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Lock
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <Input
               type="password"
               placeholder="Confirm Password"
@@ -61,7 +81,11 @@ export default function RegisterForm() {
               required
             />
           </div>
-          <Button type="submit" className="w-full bg-[#00BFFF] hover:bg-[#33CCFF] text-white" disabled={isPending}>
+          <Button
+            type="submit"
+            className="w-full bg-[#00BFFF] hover:bg-[#33CCFF] text-white"
+            disabled={isPending}
+          >
             {isPending ? "Loading..." : "Register"}
           </Button>
         </form>
@@ -75,5 +99,5 @@ export default function RegisterForm() {
         </p>
       </CardFooter>
     </Card>
-  )
+  );
 }
