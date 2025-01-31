@@ -11,6 +11,10 @@ const FallbackScreen = lazy(
 );
 const Profile = lazy(() => import("./pages/profile/Profile"));
 const Settings = lazy(() => import("./pages/settings/Settings"));
+const Templates = lazy(() => import("./pages/templates/Templates"));
+const Progress = lazy(() => import("./pages/progress/Progress"));
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const Workout = lazy(() => import("./pages/workouts/Workout"));
 
 const appRouter = createBrowserRouter([
   {
@@ -19,7 +23,7 @@ const appRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1>Home</h1>,
+        element: <Dashboard />,
       },
       {
         path: "profile",
@@ -28,6 +32,18 @@ const appRouter = createBrowserRouter([
       {
         path: "settings",
         element : <Settings />,
+      },
+      {
+        path: "templates",
+        element: <Templates />,
+      },
+      {
+        path : "progress",
+        element: <Progress />
+      },
+      {
+        path : "workouts",
+        element: <Workout />
       }
     ],
   },
