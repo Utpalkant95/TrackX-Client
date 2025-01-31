@@ -1,4 +1,5 @@
-import { Loader2 } from "lucide-react"
+import { lazy } from "react"
+const Loader = lazy(() => import("@/components/Loader/Loader"));
 
 const  FallbackScreen = ()  =>{
   return (
@@ -7,7 +8,7 @@ const  FallbackScreen = ()  =>{
         <span className="text-3xl font-bold">
           Track<span className="text-[#00BFFF]">X</span>
         </span>
-        <Loader2 className="h-12 w-12 animate-spin text-[#00BFFF]" />
+        <Loader size={48}/>
         <p className="text-lg">Loading your fitness journey...</p>
       </div>
     </div>

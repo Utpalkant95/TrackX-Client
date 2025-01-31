@@ -21,8 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import MobileMenu from "./MobileNavBar";
 import { useLogout } from "@/hooks";
+import { lazy } from "react";
+
+const MobileMenu = lazy(() => import("./MobileNavBar"));
 
 const navItems = [
   { name: "Dashboard", href: "/", icon: Home },
