@@ -1,6 +1,5 @@
 import { Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -10,6 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/hooks";
+import { lazy } from "react";
+
+const FormInputWrapperAtom = lazy(() => import("@/atmos/FormInputWrapperAtom"));
 
 export default function LoginForm() {
   const { formik, isPending } = useLogin();
@@ -19,37 +21,27 @@ export default function LoginForm() {
         <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={formik.handleSubmit} className="space-y-4" autoComplete="off">
-          <div className="relative">
-            <Mail
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-            <Input
-              type="email"
-              placeholder="Email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              name="email"
-              autoComplete="email"
-              className="pl-10 bg-[#2A2A2A] border-gray-600 text-white placeholder-gray-400"
-            />
-          </div>
-          <div className="relative">
-            <Lock
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              autoComplete="current-password"
-              name="password"
-              className="pl-10 bg-[#2A2A2A] border-gray-600 text-white placeholder-gray-400"
-            />
-          </div>
+        <form
+          onSubmit={formik.handleSubmit}
+          className="space-y-4"
+          autoComplete="off"
+        >
+          <FormInputWrapperAtom
+            Icon={Mail}
+            type="email"
+            placeholder="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            name="email"
+          />
+          <FormInputWrapperAtom
+            Icon={Lock}
+            type="password"
+            placeholder="Password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            name="password"
+          />
           <Button
             type="submit"
             className="w-full bg-[#00BFFF] hover:bg-[#33CCFF] text-white"

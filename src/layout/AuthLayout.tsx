@@ -1,12 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FallbackScreen } from "@/components";
+import { lazy } from "react";
+const FallbackScreen = lazy(
+  () => import("@/components/fallbackScreen/FallBackScreen")
+);
 
 const AuthLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   console.log("isAuthenticated", isAuthenticated);
-  
+
   if (isLoading) return <FallbackScreen />;
   return isAuthenticated ? (
     <Navigate to="/" replace />

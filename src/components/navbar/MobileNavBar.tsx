@@ -1,19 +1,9 @@
 import { Link } from "react-router-dom"
 import { useLocation } from "react-router-dom"
-import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { IMobileMenuProps } from "@/Api/interfaces/Project"
 
-interface NavItem {
-  name: string
-  href: string
-  icon: LucideIcon
-}
-
-interface MobileMenuProps {
-  navItems: NavItem[]
-}
-
-export default function MobileMenu({ navItems }: MobileMenuProps) {
+export default function MobileMenu({ navItems }: IMobileMenuProps) {
   const pathname = useLocation().pathname
 
   return (

@@ -1,7 +1,11 @@
-import { Navbar } from "@/components/navbar";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FallbackScreen } from "@/components";
+import { lazy } from "react";
+
+const FallbackScreen = lazy(
+  () => import("@/components/fallbackScreen/FallBackScreen")
+);
+const Navbar = lazy(() => import("@/components/navbar/Navbar"));
 
 const MainLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
