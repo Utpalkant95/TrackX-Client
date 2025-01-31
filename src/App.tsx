@@ -10,6 +10,7 @@ const FallbackScreen = lazy(
   () => import("./components/fallbackScreen/FallBackScreen")
 );
 const Profile = lazy(() => import("./pages/profile/Profile"));
+const Settings = lazy(() => import("./pages/settings/Settings"));
 
 const appRouter = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const appRouter = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "settings",
+        element : <Settings />,
       }
     ],
   },
