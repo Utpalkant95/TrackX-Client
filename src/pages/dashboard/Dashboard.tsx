@@ -1,17 +1,47 @@
-"use client"
-
-import { useState } from "react"
-import { format } from "date-fns"
-import { CalendarIcon, Plus, ArrowRight, Dumbbell, Zap, Flame, AlertTriangle } from "lucide-react"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useState } from "react";
+import { format } from "date-fns";
+import {
+  CalendarIcon,
+  Plus,
+  ArrowRight,
+  Dumbbell,
+  Zap,
+  Flame,
+  AlertTriangle,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Mock data for recent workouts
 const recentWorkouts = [
@@ -81,7 +111,7 @@ const recentWorkouts = [
       },
     ],
   },
-]
+];
 
 // Mock data for progress chart
 const progressData = [
@@ -92,18 +122,20 @@ const progressData = [
   { day: "Fri", weight: 250, reps: 34 },
   { day: "Sat", weight: 260, reps: 32 },
   { day: "Sun", weight: 270, reps: 35 },
-]
+];
 
 export default function Dashboard() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight")
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight");
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">Track your progress and stay on top of your workouts.</p>
+          <p className="text-gray-400">
+            Track your progress and stay on top of your workouts.
+          </p>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-4 md:mt-0">
           <Popover>
@@ -112,7 +144,7 @@ export default function Dashboard() {
                 variant={"outline"}
                 className={cn(
                   "w-[240px] justify-start text-left font-normal bg-[#2A2A2A] text-white",
-                  !date && "text-muted-foreground",
+                  !date && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -120,14 +152,22 @@ export default function Dashboard() {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 bg-[#2A2A2A]" align="start">
-              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
             </PopoverContent>
           </Popover>
           <div className="flex space-x-2">
             <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
               <Plus className="mr-2 h-4 w-4" /> Log Workout
             </Button>
-            <Button variant="outline" className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
+            <Button
+              variant="outline"
+              className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+            >
               View Progress
             </Button>
           </div>
@@ -142,7 +182,9 @@ export default function Dashboard() {
               <CardTitle>Today's Workout Plan</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-400 mb-4">No workout scheduled for today.</p>
+              <p className="text-gray-400 mb-4">
+                No workout scheduled for today.
+              </p>
               <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
                 Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -157,19 +199,26 @@ export default function Dashboard() {
             <CardContent>
               <ScrollArea className="h-[300px] pr-4">
                 {recentWorkouts.map((workout) => (
-                  <Card key={workout.id} className="mb-4 bg-[#2A2A2A] border-none">
+                  <Card
+                    key={workout.id}
+                    className="mb-4 bg-[#2A2A2A] border-none"
+                  >
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">{format(new Date(workout.date), "MMMM d, yyyy")}</CardTitle>
+                      <CardTitle className="text-lg text-[#edfafa]">
+                        {format(new Date(workout.date), "MMMM d, yyyy")}
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       {workout.exercises.map((exercise, index) => (
                         <div key={index} className="mb-2">
-                          <p className="font-semibold">{exercise.name}</p>
+                          <p className="font-semibold text-[#edfafa]">{exercise.name}</p>
                           <p className="text-sm text-gray-400">
                             {exercise.sets.map((set, setIndex) => (
                               <span key={setIndex}>
                                 {set.weight}kg x {set.reps}
-                                {setIndex < exercise.sets.length - 1 ? ", " : ""}
+                                {setIndex < exercise.sets.length - 1
+                                  ? ", "
+                                  : ""}
                               </span>
                             ))}
                           </p>
@@ -181,7 +230,7 @@ export default function Dashboard() {
               </ScrollArea>
             </CardContent>
             <CardFooter>
-              <Button variant="outline" className="w-full">
+              <Button variant="default" className="w-full">
                 Repeat Last Workout
               </Button>
             </CardFooter>
@@ -194,7 +243,12 @@ export default function Dashboard() {
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Weekly Progress</CardTitle>
-                <Select value={chartMetric} onValueChange={(value: "weight" | "reps") => setChartMetric(value)}>
+                <Select
+                  value={chartMetric}
+                  onValueChange={(value: "weight" | "reps") =>
+                    setChartMetric(value)
+                  }
+                >
                   <SelectTrigger className="w-[120px] bg-[#2A2A2A] text-white">
                     <SelectValue placeholder="Select metric" />
                   </SelectTrigger>
@@ -213,10 +267,18 @@ export default function Dashboard() {
                     <XAxis dataKey="day" stroke="#888" />
                     <YAxis stroke="#888" />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "#1E1E1E", border: "none" }}
+                      contentStyle={{
+                        backgroundColor: "#1E1E1E",
+                        border: "none",
+                      }}
                       itemStyle={{ color: "#00BFFF" }}
                     />
-                    <Line type="monotone" dataKey={chartMetric} stroke="#00BFFF" strokeWidth={2} />
+                    <Line
+                      type="monotone"
+                      dataKey={chartMetric}
+                      stroke="#00BFFF"
+                      strokeWidth={2}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -228,7 +290,8 @@ export default function Dashboard() {
             <Card className="bg-[#1E1E1E] text-white">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
-                  <Dumbbell className="h-4 w-4 inline-block mr-1" /> Heaviest Lift
+                  <Dumbbell className="h-4 w-4 inline-block mr-1" /> Heaviest
+                  Lift
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -270,21 +333,24 @@ export default function Dashboard() {
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Plateau Detected</AlertTitle>
                 <AlertDescription>
-                  No progress in Squats for 2 weeks. Consider adjusting weight or reps.
+                  No progress in Squats for 2 weeks. Consider adjusting weight
+                  or reps.
                 </AlertDescription>
               </Alert>
               <Alert className="bg-[#2A2A2A] border-green-500">
                 <Zap className="h-4 w-4" />
                 <AlertTitle>Workout Suggestion</AlertTitle>
                 <AlertDescription>
-                  Try increasing Bench Press weight by 2.5kg next session for progressive overload.
+                  Try increasing Bench Press weight by 2.5kg next session for
+                  progressive overload.
                 </AlertDescription>
               </Alert>
               <Alert className="bg-[#2A2A2A] border-blue-500">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Recovery Alert</AlertTitle>
                 <AlertDescription>
-                  You've worked out 6 days in a row. Consider taking a rest day for better recovery.
+                  You've worked out 6 days in a row. Consider taking a rest day
+                  for better recovery.
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -292,6 +358,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
