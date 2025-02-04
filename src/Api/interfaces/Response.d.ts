@@ -46,3 +46,10 @@ export interface IWorkoutData {
 export interface IWorkoutResponse {
   data: WorkoutData[];
 }
+
+
+export interface IWorkoutStats {
+  totalWorkouts : number;
+  mostFrequentExercise: string,
+  totalWeightLifted : number
+}
