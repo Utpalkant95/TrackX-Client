@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { format } from "date-fns"
 import { CalendarIcon, Edit2, Trash2, Repeat, ClipboardList } from "lucide-react"
@@ -24,6 +22,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { useQuery } from "@tanstack/react-query"
+import { getWorkout } from "@/Api/workout"
+import { IWorkoutData } from "@/Api/interfaces/Response"
 
 // Mock data for exercises
 const exercises = [
@@ -32,42 +33,6 @@ const exercises = [
   { id: 3, name: "Deadlifts", image: "/exercises/deadlifts.png" },
   { id: 4, name: "Shoulder Press", image: "/exercises/shoulder-press.png" },
   { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
-]
-
-// Mock data for past workouts
-const pastWorkouts = [
-  {
-    id: 1,
-    date: "2025-01-28",
-    exercises: [
-      {
-        name: "Bench Press",
-        sets: [
-          { weight: 60, reps: 10 },
-          { weight: 65, reps: 8 },
-          { weight: 70, reps: 6 },
-        ],
-      },
-      {
-        name: "Squats",
-        sets: [
-          { weight: 80, reps: 12 },
-          { weight: 90, reps: 10 },
-          { weight: 100, reps: 8 },
-          { weight: 110, reps: 6 },
-        ],
-      },
-      {
-        name: "Deadlifts",
-        sets: [
-          { weight: 100, reps: 8 },
-          { weight: 110, reps: 6 },
-          { weight: 120, reps: 4 },
-        ],
-      },
-    ],
-  },
-  // Add more past workouts here...
 ]
 
 interface Set {
@@ -92,6 +57,11 @@ export default function Workouts() {
   const [currentWorkout, setCurrentWorkout] = useState<Workout>({
     date: new Date(),
     exercises: [{ name: "", sets: [{ weight: 0, reps: 0, difficulty: "easy" }] }],
+  })
+
+  const {data} = useQuery({
+    queryKey: ["workouts"],
+    queryFn: getWorkout,
   })
 
   const addExercise = () => {
@@ -259,16 +229,16 @@ export default function Workouts() {
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full">
-                {pastWorkouts.map((workout) => (
-                  <AccordionItem key={workout.id} value={`workout-${workout.id}`}>
+                {data?.data?.map((workout :IWorkoutData | undefined ) => (
+                  <AccordionItem key={workout?._id} value={`workout-${workout?._id}`}>
                     <AccordionTrigger className="text-left">
                       <div className="flex justify-between items-center w-full">
-                        <span>{format(new Date(workout.date), "MMMM d, yyyy")}</span>
-                        <Badge variant="secondary">{workout.exercises.length} exercises</Badge>
+                        <span>{format(new Date(workout?.date as string), "MMMM d, yyyy")}</span>
+                        <Badge variant="secondary">{workout?.exercises.length} exercises</Badge>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      {workout.exercises.map((exercise, index) => (
+                      {workout?.exercises.map((exercise, index) => (
                         <div key={index} className="mb-2">
                           <h4 className="font-semibold">{exercise.name}</h4>
                           <p className="text-sm text-gray-400">
@@ -338,4 +308,3 @@ export default function Workouts() {
     </div>
   )
 }
-

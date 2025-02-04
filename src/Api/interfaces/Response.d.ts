@@ -18,3 +18,31 @@ export interface IUserProfile {
     createdAt: string;
   };
 }
+
+
+interface ExerciseSet {
+  weight: number;
+  reps: number;
+  difficulty: "Easy" | "Hard"; // You can add more difficulty levels if needed
+  _id: string;
+}
+
+interface Exercise {
+  name: string;
+  sets: ExerciseSet[];
+  _id: string;
+}
+
+export interface IWorkoutData {
+  _id: string;
+  userId: string;
+  date: string; // ISO date string
+  exercises: Exercise[];
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  __v: number;
+}
+
+export interface IWorkoutResponse {
+  data: WorkoutData[];
+}
