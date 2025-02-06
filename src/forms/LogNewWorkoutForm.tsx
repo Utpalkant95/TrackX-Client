@@ -1,0 +1,205 @@
+import { Workout } from "@/Api/interfaces/Project";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  DialogContent,
+  DialogHeader,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Select } from "@radix-ui/react-select";
+import { Plus, X } from "lucide-react";
+import { useState } from "react";
+
+// Mock data for exercises
+const exerciseList = [
+  { id: 1, name: "Squats", image: "/exercises/squats.png" },
+  { id: 2, name: "Bench Press", image: "/exercises/bench-press.png" },
+  { id: 3, name: "Deadlifts", image: "/exercises/deadlifts.png" },
+  { id: 4, name: "Shoulder Press", image: "/exercises/shoulder-press.png" },
+  { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
+];
+
+const LogNewWorkoutForm = () => {
+  const [excersises, setExercises] = useState<Workout>({ exercises: [] });
+
+  // Function to add a new exercise
+  const addExercise = (e: any) => {
+    e.preventDefault();
+    setExercises((prev) => ({
+      ...prev,
+      exercises: [
+        ...prev.exercises,
+        {
+          name: "", // Default name for the exercise
+          sets: [],
+        },
+      ],
+    }));
+  };
+
+  // Function to add a new set for a specific exercise
+  const addSet = (e: any, exerciseIndex: number) => {
+    e.preventDefault();
+    setExercises((prev) => {
+      const updatedExercises = [...prev.exercises];
+      updatedExercises[exerciseIndex].sets.push({
+        weight: 0, // Default weight
+        reps: 0, // Default reps
+        difficulty: "Easy", // Default difficulty
+      });
+      return {
+        ...prev,
+        exercises: updatedExercises,
+      };
+    });
+  };
+
+  // Function to remove a set for a specific exercise
+  const removeSet = (exerciseIndex: number, setIndex: number) => {
+    setExercises((prev) => {
+      const updatedExercises = [...prev.exercises];
+      updatedExercises[exerciseIndex].sets = updatedExercises[
+        exerciseIndex
+      ].sets.filter((_, index) => index !== setIndex);
+      return {
+        ...prev,
+        exercises: updatedExercises,
+      };
+    });
+  };
+
+  // Function to remove an exercise
+  const removeExercise = (exerciseIndex: number) => {
+    setExercises((prev) => {
+      const updatedExercises = prev.exercises.filter(
+        (_, index) => index !== exerciseIndex
+      );
+      return {
+        ...prev,
+        exercises: updatedExercises,
+      };
+    });
+  };
+
+  return (
+    <DialogContent className="bg-[#1E1E1E] text-white">
+      <DialogHeader>
+        <DialogTitle>Log New Workout</DialogTitle>
+        <DialogDescription>
+          Record your exercises, sets, and reps for this workout session.
+        </DialogDescription>
+      </DialogHeader>
+      <ScrollArea className="max-h-[60vh] pr-4">
+        <div className="space-y-4 py-4">
+          {excersises.exercises.map((exercise, exerciseIndex) => (
+            <Card key={exerciseIndex} className="bg-[#2A2A2A] p-4">
+              <div className="mb-4 flex items-center justify-between">
+                <Label>Exercise {exerciseIndex + 1}</Label>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeExercise(exerciseIndex)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <Select>
+                <SelectTrigger className="mb-4 bg-[#3A3A3A] text-white">
+                  <SelectValue placeholder="Select exercise" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#3A3A3A] text-white">
+                  {exerciseList.map((ex) => (
+                    <SelectItem key={ex.id} value={ex.name}>
+                      <div className="flex items-center">
+                        <img
+                          src={ex.image || "/placeholder.svg"}
+                          alt={ex.name}
+                          className="mr-2 h-6 w-6 rounded"
+                        />
+                        {ex.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {exercise.sets.map((set, setIndex) => (
+                <div key={setIndex} className="mb-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Set {setIndex + 1}</Label>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeSet(exerciseIndex, setIndex)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label htmlFor={`weight-${exerciseIndex}-${setIndex}`}>
+                        Weight (kg)
+                      </Label>
+                      <Input
+                        id={`weight-${exerciseIndex}-${setIndex}`}
+                        type="number"
+                        value={set.weight}
+                        className="bg-[#3A3A3A] text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`reps-${exerciseIndex}-${setIndex}`}>
+                        Reps
+                      </Label>
+                      <Input
+                        id={`reps-${exerciseIndex}-${setIndex}`}
+                        type="number"
+                        value={set.reps}
+                        className="bg-[#3A3A3A] text-white"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Difficulty</Label>
+                    <Slider min={1} max={5} step={1} className="py-4" />
+                  </div>
+                </div>
+              ))}
+              <Button
+                onClick={(e) => addSet(e, exerciseIndex)}
+                variant="outline"
+                className="mt-2 w-full"
+              >
+                <Plus className="mr-2 h-4 w-4" /> Add Another Set
+              </Button>
+            </Card>
+          ))}
+          <Button onClick={addExercise} variant="outline" className="w-full">
+            <Plus className="mr-2 h-4 w-4" /> Add Another Exercise
+          </Button>
+        </div>
+      </ScrollArea>
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+        >
+          Log Workout
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+};
+
+export default LogNewWorkoutForm;

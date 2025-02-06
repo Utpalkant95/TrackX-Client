@@ -22,3 +22,24 @@ export interface IProfileSectionWrapperAtom {
   title: string;
   className ?: string;
 }
+
+
+interface Set {
+  weight: number
+  reps: number
+  difficulty: "Easy" | "Medium" | "Hard"
+}
+
+export interface Exercise {
+  name: string
+  sets: Set[]
+}
+
+export interface Template {
+  name: string
+  exercises: Exercise[]
+}
+
+interface Workout {
+  exercises: Exercise[]
+}
