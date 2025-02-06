@@ -35,11 +35,11 @@ export interface Exercise {
   sets: Set[]
 }
 
-export interface Template {
-  name: string
+interface Workout {
   exercises: Exercise[]
 }
 
-interface Workout {
+export interface Template {
+  name: string
   exercises: Exercise[]
 }

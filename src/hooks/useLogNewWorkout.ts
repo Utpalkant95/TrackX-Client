@@ -1,15 +1,16 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Workout } from "@/Api/interfaces/Project";
 
-const initialValues = {
+const initialValues: Workout = {
   exercises: [
     {
       name: "",
-      set: [
+      sets: [
         {
           weight: 0,
-          reps: 0,
-          difficulty: "",
+          reps: 1, 
+          difficulty: "Easy", 
         },
       ],
     },
@@ -21,7 +22,7 @@ const validationSchema = Yup.object().shape({
     .of(
       Yup.object().shape({
         name: Yup.string().trim().required("Exercise name is required"),
-        set: Yup.array()
+        sets: Yup.array()
           .of(
             Yup.object().shape({
               weight: Yup.number()
@@ -31,8 +32,7 @@ const validationSchema = Yup.object().shape({
                 .min(1, "Reps must be at least 1")
                 .required("Reps are required"),
               difficulty: Yup.string()
-                .trim()
-                .oneOf(["easy", "medium", "hard"], "Invalid difficulty")
+                .oneOf(["Easy", "Medium", "Hard"], "Invalid difficulty")
                 .required("Difficulty is required"),
             })
           )
