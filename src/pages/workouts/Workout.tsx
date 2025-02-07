@@ -44,7 +44,6 @@ const RenderWorkoutStatsElement = ({
 export default function Workouts() {
   const [isLoggingWorkout, setIsLoggingWorkout] = useState<boolean>(false);
 
-
   const { data, refetch } = useQuery({
     queryKey: ["workouts"],
     queryFn: getWorkout,
@@ -55,16 +54,16 @@ export default function Workouts() {
     queryFn: getWorkoutsStats,
   });
 
-  const {mutate} = useMutation({
+  const { mutate } = useMutation({
     mutationKey: ["delete workout"],
     mutationFn: deleteWorkout,
-    onSuccess: (data : IRES) => {
-      refetch()
-      enqueueSnackbar(data.message, {variant : "success"})
+    onSuccess: (data: IRES) => {
+      refetch();
+      enqueueSnackbar(data.message, { variant: "success" });
     },
-    onError : (error : AxiosError<IRES>) => {
-      enqueueSnackbar(error.response?.data.message, {variant : "error"})
-    }
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    },
   });
 
   return (
@@ -77,14 +76,16 @@ export default function Workouts() {
           </p>
         </div>
 
-        <Dialog open={isLoggingWorkout} onOpenChange={setIsLoggingWorkout}>
-          <DialogTrigger asChild>
-            <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              Log New Workout
-            </Button>
-          </DialogTrigger>
-          <LogNewWorkout refetch={refetch}/>
-        </Dialog>
+        <div>
+          <Dialog open={isLoggingWorkout} onOpenChange={setIsLoggingWorkout}>
+            <DialogTrigger asChild>
+              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+                Log New Workout
+              </Button>
+            </DialogTrigger>
+            <LogNewWorkout refetch={refetch} />
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid gap-8 md:grid-cols-2">
@@ -134,7 +135,7 @@ export default function Workouts() {
                         </div>
                       ))}
                       <div className="flex justify-end space-x-2 mt-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="secondary" size="sm">
                           <Edit2 className="w-4 h-4 mr-1" /> Edit
                         </Button>
                         <Button
