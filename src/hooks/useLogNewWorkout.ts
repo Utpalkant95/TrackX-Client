@@ -47,12 +47,13 @@ const validationSchema = Yup.object().shape({
     .min(1, "At least one exercise is required"),
 });
 
-const useLogNewWorkout = () => {
+const useLogNewWorkout = ({refetch} : {refetch : () => void}) => {
   const {mutate, isPending} = useMutation({
     mutationKey : ["logNewWorkout"],
     mutationFn : logNewWorkout,
     onSuccess : (data) => {
       enqueueSnackbar(data.message, {variant : "success"})
+      refetch();
     },
     onError : (error : AxiosError<IRES>) => {
       enqueueSnackbar(error.response?.data.message, {variant : "error"})

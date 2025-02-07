@@ -18,9 +18,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useQuery } from "@tanstack/react-query";
-import { getWorkout, getWorkoutsStats } from "@/Api/workout";
-import { IWorkoutData } from "@/Api/interfaces/Response";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  deleteWorkout,
+  getWorkout,
+  getWorkoutsStats,
+  repeatLastWorkout,
+} from "@/Api/workout";
+import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
 
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 
@@ -40,8 +47,9 @@ const RenderWorkoutStatsElement = ({
 };
 
 export default function Workouts() {
-  const [isLoggingWorkout, setIsLoggingWorkout] = useState(false);
-  const { data } = useQuery({
+  const [isLoggingWorkout, setIsLoggingWorkout] = useState<boolean>(false);
+
+  const { data, refetch } = useQuery({
     queryKey: ["workouts"],
     queryFn: getWorkout,
   });
@@ -49,6 +57,33 @@ export default function Workouts() {
   const { data: workoutStats } = useQuery({
     queryKey: ["workouts-stats"],
     queryFn: getWorkoutsStats,
+  });
+
+  const { mutate } = useMutation({
+    mutationKey: ["delete workout"],
+    mutationFn: deleteWorkout,
+    onSuccess: (data: IRES) => {
+      refetch();
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    },
+  });
+
+  const {
+    mutate: repeatLastWorkoutMutate,
+    isPending: repeatLastWorkoutIsPending,
+  } = useMutation({
+    mutationKey: ["repeat workout"],
+    mutationFn: repeatLastWorkout,
+    onSuccess : (data: IRES) => {
+      refetch();
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    }
   });
 
   return (
@@ -61,14 +96,16 @@ export default function Workouts() {
           </p>
         </div>
 
-        <Dialog open={isLoggingWorkout} onOpenChange={setIsLoggingWorkout}>
-          <DialogTrigger asChild>
-            <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              Log New Workout
-            </Button>
-          </DialogTrigger>
-          <LogNewWorkout />
-        </Dialog>
+        <div>
+          <Dialog open={isLoggingWorkout} onOpenChange={setIsLoggingWorkout}>
+            <DialogTrigger asChild>
+              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+                Log New Workout
+              </Button>
+            </DialogTrigger>
+            <LogNewWorkout refetch={refetch} />
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid gap-8 md:grid-cols-2">
@@ -118,13 +155,14 @@ export default function Workouts() {
                         </div>
                       ))}
                       <div className="flex justify-end space-x-2 mt-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="secondary" size="sm">
                           <Edit2 className="w-4 h-4 mr-1" /> Edit
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           className="text-red-500 hover:text-red-600"
+                          onClick={() => mutate(workout?._id)}
                         >
                           <Trash2 className="w-4 h-4 mr-1" /> Delete
                         </Button>
@@ -165,8 +203,14 @@ export default function Workouts() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
-                <Repeat className="mr-2 h-4 w-4" /> Repeat Last Workout
+              <Button
+                className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+                onClick={() => repeatLastWorkoutMutate()}
+              >
+                <Repeat className="mr-2 h-4 w-4" />{" "}
+                {repeatLastWorkoutIsPending
+                  ? "Repeating..."
+                  : "Repeat Last Workout"}
               </Button>
               <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
                 <ClipboardList className="mr-2 h-4 w-4" /> Import from Templates
