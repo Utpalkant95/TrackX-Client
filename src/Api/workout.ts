@@ -23,3 +23,10 @@ export const logNewWorkout = async (data : Workout) => {
     });
     return response.data as IRES;
 }
+
+export const deleteWorkout = async (id : string | undefined) => {
+    const response = await axios.delete(`http://localhost:3000/api/v1/workout/delete-workout/${id}`, {
+        withCredentials : true
+    });
+    return response.data as IRES;
+}

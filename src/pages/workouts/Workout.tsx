@@ -18,9 +18,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useQuery } from "@tanstack/react-query";
-import { getWorkout, getWorkoutsStats } from "@/Api/workout";
-import { IWorkoutData } from "@/Api/interfaces/Response";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteWorkout, getWorkout, getWorkoutsStats } from "@/Api/workout";
+import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
 
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 
@@ -40,8 +42,10 @@ const RenderWorkoutStatsElement = ({
 };
 
 export default function Workouts() {
-  const [isLoggingWorkout, setIsLoggingWorkout] = useState(false);
-  const { data } = useQuery({
+  const [isLoggingWorkout, setIsLoggingWorkout] = useState<boolean>(false);
+
+
+  const { data, refetch } = useQuery({
     queryKey: ["workouts"],
     queryFn: getWorkout,
   });
@@ -49,6 +53,18 @@ export default function Workouts() {
   const { data: workoutStats } = useQuery({
     queryKey: ["workouts-stats"],
     queryFn: getWorkoutsStats,
+  });
+
+  const {mutate} = useMutation({
+    mutationKey: ["delete workout"],
+    mutationFn: deleteWorkout,
+    onSuccess: (data : IRES) => {
+      refetch()
+      enqueueSnackbar(data.message, {variant : "success"})
+    },
+    onError : (error : AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, {variant : "error"})
+    }
   });
 
   return (
@@ -67,7 +83,7 @@ export default function Workouts() {
               Log New Workout
             </Button>
           </DialogTrigger>
-          <LogNewWorkout />
+          <LogNewWorkout refetch={refetch}/>
         </Dialog>
       </div>
 
@@ -125,6 +141,7 @@ export default function Workouts() {
                           variant="outline"
                           size="sm"
                           className="text-red-500 hover:text-red-600"
+                          onClick={() => mutate(workout?._id)}
                         >
                           <Trash2 className="w-4 h-4 mr-1" /> Delete
                         </Button>

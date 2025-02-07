@@ -31,8 +31,8 @@ const exerciseList = [
   { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
 ];
 
-const LogNewWorkoutForm = () => {
-  const { formik, isPending } = useLogNewWorkout();
+const LogNewWorkoutForm = ({refetch} : {refetch : () => void}) => {
+  const { formik, isPending } = useLogNewWorkout({refetch : refetch});
 
   // Function to add a new exercise
   const addExercise = () => {
