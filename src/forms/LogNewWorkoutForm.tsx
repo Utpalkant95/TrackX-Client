@@ -1,4 +1,3 @@
-import { Workout } from "@/Api/interfaces/Project";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -33,64 +32,26 @@ const exerciseList = [
 ];
 
 const LogNewWorkoutForm = () => {
-  // const [excersises, setExercises] = useState<Workout>({ exercises: [] });
-  const formik = useLogNewWorkout();
+  const { formik, isPending } = useLogNewWorkout();
 
   // Function to add a new exercise
-  const addExercise = (e: any) => {
-    e.preventDefault();
-    // setExercises((prev) => ({
-    //   ...prev,
-    //   exercises: [
-    //     ...prev.exercises,
-    //     {
-    //       name: "", // Default name for the exercise
-    //       sets: [],
-    //     },
-    //   ],
-    // }));
-
+  const addExercise = () => {
     formik.setFieldValue("exercises", [
       ...formik.values.exercises,
       { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
-    ])
+    ]);
   };
 
   // Function to add a new set for a specific exercise
-  const addSet = (e: any, exerciseIndex: number) => {
-    e.preventDefault();
-    // setExercises((prev) => {
-    //   const updatedExercises = [...prev.exercises];
-    //   updatedExercises[exerciseIndex].sets.push({
-    //     weight: 0, // Default weight
-    //     reps: 0, // Default reps
-    //     difficulty: "Easy", // Default difficulty
-    //   });
-    //   return {
-    //     ...prev,
-    //     exercises: updatedExercises,
-    //   };
-    // });
-
+  const addSet = (exerciseIndex: number) => {
     formik.setFieldValue(`exercises.${exerciseIndex}.sets`, [
       ...formik.values.exercises[exerciseIndex].sets,
       { weight: 0, reps: 1, difficulty: "Easy" },
-    ])
+    ]);
   };
 
   // Function to remove a set for a specific exercise
   const removeSet = (exerciseIndex: number, setIndex: number) => {
-    // setExercises((prev) => {
-    //   const updatedExercises = [...prev.exercises];
-    //   updatedExercises[exerciseIndex].sets = updatedExercises[
-    //     exerciseIndex
-    //   ].sets.filter((_, index) => index !== setIndex);
-    //   return {
-    //     ...prev,
-    //     exercises: updatedExercises,
-    //   };
-    // });
-
     const newSets = [...formik.values.exercises[exerciseIndex].sets];
     newSets.splice(setIndex, 1);
     formik.setFieldValue(`exercises.${exerciseIndex}.sets`, newSets);
@@ -98,16 +59,6 @@ const LogNewWorkoutForm = () => {
 
   // Function to remove an exercise
   const removeExercise = (exerciseIndex: number) => {
-    // setExercises((prev) => {
-    //   const updatedExercises = prev.exercises.filter(
-    //     (_, index) => index !== exerciseIndex
-    //   );
-    //   return {
-    //     ...prev,
-    //     exercises: updatedExercises,
-    //   };
-    // });
-
     formik.setFieldValue(
       "exercises",
       formik.values.exercises.filter((_, index) => index !== exerciseIndex)
@@ -226,7 +177,7 @@ const LogNewWorkoutForm = () => {
                   </div>
                 ))}
                 <Button
-                  onClick={(e) => addSet(e, exerciseIndex)}
+                  onClick={() => addSet(exerciseIndex)}
                   variant="outline"
                   className="mt-2 w-full"
                 >
@@ -234,7 +185,11 @@ const LogNewWorkoutForm = () => {
                 </Button>
               </Card>
             ))}
-            <Button onClick={addExercise} variant="secondary" className="w-full">
+            <Button
+              onClick={addExercise}
+              variant="secondary"
+              className="w-full"
+            >
               <Plus className="mr-2 h-4 w-4" /> Add Another Exercise
             </Button>
           </div>
@@ -243,9 +198,9 @@ const LogNewWorkoutForm = () => {
           <Button
             type="submit"
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-            onClick={() =>formik.handleSubmit()}
+            onClick={() => formik.handleSubmit()}
           >
-            Log Workout
+            {isPending ? "Logging Workout..." : "Log Workout"}
           </Button>
         </DialogFooter>
       </DialogContent>

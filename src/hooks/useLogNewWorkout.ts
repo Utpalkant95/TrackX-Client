@@ -1,6 +1,11 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Workout } from "@/Api/interfaces/Project";
+import { useMutation } from "@tanstack/react-query";
+import { logNewWorkout } from "@/Api/workout";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
+import { IRES } from "@/Api/interfaces/Response";
 
 const initialValues: Workout = {
   exercises: [
@@ -43,15 +48,28 @@ const validationSchema = Yup.object().shape({
 });
 
 const useLogNewWorkout = () => {
+  const {mutate, isPending} = useMutation({
+    mutationKey : ["logNewWorkout"],
+    mutationFn : logNewWorkout,
+    onSuccess : (data) => {
+      enqueueSnackbar(data.message, {variant : "success"})
+    },
+    onError : (error : AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, {variant : "error"})
+    }
+  })
+
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log("Workout Data:", values);
+      mutate(values);
     },
   });
 
-  return formik;
+  return {
+    formik, isPending
+  };
 };
 
 export default useLogNewWorkout;
