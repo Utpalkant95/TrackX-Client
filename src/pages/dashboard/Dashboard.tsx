@@ -43,76 +43,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
-// Mock data for recent workouts
-const recentWorkouts = [
-  {
-    id: 1,
-    date: "2025-01-28",
-    exercises: [
-      {
-        name: "Bench Press",
-        sets: [
-          { weight: 60, reps: 10 },
-          { weight: 65, reps: 8 },
-          { weight: 70, reps: 6 },
-        ],
-      },
-      {
-        name: "Squats",
-        sets: [
-          { weight: 80, reps: 12 },
-          { weight: 90, reps: 10 },
-          { weight: 100, reps: 8 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    date: "2025-01-26",
-    exercises: [
-      {
-        name: "Deadlifts",
-        sets: [
-          { weight: 100, reps: 8 },
-          { weight: 110, reps: 6 },
-          { weight: 120, reps: 4 },
-        ],
-      },
-      {
-        name: "Pull-ups",
-        sets: [
-          { weight: 0, reps: 12 },
-          { weight: 0, reps: 10 },
-          { weight: 0, reps: 8 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    date: "2025-01-24",
-    exercises: [
-      {
-        name: "Shoulder Press",
-        sets: [
-          { weight: 40, reps: 10 },
-          { weight: 45, reps: 8 },
-          { weight: 50, reps: 6 },
-        ],
-      },
-      {
-        name: "Bicep Curls",
-        sets: [
-          { weight: 20, reps: 12 },
-          { weight: 22.5, reps: 10 },
-          { weight: 25, reps: 8 },
-        ],
-      },
-    ],
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getWorkout } from "@/Api/workout";
 
 // Mock data for progress chart
 const progressData = [
@@ -180,6 +112,11 @@ const PersonalBestItem = ({
 export default function Dashboard() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight");
+
+  const {data : workouts} = useQuery({
+    queryKey : ["get-recent-workouts"],
+    queryFn : getWorkout
+  })
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen">
@@ -251,9 +188,9 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px] pr-4">
-                {recentWorkouts.map((workout) => (
+                {workouts?.data?.map((workout) => (
                   <Card
-                    key={workout.id}
+                    key={workout._id}
                     className="mb-4 bg-[#2A2A2A] border-none"
                   >
                     <CardHeader className="pb-2">
