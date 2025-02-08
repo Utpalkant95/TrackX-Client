@@ -43,8 +43,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useQuery } from "@tanstack/react-query";
-import { getWorkout } from "@/Api/workout";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getWorkout, repeatLastWorkout } from "@/Api/workout";
 
 // Mock data for progress chart
 const progressData = [
@@ -116,6 +116,11 @@ export default function Dashboard() {
   const {data : workouts} = useQuery({
     queryKey : ["get-recent-workouts"],
     queryFn : getWorkout
+  })
+
+  const {mutate : repeatLastWorkoutMutate, isPending} = useMutation({
+    mutationKey : ["repeat-last-workout"],
+    mutationFn : repeatLastWorkout
   })
 
   return (
@@ -222,8 +227,8 @@ export default function Dashboard() {
               </ScrollArea>
             </CardContent>
             <CardFooter>
-              <Button variant="default" className="w-full">
-                Repeat Last Workout
+              <Button variant="default" className="w-full" onClick={() => repeatLastWorkoutMutate()}>
+                {isPending ? "Repeating..." : "Repeat Last Workout"}
               </Button>
             </CardFooter>
           </Card>
