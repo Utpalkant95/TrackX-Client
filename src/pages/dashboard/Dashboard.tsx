@@ -44,7 +44,7 @@ import {
 } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getWorkout, repeatLastWorkout } from "@/Api/workout";
+import { getWorkout, getWorkoutPerformance, repeatLastWorkout } from "@/Api/workout";
 
 // Mock data for progress chart
 const progressData = [
@@ -121,6 +121,11 @@ export default function Dashboard() {
   const {mutate : repeatLastWorkoutMutate, isPending} = useMutation({
     mutationKey : ["repeat-last-workout"],
     mutationFn : repeatLastWorkout
+  })
+
+  const {data : performanceData}=useQuery({
+    queryKey : ["get-workout-performance"],
+    queryFn : getWorkoutPerformance
   })
 
   return (
@@ -287,20 +292,20 @@ export default function Dashboard() {
             <PersonalBestItem
               Icon={Dumbbell}
               title="Heaviest Lift"
-              description="Deadlift"
-              exerciseName="120 kg"
+              description={performanceData?.data?.heaviestLiftExercise}
+              exerciseName={performanceData?.data?.heaviestLift}
             />
             <PersonalBestItem
               Icon={Flame}
               title="Longest Streak"
-              description="14 days"
-              exerciseName="Dec 1 - Dec 14"
+              description={performanceData?.data?.StreakDate}
+              exerciseName={performanceData?.data?.longestStreak}
             />
             <PersonalBestItem
               Icon={Zap}
               title="Most Frequent"
-              description="Bench Press"
-              exerciseName="3x per week"
+              description={`${performanceData?.data?.mostFrequentExerciseCount} x times`}
+              exerciseName={performanceData?.data?.mostFrequentExercise}
             />
           </div>
 
