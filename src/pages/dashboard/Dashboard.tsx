@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { format } from "date-fns";
 import {
   CalendarIcon,
@@ -8,6 +8,7 @@ import {
   Zap,
   Flame,
   AlertTriangle,
+  LucideProps,
 } from "lucide-react";
 import {
   Card,
@@ -124,6 +125,58 @@ const progressData = [
   { day: "Sun", weight: 270, reps: 35 },
 ];
 
+const ProfileSectionWrapperAtom = lazy(
+  () => import("@/atmos/ProfileSectionWrapperAtom")
+);
+
+const AiInsightItem = ({
+  Icon,
+  description,
+  title,
+}: {
+  Icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  title: string;
+  description: string;
+}) => {
+  return (
+    <Alert className="bg-[#2A2A2A] border-orange-500">
+      <Icon className="h-4 w-4" />
+      <AlertTitle>{title}</AlertTitle>
+      <AlertDescription>{description}</AlertDescription>
+    </Alert>
+  );
+};
+
+const PersonalBestItem = ({
+  Icon,
+  description,
+  exerciseName,
+  title,
+}: {
+  Icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  title: string;
+  description: string;
+  exerciseName: string;
+}) => {
+  return (
+    <Card className="bg-[#1E1E1E] text-white">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium">
+          <Icon className="h-4 w-4 inline-block mr-1" /> {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{exerciseName}</div>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
+  );
+};
+
 export default function Dashboard() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight");
@@ -211,7 +264,9 @@ export default function Dashboard() {
                     <CardContent>
                       {workout.exercises.map((exercise, index) => (
                         <div key={index} className="mb-2">
-                          <p className="font-semibold text-[#edfafa]">{exercise.name}</p>
+                          <p className="font-semibold text-[#edfafa]">
+                            {exercise.name}
+                          </p>
                           <p className="text-sm text-gray-400">
                             {exercise.sets.map((set, setIndex) => (
                               <span key={setIndex}>
@@ -287,74 +342,49 @@ export default function Dashboard() {
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-            <Card className="bg-[#1E1E1E] text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  <Dumbbell className="h-4 w-4 inline-block mr-1" /> Heaviest
-                  Lift
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">120 kg</div>
-                <p className="text-xs text-muted-foreground">Deadlift</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-[#1E1E1E] text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  <Flame className="h-4 w-4 inline-block mr-1" /> Longest Streak
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">14 days</div>
-                <p className="text-xs text-muted-foreground">Dec 1 - Dec 14</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-[#1E1E1E] text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  <Zap className="h-4 w-4 inline-block mr-1" /> Most Frequent
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Bench Press</div>
-                <p className="text-xs text-muted-foreground">3x per week</p>
-              </CardContent>
-            </Card>
+            <PersonalBestItem
+              Icon={Dumbbell}
+              title="Heaviest Lift"
+              description="Deadlift"
+              exerciseName="120 kg"
+            />
+            <PersonalBestItem
+              Icon={Flame}
+              title="Longest Streak"
+              description="14 days"
+              exerciseName="Dec 1 - Dec 14"
+            />
+            <PersonalBestItem
+              Icon={Zap}
+              title="Most Frequent"
+              description="Bench Press"
+              exerciseName="3x per week"
+            />
           </div>
 
           {/* AI-Based Insights & Recommendations */}
-          <Card className="bg-[#1E1E1E] text-white">
-            <CardHeader>
-              <CardTitle>AI Insights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert className="bg-[#2A2A2A] border-orange-500">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Plateau Detected</AlertTitle>
-                <AlertDescription>
-                  No progress in Squats for 2 weeks. Consider adjusting weight
-                  or reps.
-                </AlertDescription>
-              </Alert>
-              <Alert className="bg-[#2A2A2A] border-green-500">
-                <Zap className="h-4 w-4" />
-                <AlertTitle>Workout Suggestion</AlertTitle>
-                <AlertDescription>
-                  Try increasing Bench Press weight by 2.5kg next session for
-                  progressive overload.
-                </AlertDescription>
-              </Alert>
-              <Alert className="bg-[#2A2A2A] border-blue-500">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Recovery Alert</AlertTitle>
-                <AlertDescription>
-                  You've worked out 6 days in a row. Consider taking a rest day
-                  for better recovery.
-                </AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
+          <ProfileSectionWrapperAtom title="AI Insights" className="">
+            <div className="flex flex-col space-y-4">
+              <AiInsightItem
+                Icon={AlertTriangle}
+                title="Plateau Detected"
+                description="No progress in Squats for 2 weeks. Consider adjusting weight
+                  or reps."
+              />
+              <AiInsightItem
+                Icon={Zap}
+                title="Workout Suggestion"
+                description="Try increasing Bench Press weight by 2.5kg next session for
+                  progressive overload."
+              />
+              <AiInsightItem
+                Icon={AlertTriangle}
+                title="Recovery Alert"
+                description="You've worked out 6 days in a row. Consider taking a rest day
+                  for better recovery."
+              />
+            </div>
+          </ProfileSectionWrapperAtom>
         </div>
       </div>
     </div>
