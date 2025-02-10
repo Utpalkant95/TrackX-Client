@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { format } from "date-fns";
 import {
   CalendarIcon,
@@ -8,6 +8,7 @@ import {
   Zap,
   Flame,
   AlertTriangle,
+  LucideProps,
 } from "lucide-react";
 import {
   Card,
@@ -42,76 +43,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
-// Mock data for recent workouts
-const recentWorkouts = [
-  {
-    id: 1,
-    date: "2025-01-28",
-    exercises: [
-      {
-        name: "Bench Press",
-        sets: [
-          { weight: 60, reps: 10 },
-          { weight: 65, reps: 8 },
-          { weight: 70, reps: 6 },
-        ],
-      },
-      {
-        name: "Squats",
-        sets: [
-          { weight: 80, reps: 12 },
-          { weight: 90, reps: 10 },
-          { weight: 100, reps: 8 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    date: "2025-01-26",
-    exercises: [
-      {
-        name: "Deadlifts",
-        sets: [
-          { weight: 100, reps: 8 },
-          { weight: 110, reps: 6 },
-          { weight: 120, reps: 4 },
-        ],
-      },
-      {
-        name: "Pull-ups",
-        sets: [
-          { weight: 0, reps: 12 },
-          { weight: 0, reps: 10 },
-          { weight: 0, reps: 8 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    date: "2025-01-24",
-    exercises: [
-      {
-        name: "Shoulder Press",
-        sets: [
-          { weight: 40, reps: 10 },
-          { weight: 45, reps: 8 },
-          { weight: 50, reps: 6 },
-        ],
-      },
-      {
-        name: "Bicep Curls",
-        sets: [
-          { weight: 20, reps: 12 },
-          { weight: 22.5, reps: 10 },
-          { weight: 25, reps: 8 },
-        ],
-      },
-    ],
-  },
-];
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  getWorkout,
+  getWorkoutPerformance,
+  repeatLastWorkout,
+} from "@/Api/workout";
+import { Link } from "react-router-dom";
 
 // Mock data for progress chart
 const progressData = [
@@ -124,9 +62,76 @@ const progressData = [
   { day: "Sun", weight: 270, reps: 35 },
 ];
 
+const ProfileSectionWrapperAtom = lazy(
+  () => import("@/atmos/ProfileSectionWrapperAtom")
+);
+
+const AiInsightItem = ({
+  Icon,
+  description,
+  title,
+}: {
+  Icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  title: string;
+  description: string;
+}) => {
+  return (
+    <Alert className="bg-[#2A2A2A] border-orange-500">
+      <Icon className="h-4 w-4" />
+      <AlertTitle>{title}</AlertTitle>
+      <AlertDescription>{description}</AlertDescription>
+    </Alert>
+  );
+};
+
+const PersonalBestItem = ({
+  Icon,
+  description,
+  exerciseName,
+  title,
+}: {
+  Icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  title: string;
+  description: string;
+  exerciseName: string;
+}) => {
+  return (
+    <Card className="bg-[#1E1E1E] text-white">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium">
+          <Icon className="h-4 w-4 inline-block mr-1" /> {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{exerciseName}</div>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
+  );
+};
+
 export default function Dashboard() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight");
+
+  const { data: workouts } = useQuery({
+    queryKey: ["get-recent-workouts"],
+    queryFn: getWorkout,
+  });
+
+  const { mutate: repeatLastWorkoutMutate, isPending } = useMutation({
+    mutationKey: ["repeat-last-workout"],
+    mutationFn: repeatLastWorkout,
+  });
+
+  const { data: performanceData } = useQuery({
+    queryKey: ["get-workout-performance"],
+    queryFn: getWorkoutPerformance,
+  });
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen">
@@ -162,13 +167,15 @@ export default function Dashboard() {
           </Popover>
           <div className="flex space-x-2">
             <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              <Plus className="mr-2 h-4 w-4" /> Log Workout
+              <Link to={"/workouts"} className="flex items-center">
+                <Plus className="mr-2 h-4 w-4" /> Log Workout
+              </Link>
             </Button>
             <Button
               variant="outline"
               className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
             >
-              View Progress
+              <Link to={"/progress"}>View Progress</Link>
             </Button>
           </div>
         </div>
@@ -198,9 +205,9 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px] pr-4">
-                {recentWorkouts.map((workout) => (
+                {workouts?.data?.map((workout) => (
                   <Card
-                    key={workout.id}
+                    key={workout._id}
                     className="mb-4 bg-[#2A2A2A] border-none"
                   >
                     <CardHeader className="pb-2">
@@ -211,7 +218,9 @@ export default function Dashboard() {
                     <CardContent>
                       {workout.exercises.map((exercise, index) => (
                         <div key={index} className="mb-2">
-                          <p className="font-semibold text-[#edfafa]">{exercise.name}</p>
+                          <p className="font-semibold text-[#edfafa]">
+                            {exercise.name}
+                          </p>
                           <p className="text-sm text-gray-400">
                             {exercise.sets.map((set, setIndex) => (
                               <span key={setIndex}>
@@ -230,8 +239,12 @@ export default function Dashboard() {
               </ScrollArea>
             </CardContent>
             <CardFooter>
-              <Button variant="default" className="w-full">
-                Repeat Last Workout
+              <Button
+                variant="default"
+                className="w-full"
+                onClick={() => repeatLastWorkoutMutate()}
+              >
+                {isPending ? "Repeating..." : "Repeat Last Workout"}
               </Button>
             </CardFooter>
           </Card>
@@ -287,74 +300,49 @@ export default function Dashboard() {
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-            <Card className="bg-[#1E1E1E] text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  <Dumbbell className="h-4 w-4 inline-block mr-1" /> Heaviest
-                  Lift
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">120 kg</div>
-                <p className="text-xs text-muted-foreground">Deadlift</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-[#1E1E1E] text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  <Flame className="h-4 w-4 inline-block mr-1" /> Longest Streak
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">14 days</div>
-                <p className="text-xs text-muted-foreground">Dec 1 - Dec 14</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-[#1E1E1E] text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  <Zap className="h-4 w-4 inline-block mr-1" /> Most Frequent
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Bench Press</div>
-                <p className="text-xs text-muted-foreground">3x per week</p>
-              </CardContent>
-            </Card>
+            <PersonalBestItem
+              Icon={Dumbbell}
+              title="Heaviest Lift"
+              description={performanceData?.data?.heaviestLiftExercise}
+              exerciseName={performanceData?.data?.heaviestLift}
+            />
+            <PersonalBestItem
+              Icon={Flame}
+              title="Longest Streak"
+              description={performanceData?.data?.StreakDate}
+              exerciseName={performanceData?.data?.longestStreak}
+            />
+            <PersonalBestItem
+              Icon={Zap}
+              title="Most Frequent"
+              description={`${performanceData?.data?.mostFrequentExerciseCount} x times`}
+              exerciseName={performanceData?.data?.mostFrequentExercise}
+            />
           </div>
 
           {/* AI-Based Insights & Recommendations */}
-          <Card className="bg-[#1E1E1E] text-white">
-            <CardHeader>
-              <CardTitle>AI Insights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert className="bg-[#2A2A2A] border-orange-500">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Plateau Detected</AlertTitle>
-                <AlertDescription>
-                  No progress in Squats for 2 weeks. Consider adjusting weight
-                  or reps.
-                </AlertDescription>
-              </Alert>
-              <Alert className="bg-[#2A2A2A] border-green-500">
-                <Zap className="h-4 w-4" />
-                <AlertTitle>Workout Suggestion</AlertTitle>
-                <AlertDescription>
-                  Try increasing Bench Press weight by 2.5kg next session for
-                  progressive overload.
-                </AlertDescription>
-              </Alert>
-              <Alert className="bg-[#2A2A2A] border-blue-500">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Recovery Alert</AlertTitle>
-                <AlertDescription>
-                  You've worked out 6 days in a row. Consider taking a rest day
-                  for better recovery.
-                </AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
+          <ProfileSectionWrapperAtom title="AI Insights" className="">
+            <div className="flex flex-col space-y-4">
+              <AiInsightItem
+                Icon={AlertTriangle}
+                title="Plateau Detected"
+                description="No progress in Squats for 2 weeks. Consider adjusting weight
+                  or reps."
+              />
+              <AiInsightItem
+                Icon={Zap}
+                title="Workout Suggestion"
+                description="Try increasing Bench Press weight by 2.5kg next session for
+                  progressive overload."
+              />
+              <AiInsightItem
+                Icon={AlertTriangle}
+                title="Recovery Alert"
+                description="You've worked out 6 days in a row. Consider taking a rest day
+                  for better recovery."
+              />
+            </div>
+          </ProfileSectionWrapperAtom>
         </div>
       </div>
     </div>

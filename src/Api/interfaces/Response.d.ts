@@ -44,7 +44,7 @@ export interface IWorkoutData {
 }
 
 export interface IWorkoutResponse {
-  data: WorkoutData[];
+  data: IWorkoutData[];
 }
 
 

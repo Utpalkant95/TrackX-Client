@@ -37,3 +37,10 @@ export const repeatLastWorkout = async () => {
     });
     return response.data as IRES;
 }
+
+export const getWorkoutPerformance = async () => {
+    const response = await axios.get("http://localhost:3000/api/v1/workout/get-workout-performance", {
+        withCredentials : true
+    });
+    return response.data as IRES;
+}
