@@ -44,7 +44,12 @@ import {
 } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getWorkout, getWorkoutPerformance, repeatLastWorkout } from "@/Api/workout";
+import {
+  getWorkout,
+  getWorkoutPerformance,
+  repeatLastWorkout,
+} from "@/Api/workout";
+import { Link } from "react-router-dom";
 
 // Mock data for progress chart
 const progressData = [
@@ -113,20 +118,20 @@ export default function Dashboard() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight");
 
-  const {data : workouts} = useQuery({
-    queryKey : ["get-recent-workouts"],
-    queryFn : getWorkout
-  })
+  const { data: workouts } = useQuery({
+    queryKey: ["get-recent-workouts"],
+    queryFn: getWorkout,
+  });
 
-  const {mutate : repeatLastWorkoutMutate, isPending} = useMutation({
-    mutationKey : ["repeat-last-workout"],
-    mutationFn : repeatLastWorkout
-  })
+  const { mutate: repeatLastWorkoutMutate, isPending } = useMutation({
+    mutationKey: ["repeat-last-workout"],
+    mutationFn: repeatLastWorkout,
+  });
 
-  const {data : performanceData}=useQuery({
-    queryKey : ["get-workout-performance"],
-    queryFn : getWorkoutPerformance
-  })
+  const { data: performanceData } = useQuery({
+    queryKey: ["get-workout-performance"],
+    queryFn: getWorkoutPerformance,
+  });
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen">
@@ -162,13 +167,15 @@ export default function Dashboard() {
           </Popover>
           <div className="flex space-x-2">
             <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              <Plus className="mr-2 h-4 w-4" /> Log Workout
+              <Link to={"/workouts"} className="flex items-center">
+                <Plus className="mr-2 h-4 w-4" /> Log Workout
+              </Link>
             </Button>
             <Button
               variant="outline"
               className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
             >
-              View Progress
+              <Link to={"/progress"}>View Progress</Link>
             </Button>
           </div>
         </div>
@@ -232,7 +239,11 @@ export default function Dashboard() {
               </ScrollArea>
             </CardContent>
             <CardFooter>
-              <Button variant="default" className="w-full" onClick={() => repeatLastWorkoutMutate()}>
+              <Button
+                variant="default"
+                className="w-full"
+                onClick={() => repeatLastWorkoutMutate()}
+              >
                 {isPending ? "Repeating..." : "Repeat Last Workout"}
               </Button>
             </CardFooter>
