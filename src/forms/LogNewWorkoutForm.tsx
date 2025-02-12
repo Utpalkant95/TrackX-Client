@@ -31,7 +31,7 @@ const exerciseList = [
   { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
 ];
 
-const LogNewWorkoutForm = ({refetch} : {refetch : () => void}) => {
+const LogNewWorkoutForm = ({title, des, refetch} : {title : string, des : string, refetch : () => void}) => {
   const { formik, isPending } = useLogNewWorkout({refetch : refetch});
 
   // Function to add a new exercise
@@ -69,9 +69,9 @@ const LogNewWorkoutForm = ({refetch} : {refetch : () => void}) => {
     <form onSubmit={formik.handleSubmit}>
       <DialogContent className="bg-[#1E1E1E] text-white">
         <DialogHeader>
-          <DialogTitle>Log New Workout</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Record your exercises, sets, and reps for this workout session.
+            {des}
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[60vh] pr-4">

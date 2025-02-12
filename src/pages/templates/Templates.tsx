@@ -50,7 +50,7 @@ export default function Templates() {
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
               </Button>
             </DialogTrigger>
-            <LogNewWorkout refetch={refetch} />
+            <LogNewWorkout refetch={refetch} title="Create New Template" des="Create a new workout template with detailed set information."/>
           </Dialog>
         </div>
       </div>

@@ -47,7 +47,6 @@ const RenderWorkoutStatsElement = ({
 };
 
 export default function Workouts() {
-
   const { data, refetch } = useQuery({
     queryKey: ["workouts"],
     queryFn: getWorkout,
@@ -76,13 +75,13 @@ export default function Workouts() {
   } = useMutation({
     mutationKey: ["repeat workout"],
     mutationFn: repeatLastWorkout,
-    onSuccess : (data: IRES) => {
+    onSuccess: (data: IRES) => {
       refetch();
       enqueueSnackbar(data.message, { variant: "success" });
     },
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.response?.data.message, { variant: "error" });
-    }
+    },
   });
 
   return (
@@ -102,7 +101,11 @@ export default function Workouts() {
                 Log New Workout
               </Button>
             </DialogTrigger>
-            <LogNewWorkout refetch={refetch} />
+            <LogNewWorkout
+              refetch={refetch}
+              title="Log New Workout"
+              des="Record your exercises, sets, and reps for this workout session."
+            />
           </Dialog>
         </div>
       </div>
