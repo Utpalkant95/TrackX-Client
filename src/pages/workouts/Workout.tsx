@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { lazy } from "react";
 import { format } from "date-fns";
 import { Edit2, Trash2, Repeat, ClipboardList } from "lucide-react";
 import {
@@ -47,7 +47,6 @@ const RenderWorkoutStatsElement = ({
 };
 
 export default function Workouts() {
-  const [isLoggingWorkout, setIsLoggingWorkout] = useState<boolean>(false);
 
   const { data, refetch } = useQuery({
     queryKey: ["workouts"],
@@ -97,7 +96,7 @@ export default function Workouts() {
         </div>
 
         <div>
-          <Dialog open={isLoggingWorkout} onOpenChange={setIsLoggingWorkout}>
+          <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
                 Log New Workout

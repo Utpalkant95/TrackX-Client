@@ -28,7 +28,7 @@ import { ITemplate } from "@/Api/interfaces/Project";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 
 export default function Templates() {
-  const {data, refetch} = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
   });
@@ -43,14 +43,16 @@ export default function Templates() {
             Create and save your custom workout routines for quick logging.
           </p>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              <Plus className="mr-2 h-4 w-4" /> Create New Template
-            </Button>
-          </DialogTrigger>
-          <LogNewWorkout refetch={refetch} />
-        </Dialog>
+        <div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+                <Plus className="mr-2 h-4 w-4" /> Create New Template
+              </Button>
+            </DialogTrigger>
+            <LogNewWorkout refetch={refetch} />
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid gap-8 md:grid-cols-2">
@@ -60,7 +62,7 @@ export default function Templates() {
             Saved Templates
           </h2>
           <div className="space-y-4">
-            {data?.data.map((template : ITemplate, index : number) => (
+            {data?.data.map((template: ITemplate, index: number) => (
               <Card key={index} className="bg-[#1E1E1E] text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-medium">
