@@ -42,7 +42,10 @@ const LogNewWorkoutForm = ({
   refetch: () => void;
   type: string;
 }) => {
-  const { formik, isPending } = useLogNewWorkout({ refetch: refetch, type: type });
+  const { formik, isPending, isTemplate } = useLogNewWorkout({
+    refetch: refetch,
+    type,
+  });
 
   // Function to add a new exercise
   const addExercise = () => {
@@ -84,11 +87,14 @@ const LogNewWorkoutForm = ({
         </DialogHeader>
         <ScrollArea className="max-h-[60vh] pr-4">
           <div className="space-y-4 py-4">
-            {type === "TEMPLATE" && (
+            {isTemplate(formik.values) && (
               <div className="space-y-2">
                 <Label htmlFor="template-name">Template Name</Label>
                 <Input
-                  id="template-name"
+                  type="text"
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
                   placeholder="e.g., Leg Day Routine"
                   className="bg-[#2A2A2A] text-white"
                 />
@@ -218,7 +224,13 @@ const LogNewWorkoutForm = ({
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
             onClick={() => formik.handleSubmit()}
           >
-            {isPending ? type==="TEMPLATE" ? "Creating Template..." : "Logging Workout..." : type==="TEMPLATE" ? "Create Template" : "Log Workout"}
+            {isPending
+              ? type === "TEMPLATE"
+                ? "Creating Template..."
+                : "Logging Workout..."
+              : type === "TEMPLATE"
+              ? "Create Template"
+              : "Log Workout"}
           </Button>
         </DialogFooter>
       </DialogContent>
