@@ -15,3 +15,10 @@ export const createTemplate = async (data : ITemplate) => {
     })
     return response.data as IRES;
 }
+
+export const deleteTemplate = async (id : string | undefined) => {
+    const response = await axios.delete(`http://localhost:3000/api/v1/template/delete-template/${id}`, {
+        withCredentials : true
+    })
+    return response.data as IRES;
+}

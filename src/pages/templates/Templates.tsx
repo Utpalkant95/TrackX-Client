@@ -22,15 +22,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
-import { getTemplates } from "@/Api/template";
-import { ITemplate } from "@/Api/interfaces/Project";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteTemplate, getTemplates } from "@/Api/template";
+import { enqueueSnackbar } from "notistack";
+import { IRES, ITemplateData } from "@/Api/interfaces/Response";
+import { AxiosError } from "axios";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 
 export default function Templates() {
   const { data, refetch } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
+  });
+
+  const { mutate } = useMutation({
+    mutationKey: ["deleteTemplate"],
+    mutationFn: deleteTemplate,
+    onSuccess: (data: IRES) => {
+      refetch();
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
   });
   return (
     <div className="container mx-auto px-4 py-8">
@@ -50,7 +64,12 @@ export default function Templates() {
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
               </Button>
             </DialogTrigger>
-            <LogNewWorkout refetch={refetch} title="Create New Template" des="Create a new workout template with detailed set information." type="TEMPLATE" />
+            <LogNewWorkout
+              refetch={refetch}
+              title="Create New Template"
+              des="Create a new workout template with detailed set information."
+              type="TEMPLATE"
+            />
           </Dialog>
         </div>
       </div>
@@ -62,7 +81,7 @@ export default function Templates() {
             Saved Templates
           </h2>
           <div className="space-y-4">
-            {data?.data.map((template: ITemplate, index: number) => (
+            {data?.data.map((template: ITemplateData, index: number) => (
               <Card key={index} className="bg-[#1E1E1E] text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-medium">
@@ -90,7 +109,10 @@ export default function Templates() {
                           <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">
                             Cancel
                           </AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-600 text-white hover:bg-red-700">
+                          <AlertDialogAction
+                            className="bg-red-600 text-white hover:bg-red-700"
+                            onClick={() => mutate(template._id)}
+                          >
                             Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>
