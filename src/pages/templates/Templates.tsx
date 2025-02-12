@@ -34,7 +34,7 @@ export default function Templates() {
   });
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex items-center justify-b2etween">
+      <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold text-white">
             Workout Templates

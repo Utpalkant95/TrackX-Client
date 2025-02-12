@@ -42,7 +42,7 @@ const LogNewWorkoutForm = ({
   refetch: () => void;
   type: string;
 }) => {
-  const { formik, isPending, isTemplate } = useLogNewWorkout({
+  const { formik, isPending, isTemplate, isTemplatePending } = useLogNewWorkout({
     refetch: refetch,
     type,
   });
@@ -224,13 +224,7 @@ const LogNewWorkoutForm = ({
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
             onClick={() => formik.handleSubmit()}
           >
-            {isPending
-              ? type === "TEMPLATE"
-                ? "Creating Template..."
-                : "Logging Workout..."
-              : type === "TEMPLATE"
-              ? "Create Template"
-              : "Log Workout"}
+            {isPending || isTemplatePending ? "Loading..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

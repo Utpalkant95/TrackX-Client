@@ -99,7 +99,7 @@ const useLogNewWorkout = ({
     },
   });
 
-  const { mutate: templateMutate } = useMutation({
+  const { mutate: templateMutate, isPending: isTemplatePending } = useMutation({
     mutationKey: ["create-template"],
     mutationFn: createTemplate,
   });
@@ -125,6 +125,7 @@ const useLogNewWorkout = ({
     formik,
     isPending,
     isTemplate,
+    isTemplatePending
   };
 };
 
