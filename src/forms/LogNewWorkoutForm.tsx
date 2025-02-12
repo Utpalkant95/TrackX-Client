@@ -31,8 +31,21 @@ const exerciseList = [
   { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
 ];
 
-const LogNewWorkoutForm = ({refetch} : {refetch : () => void}) => {
-  const { formik, isPending } = useLogNewWorkout({refetch : refetch});
+const LogNewWorkoutForm = ({
+  title,
+  des,
+  refetch,
+  type,
+}: {
+  title: string;
+  des: string;
+  refetch: () => void;
+  type: string;
+}) => {
+  const { formik, isPending, isTemplate, isTemplatePending } = useLogNewWorkout({
+    refetch: refetch,
+    type,
+  });
 
   // Function to add a new exercise
   const addExercise = () => {
@@ -69,13 +82,24 @@ const LogNewWorkoutForm = ({refetch} : {refetch : () => void}) => {
     <form onSubmit={formik.handleSubmit}>
       <DialogContent className="bg-[#1E1E1E] text-white">
         <DialogHeader>
-          <DialogTitle>Log New Workout</DialogTitle>
-          <DialogDescription>
-            Record your exercises, sets, and reps for this workout session.
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{des}</DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[60vh] pr-4">
           <div className="space-y-4 py-4">
+            {isTemplate(formik.values) && (
+              <div className="space-y-2">
+                <Label htmlFor="template-name">Template Name</Label>
+                <Input
+                  type="text"
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  placeholder="e.g., Leg Day Routine"
+                  className="bg-[#2A2A2A] text-white"
+                />
+              </div>
+            )}
             {formik.values.exercises.map((exercise, exerciseIndex) => (
               <Card key={exerciseIndex} className="bg-[#2A2A2A] p-4">
                 <div className="mb-4 flex items-center justify-between">
@@ -200,7 +224,7 @@ const LogNewWorkoutForm = ({refetch} : {refetch : () => void}) => {
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
             onClick={() => formik.handleSubmit()}
           >
-            {isPending ? "Logging Workout..." : "Log Workout"}
+            {isPending || isTemplatePending ? "Loading..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>
