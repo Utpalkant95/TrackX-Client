@@ -53,3 +53,9 @@ export interface IWorkoutStats {
   mostFrequentExercise: string,
   totalWeightLifted : number
 }
+
+export interface ITemplateData {
+  _id: string;
+  name: string;
+  exercises: Exercise[];
+}

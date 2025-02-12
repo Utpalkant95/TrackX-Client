@@ -102,6 +102,13 @@ const useLogNewWorkout = ({
   const { mutate: templateMutate, isPending: isTemplatePending } = useMutation({
     mutationKey: ["create-template"],
     mutationFn: createTemplate,
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+      refetch();
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    },
   });
 
   const formik = useFormik<FormikValues>({
