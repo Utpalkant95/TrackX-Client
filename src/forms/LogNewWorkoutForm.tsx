@@ -31,8 +31,18 @@ const exerciseList = [
   { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
 ];
 
-const LogNewWorkoutForm = ({title, des, refetch} : {title : string, des : string, refetch : () => void}) => {
-  const { formik, isPending } = useLogNewWorkout({refetch : refetch});
+const LogNewWorkoutForm = ({
+  title,
+  des,
+  refetch,
+  type,
+}: {
+  title: string;
+  des: string;
+  refetch: () => void;
+  type: string;
+}) => {
+  const { formik, isPending } = useLogNewWorkout({ refetch: refetch, type: type });
 
   // Function to add a new exercise
   const addExercise = () => {
@@ -70,12 +80,20 @@ const LogNewWorkoutForm = ({title, des, refetch} : {title : string, des : string
       <DialogContent className="bg-[#1E1E1E] text-white">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            {des}
-          </DialogDescription>
+          <DialogDescription>{des}</DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[60vh] pr-4">
           <div className="space-y-4 py-4">
+            {type === "TEMPLATE" && (
+              <div className="space-y-2">
+                <Label htmlFor="template-name">Template Name</Label>
+                <Input
+                  id="template-name"
+                  placeholder="e.g., Leg Day Routine"
+                  className="bg-[#2A2A2A] text-white"
+                />
+              </div>
+            )}
             {formik.values.exercises.map((exercise, exerciseIndex) => (
               <Card key={exerciseIndex} className="bg-[#2A2A2A] p-4">
                 <div className="mb-4 flex items-center justify-between">
@@ -200,7 +218,7 @@ const LogNewWorkoutForm = ({title, des, refetch} : {title : string, des : string
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
             onClick={() => formik.handleSubmit()}
           >
-            {isPending ? "Logging Workout..." : "Log Workout"}
+            {isPending ? type==="TEMPLATE" ? "Creating Template..." : "Logging Workout..." : type==="TEMPLATE" ? "Create Template" : "Log Workout"}
           </Button>
         </DialogFooter>
       </DialogContent>

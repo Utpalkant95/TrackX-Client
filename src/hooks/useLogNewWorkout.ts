@@ -1,28 +1,13 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Workout } from "@/Api/interfaces/Project";
+import { ITemplate, Workout } from "@/Api/interfaces/Project";
 import { useMutation } from "@tanstack/react-query";
 import { logNewWorkout } from "@/Api/workout";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES } from "@/Api/interfaces/Response";
 
-const initialValues: Workout = {
-  exercises: [
-    {
-      name: "",
-      sets: [
-        {
-          weight: 0,
-          reps: 1, 
-          difficulty: "Easy", 
-        },
-      ],
-    },
-  ],
-};
-
-const validationSchema = Yup.object().shape({
+const workoutValidationSchema = Yup.object().shape({
   exercises: Yup.array()
     .of(
       Yup.object().shape({
@@ -47,7 +32,32 @@ const validationSchema = Yup.object().shape({
     .min(1, "At least one exercise is required"),
 });
 
-const useLogNewWorkout = ({refetch} : {refetch : () => void}) => {
+const workoutValues: Workout = {
+  exercises: [
+    {
+      name: "",
+      sets: [
+        {
+          weight: 0,
+          reps: 1, 
+          difficulty: "Easy", 
+        },
+      ],
+    },
+  ],
+};
+
+const templateValues : ITemplate = {
+  name: "",
+  ...workoutValues,
+}
+
+const templateValidationSchema = Yup.object().shape({
+  name: Yup.string().trim().required("Template name is required"),
+  ...workoutValidationSchema.fields
+});
+
+const useLogNewWorkout = ({refetch, type} : {refetch : () => void, type : string}) => {
   const {mutate, isPending} = useMutation({
     mutationKey : ["logNewWorkout"],
     mutationFn : logNewWorkout,
@@ -61,8 +71,8 @@ const useLogNewWorkout = ({refetch} : {refetch : () => void}) => {
   })
 
   const formik = useFormik({
-    initialValues,
-    validationSchema,
+    initialValues : type === "WORKOUT" ? workoutValues : templateValues,
+    validationSchema : type === "WORKOUT" ? workoutValidationSchema : templateValidationSchema,
     onSubmit: (values) => {
       mutate(values);
     },

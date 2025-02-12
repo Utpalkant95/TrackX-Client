@@ -102,6 +102,7 @@ export default function Workouts() {
               </Button>
             </DialogTrigger>
             <LogNewWorkout
+              type="WORKOUT"
               refetch={refetch}
               title="Log New Workout"
               des="Record your exercises, sets, and reps for this workout session."

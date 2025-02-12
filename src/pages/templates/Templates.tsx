@@ -34,7 +34,7 @@ export default function Templates() {
   });
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex items-center justify-b2etween">
         <div>
           <h1 className="mb-2 text-3xl font-bold text-white">
             Workout Templates
@@ -50,7 +50,7 @@ export default function Templates() {
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
               </Button>
             </DialogTrigger>
-            <LogNewWorkout refetch={refetch} title="Create New Template" des="Create a new workout template with detailed set information."/>
+            <LogNewWorkout refetch={refetch} title="Create New Template" des="Create a new workout template with detailed set information." type="TEMPLATE" />
           </Dialog>
         </div>
       </div>
