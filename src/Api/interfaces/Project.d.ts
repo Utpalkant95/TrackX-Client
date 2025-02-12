@@ -39,7 +39,7 @@ interface Workout {
   exercises: Exercise[]
 }
 
-export interface Template {
+export interface ITemplate {
   name: string
   exercises: Exercise[]
 }
