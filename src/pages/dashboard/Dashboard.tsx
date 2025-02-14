@@ -53,6 +53,7 @@ import { Link } from "react-router-dom";
 
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 
 // Mock data for progress chart
 const progressData = [
@@ -187,21 +188,45 @@ export default function Dashboard() {
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Today's Workout Plan */}
-          <Card className="bg-[#1E1E1E] text-white">
-            <CardHeader>
-              <CardTitle>Today's Workout Plan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-400 mb-4">
-                No workout scheduled for today.
-              </p>
-              <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-                Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </CardContent>
-          </Card>
+          <PrimaryCard title="Today's Workout Plan">
+            <p className="text-gray-400 mb-4">
+              No workout scheduled for today.
+            </p>
+            <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+              Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </PrimaryCard>
 
           {/* Recent Workouts */}
+          <PrimaryCard title="Recent Workouts">
+            <ScrollArea className="h-[300px] pr-4">
+              {workouts?.data?.map((workout) => (
+                <PrimaryCard
+                  key={workout._id}
+                  title={format(new Date(workout.date), "MMMM d, yyyy")}
+                  cardClassName="mb-4 bg-[#2A2A2A] border-none"
+                  cardHeaderClassName="pb-2"
+                  cardTitleClassName="text-lg text-[#edfafa]"
+                >
+                  {workout.exercises.map((exercise, index) => (
+                    <div key={index} className="mb-2">
+                      <p className="font-semibold text-[#edfafa]">
+                        {exercise.name}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        {exercise.sets.map((set, setIndex) => (
+                          <span key={setIndex}>
+                            {set.weight}kg x {set.reps}
+                            {setIndex < exercise.sets.length - 1 ? ", " : ""}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+                  ))}
+                </PrimaryCard>
+              ))}
+            </ScrollArea>
+          </PrimaryCard>
           <Card className="bg-[#1E1E1E] text-white">
             <CardHeader>
               <CardTitle>Recent Workouts</CardTitle>
