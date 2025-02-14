@@ -52,6 +52,7 @@ import {
 import { Link } from "react-router-dom";
 
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 // Mock data for progress chart
 const progressData = [
@@ -183,7 +184,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Today's Workout Plan */}
           <Card className="bg-[#1E1E1E] text-white">
@@ -346,7 +347,7 @@ export default function Dashboard() {
             </div>
           </ProfileSectionWrapperAtom>
         </div>
-      </div>
+      </LayoutGridWrapper>
     </UiLayout>
   );
 }
