@@ -36,11 +36,10 @@ import {
   repeatLastWorkout,
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
-import { CardFooter } from "@/components/ui/card";
-
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
+const CardFooter = lazy(() => import("@/components/ui/card").then(module => ({ default: module.CardFooter })));
 
 // Mock data for progress chart
 const progressData = [
