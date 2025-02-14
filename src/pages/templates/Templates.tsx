@@ -28,6 +28,8 @@ import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Templates() {
   const { data, refetch } = useQuery({
@@ -47,7 +49,7 @@ export default function Templates() {
     },
   });
   return (
-    <div className="container mx-auto px-4 py-8">
+    <UiLayout>
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold text-white">
@@ -74,7 +76,7 @@ export default function Templates() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <LayoutGridWrapper Cols={2}>
         {/* Saved Templates */}
         <div>
           <h2 className="mb-4 text-2xl font-semibold text-white">
@@ -157,7 +159,7 @@ export default function Templates() {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </div>
+      </LayoutGridWrapper>
+    </UiLayout>
   );
 }
