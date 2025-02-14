@@ -4,7 +4,6 @@ import { Edit2, Trash2, Repeat, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
   Accordion,
   AccordionContent,
@@ -26,6 +25,9 @@ const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const PrimaryDialog = lazy(
+  () => import("@/components/PrimaryDialog/PrimaryDailog")
+);
 
 const RenderWorkoutStatsElement = ({
   label,
@@ -91,19 +93,14 @@ export default function Workouts() {
         </div>
 
         <div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-                Log New Workout
-              </Button>
-            </DialogTrigger>
+          <PrimaryDialog btn={() => <Button>Log New Workout</Button>}>
             <LogNewWorkout
               type="WORKOUT"
               refetch={refetch}
               title="Log New Workout"
               des="Record your exercises, sets, and reps for this workout session."
             />
-          </Dialog>
+          </PrimaryDialog>
         </div>
       </div>
 
