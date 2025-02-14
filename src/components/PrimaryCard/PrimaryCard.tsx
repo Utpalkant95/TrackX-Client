@@ -1,9 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LucideProps } from "lucide-react";
 
 interface IPrimaryCard {
   title: string;
@@ -12,6 +8,9 @@ interface IPrimaryCard {
   cardHeaderClassName?: string;
   cardTitleClassName?: string;
   cardContentClassName?: string;
+  Icon?: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
 }
 
 const PrimaryCard = ({
@@ -21,14 +20,17 @@ const PrimaryCard = ({
   cardContentClassName,
   cardHeaderClassName,
   cardTitleClassName,
+  Icon,
 }: IPrimaryCard) => {
   return (
     <Card className={cardClassName}>
       <CardHeader className={cardHeaderClassName}>
-        <CardTitle className={cardTitleClassName}>{title}</CardTitle>
+        <CardTitle className={cardTitleClassName}>
+          {Icon && <Icon className="h-4 w-4 inline-block mr-1" />}
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent className={cardContentClassName}>{children}</CardContent>
-      
     </Card>
   );
 };

@@ -10,13 +10,6 @@ import {
   AlertTriangle,
   LucideProps,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -26,13 +19,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   LineChart,
   Line,
@@ -50,6 +36,7 @@ import {
   repeatLastWorkout,
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
+import { CardFooter } from "@/components/ui/card";
 
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
@@ -104,23 +91,21 @@ const PersonalBestItem = ({
   exerciseName: string;
 }) => {
   return (
-    <Card className="bg-[#1E1E1E] text-white">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">
-          <Icon className="h-4 w-4 inline-block mr-1" /> {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{exerciseName}</div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
+    <PrimaryCard
+      title={title}
+      cardHeaderClassName="pb-2"
+      cardTitleClassName="text-sm font-medium"
+      Icon={Icon}
+    >
+      <div className="text-2xl font-bold">{exerciseName}</div>
+      <p className="text-xs text-muted-foreground">{description}</p>
+    </PrimaryCard>
   );
 };
 
 export default function Dashboard() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [chartMetric, setChartMetric] = useState<"weight" | "reps">("weight");
+  const [chartMetric] = useState<"weight" | "reps">("weight");
 
   const { data: workouts } = useQuery({
     queryKey: ["get-recent-workouts"],
@@ -241,51 +226,30 @@ export default function Dashboard() {
 
         <div className="space-y-8">
           {/* Progress & Analytics Overview */}
-          <Card className="bg-[#1E1E1E] text-white">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Weekly Progress</CardTitle>
-                <Select
-                  value={chartMetric}
-                  onValueChange={(value: "weight" | "reps") =>
-                    setChartMetric(value)
-                  }
-                >
-                  <SelectTrigger className="w-[120px] bg-[#2A2A2A] text-white">
-                    <SelectValue placeholder="Select metric" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#2A2A2A] text-white">
-                    <SelectItem value="weight">Weight</SelectItem>
-                    <SelectItem value="reps">Reps</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={progressData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                    <XAxis dataKey="day" stroke="#888" />
-                    <YAxis stroke="#888" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1E1E1E",
-                        border: "none",
-                      }}
-                      itemStyle={{ color: "#00BFFF" }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey={chartMetric}
-                      stroke="#00BFFF"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+          <PrimaryCard title="Weekly Progress">
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={progressData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                  <XAxis dataKey="day" stroke="#888" />
+                  <YAxis stroke="#888" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#1E1E1E",
+                      border: "none",
+                    }}
+                    itemStyle={{ color: "#00BFFF" }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey={chartMetric}
+                    stroke="#00BFFF"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </PrimaryCard>
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
