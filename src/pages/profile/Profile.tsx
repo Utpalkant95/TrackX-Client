@@ -34,6 +34,7 @@ const ProfileSectionWrapperAtom = lazy(
   () => import("@/atmos/ProfileSectionWrapperAtom")
 );
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Profile() {
   const { data, refetch } = useQuery({
@@ -61,7 +62,7 @@ export default function Profile() {
     <UiLayout>
       <ProfileAvatarFrag data={data} refetch={refetch} />
 
-      <div className="grid gap-8 md:grid-cols-3">
+      <LayoutGridWrapper>
         {/* User Information Section */}
         <div className="md:col-span-2">
           <ProfileSectionWrapperAtom title="Basic Information" className="mb-8">
@@ -228,7 +229,7 @@ export default function Profile() {
             </AlertDialog>
           </ProfileSectionWrapperAtom>
         </div>
-      </div>
+      </LayoutGridWrapper>
     </UiLayout>
   );
 }
