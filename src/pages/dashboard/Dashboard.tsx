@@ -198,6 +198,7 @@ export default function Dashboard() {
           </PrimaryCard>
 
           {/* Recent Workouts */}
+
           <PrimaryCard title="Recent Workouts">
             <ScrollArea className="h-[300px] pr-4">
               {workouts?.data?.map((workout) => (
@@ -226,47 +227,7 @@ export default function Dashboard() {
                 </PrimaryCard>
               ))}
             </ScrollArea>
-          </PrimaryCard>
-          <Card className="bg-[#1E1E1E] text-white">
-            <CardHeader>
-              <CardTitle>Recent Workouts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-[300px] pr-4">
-                {workouts?.data?.map((workout) => (
-                  <Card
-                    key={workout._id}
-                    className="mb-4 bg-[#2A2A2A] border-none"
-                  >
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg text-[#edfafa]">
-                        {format(new Date(workout.date), "MMMM d, yyyy")}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {workout.exercises.map((exercise, index) => (
-                        <div key={index} className="mb-2">
-                          <p className="font-semibold text-[#edfafa]">
-                            {exercise.name}
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            {exercise.sets.map((set, setIndex) => (
-                              <span key={setIndex}>
-                                {set.weight}kg x {set.reps}
-                                {setIndex < exercise.sets.length - 1
-                                  ? ", "
-                                  : ""}
-                              </span>
-                            ))}
-                          </p>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                ))}
-              </ScrollArea>
-            </CardContent>
-            <CardFooter>
+            <CardFooter className="p-0">
               <Button
                 variant="default"
                 className="w-full"
@@ -275,7 +236,7 @@ export default function Dashboard() {
                 {isPending ? "Repeating..." : "Repeat Last Workout"}
               </Button>
             </CardFooter>
-          </Card>
+          </PrimaryCard>
         </div>
 
         <div className="space-y-8">

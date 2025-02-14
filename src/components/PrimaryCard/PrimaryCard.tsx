@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface IPrimaryCard {
   title: string;
@@ -23,6 +28,7 @@ const PrimaryCard = ({
         <CardTitle className={cardTitleClassName}>{title}</CardTitle>
       </CardHeader>
       <CardContent className={cardContentClassName}>{children}</CardContent>
+      
     </Card>
   );
 };
