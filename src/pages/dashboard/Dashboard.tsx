@@ -15,11 +15,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
   LineChart,
   Line,
   XAxis,
@@ -39,7 +34,17 @@ import { Link } from "react-router-dom";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
-const CardFooter = lazy(() => import("@/components/ui/card").then(module => ({ default: module.CardFooter })));
+const CardFooter = lazy(() =>
+  import("@/components/ui/card").then((module) => ({
+    default: module.CardFooter,
+  }))
+);
+const ProfileSectionWrapperAtom = lazy(
+  () => import("@/atmos/ProfileSectionWrapperAtom")
+);
+const PrimaryPopOver = lazy(
+  () => import("@/components/PrimaryPopOver/PrimaryPopOver")
+);
 
 // Mock data for progress chart
 const progressData = [
@@ -51,10 +56,6 @@ const progressData = [
   { day: "Sat", weight: 260, reps: 32 },
   { day: "Sun", weight: 270, reps: 35 },
 ];
-
-const ProfileSectionWrapperAtom = lazy(
-  () => import("@/atmos/ProfileSectionWrapperAtom")
-);
 
 const AiInsightItem = ({
   Icon,
@@ -131,8 +132,8 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-4 md:mt-0">
-          <Popover>
-            <PopoverTrigger asChild>
+          <PrimaryPopOver
+            btn={() => (
               <Button
                 variant={"outline"}
                 className={cn(
@@ -143,16 +144,15 @@ export default function Dashboard() {
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, "PPP") : <span>Pick a date</span>}
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-[#2A2A2A]" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+            )}
+          >
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+            />
+          </PrimaryPopOver>
           <div className="flex space-x-2">
             <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
               <Link to={"/workouts"} className="flex items-center">
