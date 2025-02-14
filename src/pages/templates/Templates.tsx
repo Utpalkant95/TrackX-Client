@@ -27,6 +27,7 @@ import { getTemplates } from "@/Api/template";
 import { ITemplate } from "@/Api/interfaces/Project";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Templates() {
   const { data, refetch } = useQuery({
@@ -61,7 +62,7 @@ export default function Templates() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <LayoutGridWrapper Cols={2}>
         {/* Saved Templates */}
         <div>
           <h2 className="mb-4 text-2xl font-semibold text-white">
@@ -141,7 +142,7 @@ export default function Templates() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </LayoutGridWrapper>
     </UiLayout>
   );
 }

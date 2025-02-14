@@ -18,6 +18,7 @@ const ProfileSectionWrapperAtom = lazy(
 );
 
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Settings() {
   const [workoutReminder, setWorkoutReminder] = useState(true);
@@ -29,7 +30,7 @@ export default function Settings() {
         Manage your preferences and account settings.
       </p>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <LayoutGridWrapper Cols={2}>
         {/* Profile & Account Settings */}
 
         {/* Notifications & Preferences */}
@@ -116,7 +117,7 @@ export default function Settings() {
             </div>
           </ProfileSectionWrapperAtom>
         </div>
-      </div>
+      </LayoutGridWrapper>
 
       <div className="flex justify-end space-x-4 mt-4 md:mt-0">
         <Button variant="destructive">Reset to Default</Button>

@@ -32,6 +32,8 @@ import { AxiosError } from "axios";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+
 const RenderWorkoutStatsElement = ({
   label,
   value,
@@ -112,7 +114,7 @@ export default function Workouts() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Past Workout History */}
           <Card className="bg-[#1E1E1E] text-white">
@@ -222,7 +224,7 @@ export default function Workouts() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </LayoutGridWrapper>
     </UiLayout>
   );
 }

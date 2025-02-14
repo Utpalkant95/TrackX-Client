@@ -32,6 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 // Mock data for the progress chart
 const generateMockData = (days: number) => {
@@ -74,7 +75,7 @@ export default function Progress() {
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Filters */}
           <Card className="bg-[#1E1E1E] rounded-xl shadow-md">
@@ -355,7 +356,7 @@ export default function Progress() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </LayoutGridWrapper>
     </UiLayout>
   );
 }
