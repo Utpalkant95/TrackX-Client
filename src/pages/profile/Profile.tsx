@@ -30,7 +30,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "@/Api/User";
 
 const ProfileAvatarFrag = lazy(() => import("@/Fragments/ProfileAvatarFrag"));
-const ProfileSectionWrapperAtom = lazy(() => import("@/atmos/ProfileSectionWrapperAtom"));
+const ProfileSectionWrapperAtom = lazy(
+  () => import("@/atmos/ProfileSectionWrapperAtom")
+);
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
 
 export default function Profile() {
   const { data, refetch } = useQuery({
@@ -55,8 +58,7 @@ export default function Profile() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header Section (Profile Banner) */}
+    <UiLayout>
       <ProfileAvatarFrag data={data} refetch={refetch} />
 
       <div className="grid gap-8 md:grid-cols-3">
@@ -127,9 +129,9 @@ export default function Profile() {
                 />
               </div>
               {/* <Button className="w-full" variant="secondary">
-                  <Bell className="mr-2 h-4 w-4" />
-                  Notification Settings
-                </Button> */}
+            <Bell className="mr-2 h-4 w-4" />
+            Notification Settings
+          </Button> */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button className="w-full" variant="secondary">
@@ -187,51 +189,46 @@ export default function Profile() {
               </AlertDialog>
             </div>
           </ProfileSectionWrapperAtom>
-          <ProfileSectionWrapperAtom
-            title="Account Actions"
-            className=""
-          >
-             <Button
-                className="w-full bg-red-600 hover:bg-red-700"
-                variant="destructive"
-                onClick={() => mutate()}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild className="mt-4">
-                  <Button className="w-full" variant="secondary">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Account
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="bg-gray-900 text-white">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription className="text-gray-400">
-                      This action cannot be undone. This will permanently delete
-                      your account and remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      className="bg-red-600 text-white hover:bg-red-700"
-                      onClick={() => eraseMutate()}
-                    >
-                      {erasePending ? "Deleting..." : "Delete Account"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+          <ProfileSectionWrapperAtom title="Account Actions" className="">
+            <Button
+              className="w-full bg-red-600 hover:bg-red-700"
+              variant="destructive"
+              onClick={() => mutate()}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild className="mt-4">
+                <Button className="w-full" variant="secondary">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-gray-900 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-400">
+                    This action cannot be undone. This will permanently delete
+                    your account and remove your data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-600 text-white hover:bg-red-700"
+                    onClick={() => eraseMutate()}
+                  >
+                    {erasePending ? "Deleting..." : "Delete Account"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </ProfileSectionWrapperAtom>
         </div>
       </div>
-    </div>
+    </UiLayout>
   );
 }

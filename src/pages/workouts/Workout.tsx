@@ -30,6 +30,7 @@ import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
 
 const RenderWorkoutStatsElement = ({
   label,
@@ -85,7 +86,7 @@ export default function Workouts() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen">
+    <UiLayout>
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Workouts</h1>
@@ -222,6 +223,6 @@ export default function Workouts() {
           </Card>
         </div>
       </div>
-    </div>
+    </UiLayout>
   );
 }

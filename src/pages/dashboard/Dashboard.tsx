@@ -51,6 +51,8 @@ import {
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
 
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
+
 // Mock data for progress chart
 const progressData = [
   { day: "Mon", weight: 200, reps: 30 },
@@ -134,7 +136,7 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-[#121212] min-h-screen">
+    <UiLayout>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
@@ -345,6 +347,6 @@ export default function Dashboard() {
           </ProfileSectionWrapperAtom>
         </div>
       </div>
-    </div>
+    </UiLayout>
   );
 }

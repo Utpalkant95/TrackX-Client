@@ -26,6 +26,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTemplates } from "@/Api/template";
 import { ITemplate } from "@/Api/interfaces/Project";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
 
 export default function Templates() {
   const { data, refetch } = useQuery({
@@ -33,7 +34,7 @@ export default function Templates() {
     queryFn: getTemplates,
   });
   return (
-    <div className="container mx-auto px-4 py-8">
+    <UiLayout>
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold text-white">
@@ -50,7 +51,12 @@ export default function Templates() {
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
               </Button>
             </DialogTrigger>
-            <LogNewWorkout refetch={refetch} title="Create New Template" des="Create a new workout template with detailed set information." type="TEMPLATE" />
+            <LogNewWorkout
+              refetch={refetch}
+              title="Create New Template"
+              des="Create a new workout template with detailed set information."
+              type="TEMPLATE"
+            />
           </Dialog>
         </div>
       </div>
@@ -136,6 +142,6 @@ export default function Templates() {
           </Card>
         </div>
       </div>
-    </div>
+    </UiLayout>
   );
 }

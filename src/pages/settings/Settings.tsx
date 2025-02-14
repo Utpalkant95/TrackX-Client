@@ -1,5 +1,3 @@
-"use client";
-
 import { lazy, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CardDescription } from "@/components/ui/card";
@@ -19,11 +17,13 @@ const ProfileSectionWrapperAtom = lazy(
   () => import("@/atmos/ProfileSectionWrapperAtom")
 );
 
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
+
 export default function Settings() {
   const [workoutReminder, setWorkoutReminder] = useState(true);
 
   return (
-    <div className="container mx-auto px-4 py-8 h-[calc(100vh-64px)] ">
+    <UiLayout>
       <h1 className="mb-2 text-3xl font-bold text-white">Settings</h1>
       <p className="mb-8 text-gray-400">
         Manage your preferences and account settings.
@@ -122,6 +122,6 @@ export default function Settings() {
         <Button variant="destructive">Reset to Default</Button>
         <Button variant="secondary">Save Changes</Button>
       </div>
-    </div>
+    </UiLayout>
   );
 }
