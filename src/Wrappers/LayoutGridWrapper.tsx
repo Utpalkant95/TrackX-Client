@@ -1,6 +1,7 @@
-const LayoutGridWrapper = ({ children, Cols = 3 } : { children: React.ReactNode , Cols?: number}) => {
+const LayoutGridWrapper = ({ children, Cols=2 } : { children: React.ReactNode , Cols?: number}) => {
+  const gridClass = `grid gap-8 md:grid-cols-2`
   return (
-    <div className={`grid gap-8 md:grid-cols-${Cols}`}>
+    <div className={gridClass}>
       {children}
     </div>
   )
