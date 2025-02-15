@@ -27,7 +27,7 @@ const CardTitle = lazy(() =>
 );
 
 interface IPrimaryCard {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   cardClassName?: string;
   cardHeaderClassName?: string;
@@ -51,13 +51,17 @@ const PrimaryCard = ({
 }: IPrimaryCard) => {
   return (
     <Card className={cardClassName}>
-      <CardHeader className={cardHeaderClassName}>
-        <CardTitle className={cardTitleClassName}>
-          {Icon && <Icon className="h-4 w-4 inline-block mr-1" />}
-          {title}
-        </CardTitle>
+      {title && (
+        <CardHeader className={cardHeaderClassName}>
+        {title && (
+          <CardTitle className={cardTitleClassName}>
+            {Icon && <Icon className="h-4 w-4 inline-block mr-1" />}
+            {title}
+          </CardTitle>
+        )}
         {des && <CardDescription>{des}</CardDescription>}
       </CardHeader>
+      )}
       <CardContent className={cardContentClassName}>{children}</CardContent>
     </Card>
   );
