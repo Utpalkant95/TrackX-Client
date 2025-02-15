@@ -1,5 +1,7 @@
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { lazy } from "react";
+const Alert = lazy(() => import("@/components/ui/alert").then((module) => ({default : module.Alert})))
+const AlertDescription = lazy(() => import("@/components/ui/alert").then((module) => ({default : module.AlertDescription})))
+const AlertTitle = lazy(() => import("@/components/ui/alert").then((module) => ({default : module.AlertTitle})))
 
 interface IPrimaryAlert {
     title: string;

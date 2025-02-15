@@ -22,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
@@ -30,6 +29,9 @@ const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const PrimaryPopover = lazy(
   () => import("@/components/PrimaryPopOver/PrimaryPopOver")
+);
+const PrimaryAlert = lazy(
+  () => import("@/components/PrimaryAlert/PrimaryAlert")
 );
 
 // Mock data for the progress chart
@@ -273,35 +275,23 @@ export default function Progress() {
 
           {/* AI-Based Insights & Recommendations */}
           <PrimaryCard title="AI Insights" cardContentClassName="space-y-4">
-            <Alert className="bg-[#2A2A2A] border-orange-500">
-              <AlertTitle className="text-orange-500">
-                Plateau Detected
-              </AlertTitle>
-              <AlertDescription>
-                No progress detected in Deadlifts for 2 weeks. Consider
-                adjusting sets or weight.
-              </AlertDescription>
-            </Alert>
-            <Alert className="bg-[#2A2A2A] border-green-500">
-              <AlertTitle className="text-green-500">
-                Workout Suggestion
-              </AlertTitle>
-              <AlertDescription>
-                Try increasing weight by 2.5kg next session for progressive
-                overload.
-              </AlertDescription>
-            </Alert>
-            <Alert className="bg-[#2A2A2A] border-blue-500">
-              <AlertTitle className="text-blue-500">Recovery Alert</AlertTitle>
-              <AlertDescription>
-                You've worked out 6 days in a row. Consider a rest day for
-                optimal muscle recovery.
-              </AlertDescription>
-            </Alert>
+            <PrimaryAlert
+              title="Plateau Detected"
+              description="No progress detected in Deadlifts for 2 weeks. Consider adjusting sets or weight."
+            />
+            <PrimaryAlert
+              title="Workout Suggestion"
+              description="Try increasing weight by 2.5kg next session for progressive overload."
+            />
+            <PrimaryAlert
+              title="Recovery Alert"
+              description="You've worked out 6 days in a row. Consider a rest day for
+                optimal muscle recovery."
+            />
           </PrimaryCard>
 
           {/* Quick Actions */}
-          <PrimaryCard title="Quick Actions"  cardContentClassName="space-y-4">
+          <PrimaryCard title="Quick Actions" cardContentClassName="space-y-4">
             <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
               <Download className="mr-2 h-4 w-4" /> Download Report
             </Button>
