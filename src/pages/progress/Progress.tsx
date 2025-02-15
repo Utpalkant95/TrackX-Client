@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/popover";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 
 // Mock data for the progress chart
 const generateMockData = (days: number) => {
@@ -155,6 +156,82 @@ export default function Progress() {
               </div>
             </CardContent>
           </Card>
+
+          <PrimaryCard title="Progress Tracker" cardContentClassName="p-6">
+            <div className="flex flex-wrap gap-4">
+              <div className="w-full sm:w-auto">
+                <Label
+                  htmlFor="exercise-select"
+                  className="text-white mb-2 block"
+                >
+                  Select Exercise
+                </Label>
+                <Select
+                  value={selectedExercise}
+                  onValueChange={setSelectedExercise}
+                >
+                  <SelectTrigger
+                    id="exercise-select"
+                    className="w-full sm:w-[180px] bg-[#2A2A2A] text-white"
+                  >
+                    <SelectValue placeholder="Select exercise" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#2A2A2A] text-white">
+                    {exercises.map((exercise) => (
+                      <SelectItem key={exercise} value={exercise}>
+                        {exercise}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full sm:w-auto">
+                <Label htmlFor="date-range" className="text-white mb-2 block">
+                  Date Range
+                </Label>
+                <Select value={dateRange} onValueChange={setDateRange}>
+                  <SelectTrigger
+                    id="date-range"
+                    className="w-full sm:w-[180px] bg-[#2A2A2A] text-white"
+                  >
+                    <SelectValue placeholder="Select date range" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#2A2A2A] text-white">
+                    <SelectItem value="7">Last 7 days</SelectItem>
+                    <SelectItem value="30">Last 30 days</SelectItem>
+                    <SelectItem value="90">Last 90 days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full sm:w-auto flex items-end">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full sm:w-[200px] justify-start text-left font-normal bg-[#2A2A2A] text-white",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP") : <span>Custom range</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto p-0 bg-[#2A2A2A]"
+                    align="start"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+          </PrimaryCard>
 
           {/* Progress Visualization */}
           <Card className="bg-[#1E1E1E] rounded-xl shadow-md">
