@@ -25,14 +25,12 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
+const PrimaryPopover = lazy(
+  () => import("@/components/PrimaryPopOver/PrimaryPopOver")
+);
 
 // Mock data for the progress chart
 const generateMockData = (days: number) => {
@@ -125,8 +123,8 @@ export default function Progress() {
                 </Select>
               </div>
               <div className="w-full sm:w-auto flex items-end">
-                <Popover>
-                  <PopoverTrigger asChild>
+                <PrimaryPopover
+                  btn={() => (
                     <Button
                       variant={"outline"}
                       className={cn(
@@ -137,19 +135,15 @@ export default function Progress() {
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {date ? format(date, "PPP") : <span>Custom range</span>}
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto p-0 bg-[#2A2A2A]"
-                    align="start"
-                  >
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                  )}
+                >
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PrimaryPopover>
               </div>
             </div>
           </PrimaryCard>
@@ -278,7 +272,7 @@ export default function Progress() {
           </PrimaryCard>
 
           {/* AI-Based Insights & Recommendations */}
-          <PrimaryCard title="AI Insights">
+          <PrimaryCard title="AI Insights" cardContentClassName="space-y-4">
             <Alert className="bg-[#2A2A2A] border-orange-500">
               <AlertTitle className="text-orange-500">
                 Plateau Detected
@@ -307,7 +301,7 @@ export default function Progress() {
           </PrimaryCard>
 
           {/* Quick Actions */}
-          <PrimaryCard title="Quick Actions">
+          <PrimaryCard title="Quick Actions"  cardContentClassName="space-y-4">
             <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
               <Download className="mr-2 h-4 w-4" /> Download Report
             </Button>
