@@ -17,13 +17,14 @@ const AlertTitle = lazy(() =>
 interface IPrimaryAlert {
   title: string;
   description: string;
-  Icon: React.ForwardRefExoticComponent<
+  Icon?: React.ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
   >;
+  alertClassName? : string;
 }
-const PrimaryAlert = ({ title, description, Icon }: IPrimaryAlert) => {
+const PrimaryAlert = ({ title, description, Icon, alertClassName }: IPrimaryAlert) => {
   return (
-    <Alert>
+    <Alert className={alertClassName}>
       {Icon && <Icon className="h-4 w-4" />}
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{description}</AlertDescription>
