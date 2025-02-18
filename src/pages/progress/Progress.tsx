@@ -33,6 +33,7 @@ const PrimaryPopover = lazy(
 const PrimaryAlert = lazy(
   () => import("@/components/PrimaryAlert/PrimaryAlert")
 );
+const PrimarySelect = lazy(() => import("@/components/PrimarySelect/PrimarySelect"));
 
 // Mock data for the progress chart
 const generateMockData = (days: number) => {
@@ -81,7 +82,14 @@ export default function Progress() {
           <PrimaryCard cardContentClassName="p-6">
             <div className="flex flex-wrap gap-4">
               <div className="w-full sm:w-auto">
-                <Label
+                <PrimarySelect 
+                  data={exercises}
+                  label="Select Exercise"
+                  placeholder="Select exercise"
+                  onValueChange={setSelectedExercise}
+                  value={selectedExercise}
+                />
+                {/* <Label
                   htmlFor="exercise-select"
                   className="text-white mb-2 block"
                 >
@@ -104,7 +112,7 @@ export default function Progress() {
                       </SelectItem>
                     ))}
                   </SelectContent>
-                </Select>
+                </Select> */}
               </div>
               <div className="w-full sm:w-auto">
                 <Label htmlFor="date-range" className="text-white mb-2 block">

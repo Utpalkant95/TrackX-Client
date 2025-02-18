@@ -5,3 +5,4 @@ export * from "./PrimaryCard";
 export * from "./PrimaryPopOver";
 export * from "./PrimaryDialog";
 export * from "./PrimaryAlert";
+export * from "./PrimarySelect";
