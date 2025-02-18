@@ -8,10 +8,15 @@ import {
   SelectValue,
 } from "../ui/select";
 
+type Data = {
+  key : string;
+  value : string;
+}
+
 interface IPrimarySelect {
   label: string;
   placeholder: string;
-  data: string[];
+  data:Data[];
   onValueChange : Dispatch<SetStateAction<string>>;
   value : string;
 }
@@ -31,8 +36,8 @@ const PrimarySelect = ({ label, placeholder, data, onValueChange,value }: IPrima
         </SelectTrigger>
         <SelectContent className="bg-[#2A2A2A] text-white">
           {data.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
+            <SelectItem key={item.key} value={item.value}>
+              {item.key}
             </SelectItem>
           ))}
         </SelectContent>
