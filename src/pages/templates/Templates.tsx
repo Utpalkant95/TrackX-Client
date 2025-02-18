@@ -20,18 +20,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteTemplate, getTemplates } from "@/Api/template";
 import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
-const PrimaryDialog = lazy(
-  () => import("@/components/PrimaryDialog/PrimaryDailog")
-);
+// const PrimaryDialog = lazy(
+//   () => import("@/components/PrimaryDialog/PrimaryDailog")
+// );
 
 export default function Templates() {
   const { data, refetch } = useQuery({
@@ -62,7 +62,7 @@ export default function Templates() {
           </p>
         </div>
         <div>
-          {/* <Dialog>
+          <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
@@ -74,21 +74,7 @@ export default function Templates() {
               des="Create a new workout template with detailed set information."
               type="TEMPLATE"
             />
-          </Dialog> */}
-          <PrimaryDialog
-            btn={() => (
-              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-                <Plus className="mr-2 h-4 w-4" /> Create New Template
-              </Button>
-            )}
-          >
-            <LogNewWorkout
-              refetch={refetch}
-              title="Create New Template"
-              des="Create a new workout template with detailed set information."
-              type="TEMPLATE"
-            />
-          </PrimaryDialog>
+          </Dialog>
         </div>
       </div>
 

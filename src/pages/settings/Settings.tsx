@@ -4,24 +4,32 @@ import { CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-
-const ProfileSectionWrapperAtom = lazy(
-  () => import("@/atmos/ProfileSectionWrapperAtom")
-);
-
+import { PrimaryCard } from "@/components";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const PrimarySelect = lazy(
+  () => import("@/components/PrimarySelect/PrimarySelect")
+);
+
+const reminderTimes = [
+  {
+    key: "Morning (8:00 AM)",
+    value: "morning",
+  },
+  {
+    key: "Afternoon (2:00 PM)",
+    value: "afternoon",
+  },
+  {
+    key: "Evening (7:00 PM)",
+    value: "evening",
+  },
+];
 
 export default function Settings() {
   const [workoutReminder, setWorkoutReminder] = useState(true);
+  const [remiderTime, setRemiderTime] = useState("");
 
   return (
     <UiLayout>
@@ -35,7 +43,7 @@ export default function Settings() {
 
         {/* Notifications & Preferences */}
         <div className="space-y-8">
-          <ProfileSectionWrapperAtom title="Notifications & Preferences">
+          <PrimaryCard title="Notifications & Preferences">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
@@ -51,19 +59,13 @@ export default function Settings() {
               </div>
               {workoutReminder && (
                 <div className="ml-6 space-y-2">
-                  <Label>Reminder Time</Label>
-                  <Select>
-                    <SelectTrigger className="w-full bg-[#2A2A2A] text-white">
-                      <SelectValue placeholder="Select time" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#2A2A2A] text-white">
-                      <SelectItem value="morning">Morning (8:00 AM)</SelectItem>
-                      <SelectItem value="afternoon">
-                        Afternoon (2:00 PM)
-                      </SelectItem>
-                      <SelectItem value="evening">Evening (7:00 PM)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <PrimarySelect
+                    data={reminderTimes}
+                    label="Reminder Time"
+                    onValueChange={setRemiderTime}
+                    value={remiderTime}
+                    placeholder="Select time"
+                  />
                 </div>
               )}
               <Separator />
@@ -115,7 +117,7 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-          </ProfileSectionWrapperAtom>
+          </PrimaryCard>
         </div>
       </LayoutGridWrapper>
 
