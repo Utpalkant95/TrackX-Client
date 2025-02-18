@@ -23,12 +23,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getWorkout,
   getWorkoutPerformance,
   repeatLastWorkout,
+
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
@@ -39,11 +39,12 @@ const CardFooter = lazy(() =>
     default: module.CardFooter,
   }))
 );
-const ProfileSectionWrapperAtom = lazy(
-  () => import("@/atmos/ProfileSectionWrapperAtom")
-);
 const PrimaryPopOver = lazy(
   () => import("@/components/PrimaryPopOver/PrimaryPopOver")
+);
+
+const PrimaryAlert = lazy(
+  () => import("@/components/PrimaryAlert/PrimaryAlert")
 );
 
 // Mock data for progress chart
@@ -69,11 +70,7 @@ const AiInsightItem = ({
   description: string;
 }) => {
   return (
-    <Alert className="bg-[#2A2A2A] border-orange-500">
-      <Icon className="h-4 w-4" />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{description}</AlertDescription>
-    </Alert>
+    <PrimaryAlert title={title} description={description} Icon={Icon} alertClassName="bg-[#2A2A2A] border-orange-500"/>
   );
 };
 
@@ -273,7 +270,7 @@ export default function Dashboard() {
           </div>
 
           {/* AI-Based Insights & Recommendations */}
-          <ProfileSectionWrapperAtom title="AI Insights" className="">
+          <PrimaryCard title="AI Insights">
             <div className="flex flex-col space-y-4">
               <AiInsightItem
                 Icon={AlertTriangle}
@@ -294,7 +291,7 @@ export default function Dashboard() {
                   for better recovery."
               />
             </div>
-          </ProfileSectionWrapperAtom>
+          </PrimaryCard>
         </div>
       </LayoutGridWrapper>
     </UiLayout>

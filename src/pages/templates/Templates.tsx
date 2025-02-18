@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,15 +20,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteTemplate, getTemplates } from "@/Api/template";
 import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+// const PrimaryDialog = lazy(
+//   () => import("@/components/PrimaryDialog/PrimaryDailog")
+// );
 
 export default function Templates() {
   const { data, refetch } = useQuery({

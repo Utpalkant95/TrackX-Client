@@ -12,13 +12,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { CalendarIcon, Download, Share2, Target } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -32,6 +25,9 @@ const PrimaryPopover = lazy(
 );
 const PrimaryAlert = lazy(
   () => import("@/components/PrimaryAlert/PrimaryAlert")
+);
+const PrimarySelect = lazy(
+  () => import("@/components/PrimarySelect/PrimarySelect")
 );
 
 // Mock data for the progress chart
@@ -50,15 +46,45 @@ const generateMockData = (days: number) => {
 };
 
 const exercises = [
-  "Bench Press",
-  "Squats",
-  "Deadlifts",
-  "Shoulder Press",
-  "Bicep Curls",
+  {
+    key: "Bench Press",
+    value: "Bench Press",
+  },
+  {
+    key: "Squats",
+    value: "Squats",
+  },
+  {
+    key: "Deadlifts",
+    value: "Deadlifts",
+  },
+  {
+    key: "Shoulder Press",
+    value: "Shoulder Press",
+  },
+  {
+    key: "Bicep Curls",
+    value: "Bicep Curls",
+  },
+];
+
+const dateRanges = [
+  {
+    key: "Last 7 days",
+    value: "7",
+  },
+  {
+    key: "Last 30 days",
+    value: "30",
+  },
+  {
+    key: "Last 90 days",
+    value: "90",
+  },
 ];
 
 export default function Progress() {
-  const [selectedExercise, setSelectedExercise] = useState(exercises[0]);
+  const [selectedExercise, setSelectedExercise] = useState("");
   const [dateRange, setDateRange] = useState("30");
   const [showWeight, setShowWeight] = useState(true);
   const [date, setDate] = useState<Date>();
@@ -81,48 +107,22 @@ export default function Progress() {
           <PrimaryCard cardContentClassName="p-6">
             <div className="flex flex-wrap gap-4">
               <div className="w-full sm:w-auto">
-                <Label
-                  htmlFor="exercise-select"
-                  className="text-white mb-2 block"
-                >
-                  Select Exercise
-                </Label>
-                <Select
-                  value={selectedExercise}
+                <PrimarySelect
+                  data={exercises}
+                  label="Select Exercise"
+                  placeholder="Select exercise"
                   onValueChange={setSelectedExercise}
-                >
-                  <SelectTrigger
-                    id="exercise-select"
-                    className="w-full sm:w-[180px] bg-[#2A2A2A] text-white"
-                  >
-                    <SelectValue placeholder="Select exercise" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#2A2A2A] text-white">
-                    {exercises.map((exercise) => (
-                      <SelectItem key={exercise} value={exercise}>
-                        {exercise}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  value={selectedExercise}
+                />
               </div>
               <div className="w-full sm:w-auto">
-                <Label htmlFor="date-range" className="text-white mb-2 block">
-                  Date Range
-                </Label>
-                <Select value={dateRange} onValueChange={setDateRange}>
-                  <SelectTrigger
-                    id="date-range"
-                    className="w-full sm:w-[180px] bg-[#2A2A2A] text-white"
-                  >
-                    <SelectValue placeholder="Select date range" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#2A2A2A] text-white">
-                    <SelectItem value="7">Last 7 days</SelectItem>
-                    <SelectItem value="30">Last 30 days</SelectItem>
-                    <SelectItem value="90">Last 90 days</SelectItem>
-                  </SelectContent>
-                </Select>
+                <PrimarySelect
+                  data={dateRanges}
+                  label="Date Range"
+                  onValueChange={setDateRange}
+                  placeholder="Select date range"
+                  value={dateRange}
+                />
               </div>
               <div className="w-full sm:w-auto flex items-end">
                 <PrimaryPopover
