@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +29,9 @@ import { AxiosError } from "axios";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const PrimaryDialog = lazy(
+  () => import("@/components/PrimaryDialog/PrimaryDailog")
+);
 
 export default function Templates() {
   const { data, refetch } = useQuery({
@@ -60,7 +62,7 @@ export default function Templates() {
           </p>
         </div>
         <div>
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
@@ -72,7 +74,21 @@ export default function Templates() {
               des="Create a new workout template with detailed set information."
               type="TEMPLATE"
             />
-          </Dialog>
+          </Dialog> */}
+          <PrimaryDialog
+            btn={() => (
+              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+                <Plus className="mr-2 h-4 w-4" /> Create New Template
+              </Button>
+            )}
+          >
+            <LogNewWorkout
+              refetch={refetch}
+              title="Create New Template"
+              des="Create a new workout template with detailed set information."
+              type="TEMPLATE"
+            />
+          </PrimaryDialog>
         </div>
       </div>
 
