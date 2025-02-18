@@ -46,6 +46,10 @@ const PrimaryPopOver = lazy(
   () => import("@/components/PrimaryPopOver/PrimaryPopOver")
 );
 
+const PrimaryAlert = lazy(
+  () => import("@/components/PrimaryAlert/PrimaryAlert")
+);
+
 // Mock data for progress chart
 const progressData = [
   { day: "Mon", weight: 200, reps: 30 },
@@ -69,11 +73,12 @@ const AiInsightItem = ({
   description: string;
 }) => {
   return (
-    <Alert className="bg-[#2A2A2A] border-orange-500">
-      <Icon className="h-4 w-4" />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{description}</AlertDescription>
-    </Alert>
+    // <Alert className="bg-[#2A2A2A] border-orange-500">
+    //   <Icon className="h-4 w-4" />
+    //   <AlertTitle>{title}</AlertTitle>
+    //   <AlertDescription>{description}</AlertDescription>
+    // </Alert>
+    <PrimaryAlert title={title} description={description}/>
   );
 };
 
