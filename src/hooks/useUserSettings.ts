@@ -19,7 +19,11 @@ const initialValues = {
 const validationSchema = Yup.object().shape({
   workoutReminder: Yup.object().shape({
     workoutReminder: Yup.boolean(),
-    reminderTime: Yup.string(),
+    reminderTime: Yup.string().when("workoutReminder", {
+      is : true,
+      then: (schema) => schema.required("Reminder time is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
   }),
   progessAiAlerts: Yup.object().shape({
     plateauAlerts: Yup.boolean(),
