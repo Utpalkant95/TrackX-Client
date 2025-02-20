@@ -43,3 +43,18 @@ export interface ITemplate {
   name: string
   exercises: Exercise[]
 }
+
+export interface IUserSetting {
+  workoutReminder: {
+    workoutReminder: boolean;
+    reminderTime: string;
+  };
+  progessAiAlerts: {
+    plateauAlerts: boolean;
+    goalTrackingAlerts: boolean;
+  };
+  emailNotifications: {
+    receiveWeeklyProgressReports: boolean;
+    receiveSpecialTrainingTipsUpdates: boolean;
+  };
+}
