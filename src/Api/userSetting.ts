@@ -15,3 +15,10 @@ export const resetUserSetting = async () => {
     })
     return response.data as IRES;
 }
+
+export const getUserSetting = async () => {
+    const response = await axios.get("http://localhost:3000/api/v1/userSetting/get-user-setting", {
+        withCredentials : true
+    })
+    return response.data.data as IUserSetting | undefined;
+}

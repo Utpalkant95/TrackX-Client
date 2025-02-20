@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PrimaryCard } from "@/components";
 import { useUserSettings } from "@/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSetting } from "@/Api/userSetting";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimarySelect = lazy(
@@ -29,7 +31,21 @@ const reminderTimes = [
 ];
 
 export default function Settings() {
-  const { formik } = useUserSettings();
+
+  const { data } = useQuery({
+    queryKey: ["userSettings"],
+    queryFn: getUserSetting,
+  });
+  
+  const {
+    formik,
+    isResetPending,
+    isSavePending,
+    resetUserSettingMutate,
+  } = useUserSettings({data});
+
+  console.log(data);
+  
 
   return (
     <UiLayout>
@@ -56,7 +72,10 @@ export default function Settings() {
                   </div>
                   <Switch
                     name="workoutReminder"
-                    checked={formik.values.workoutReminder.workoutReminder}
+                    checked={
+                      formik.values.workoutReminder.workoutReminder ||
+                      data?.workoutReminder?.workoutReminder
+                    }
                     onCheckedChange={(value) =>
                       formik.setFieldValue(
                         "workoutReminder.workoutReminder",
@@ -76,7 +95,11 @@ export default function Settings() {
                           value
                         )
                       }
-                      value={formik.values.workoutReminder.reminderTime}
+                      value={
+                        (formik.values.workoutReminder
+                          .reminderTime as string) ||
+                        (data?.workoutReminder.reminderTime as string)
+                      }
                       placeholder="Select time"
                     />
                   </div>
@@ -94,6 +117,10 @@ export default function Settings() {
                             value
                           )
                         }
+                        checked={
+                          formik.values.progessAiAlerts.plateauAlerts ||
+                          data?.progessAiAlerts.plateauAlerts
+                        }
                       />
                       <label
                         htmlFor="plateau"
@@ -110,6 +137,10 @@ export default function Settings() {
                             "progessAiAlerts.goalTrackingAlerts",
                             value
                           )
+                        }
+                        checked={
+                          formik.values.progessAiAlerts.goalTrackingAlerts ||
+                          data?.progessAiAlerts.goalTrackingAlerts
                         }
                       />
                       <label
@@ -134,6 +165,11 @@ export default function Settings() {
                             value
                           )
                         }
+                        checked={
+                          formik.values.emailNotifications
+                            .receiveWeeklyProgressReports ||
+                          data?.emailNotifications.receiveWeeklyProgressReports
+                        }
                       />
                       <label
                         htmlFor="weekly-report"
@@ -151,6 +187,12 @@ export default function Settings() {
                             value
                           )
                         }
+                        checked={
+                          formik.values.emailNotifications
+                            .receiveSpecialTrainingTipsUpdates ||
+                          data?.emailNotifications
+                            .receiveSpecialTrainingTipsUpdates
+                        }
                       />
                       <label
                         htmlFor="tips-updates"
@@ -167,9 +209,14 @@ export default function Settings() {
         </LayoutGridWrapper>
 
         <div className="flex justify-end space-x-4 mt-4 md:mt-0">
-          <Button variant="destructive">Reset to Default</Button>
+          <Button
+            variant="destructive"
+            onClick={() => resetUserSettingMutate()}
+          >
+            {isResetPending ? "Reseting..." : "Reset to Default"}
+          </Button>
           <Button variant="secondary" type="submit">
-            Save Changes
+            {isSavePending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>

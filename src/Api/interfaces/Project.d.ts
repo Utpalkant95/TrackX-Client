@@ -46,15 +46,15 @@ export interface ITemplate {
 
 export interface IUserSetting {
   workoutReminder: {
-    workoutReminder: boolean;
-    reminderTime: string;
+    workoutReminder: boolean | undefined;
+    reminderTime: string | undefined;
   };
   progessAiAlerts: {
-    plateauAlerts: boolean;
-    goalTrackingAlerts: boolean;
+    plateauAlerts: boolean | undefined;
+    goalTrackingAlerts: boolean | undefined;
   };
   emailNotifications: {
-    receiveWeeklyProgressReports: boolean;
-    receiveSpecialTrainingTipsUpdates: boolean;
+    receiveWeeklyProgressReports: boolean | undefined;
+    receiveSpecialTrainingTipsUpdates: boolean | undefined;
   };
 }

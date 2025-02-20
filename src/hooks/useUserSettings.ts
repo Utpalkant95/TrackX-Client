@@ -1,25 +1,16 @@
+import { IUserSetting } from "@/Api/interfaces/Project";
 import { IRES } from "@/Api/interfaces/Response";
-import { resetUserSetting, saveUserSetting } from "@/Api/userSetting";
-import { useMutation } from "@tanstack/react-query";
+import {
+  resetUserSetting,
+  saveUserSetting,
+} from "@/Api/userSetting";
+import { useMutation} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
 import * as Yup from "yup";
 
-const initialValues = {
-  workoutReminder: {
-    workoutReminder: false,
-    reminderTime: "",
-  },
-  progessAiAlerts: {
-    plateauAlerts: false,
-    goalTrackingAlerts: false,
-  },
-  emailNotifications: {
-    receiveWeeklyProgressReports: false,
-    receiveSpecialTrainingTipsUpdates: false,
-  },
-};
+
 
 const validationSchema = Yup.object().shape({
   workoutReminder: Yup.object().shape({
@@ -40,7 +31,7 @@ const validationSchema = Yup.object().shape({
   }),
 });
 
-const useUserSettings = () => {
+const useUserSettings = ({data} : {data ?: IUserSetting  | undefined}) => {
   const { mutate: saveUserSettingMutate, isPending: isSavePending } =
     useMutation({
       mutationKey: ["saveuserSetting"],
@@ -58,25 +49,41 @@ const useUserSettings = () => {
       mutationKey: ["resetuserSetting"],
       mutationFn: resetUserSetting,
       onSuccess: (data) => {
-        enqueueSnackbar(data.message, { variant: "success" });
+        enqueueSnackbar(data?.message, { variant: "success" });
       },
       onError: (error: AxiosError<IRES>) => {
         enqueueSnackbar(error.response?.data.message, { variant: "error" });
       },
     });
+
+    const initialValues = {
+      workoutReminder: {
+        workoutReminder: false || data?.workoutReminder.workoutReminder,
+        reminderTime: data?.workoutReminder.reminderTime,
+      },
+      progessAiAlerts: {
+        plateauAlerts: false || data?.progessAiAlerts.plateauAlerts,
+        goalTrackingAlerts: false || data?.progessAiAlerts.goalTrackingAlerts,
+      },
+      emailNotifications: {
+        receiveWeeklyProgressReports: false || data?.emailNotifications.receiveWeeklyProgressReports,
+        receiveSpecialTrainingTipsUpdates: false || data?.emailNotifications.receiveSpecialTrainingTipsUpdates,
+      },
+    };
+
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      saveUserSettingMutate(values)
     },
   });
   return {
     formik,
-    saveUserSettingMutate,
     resetUserSettingMutate,
     isResetPending,
     isSavePending,
+    data
   };
 };
 

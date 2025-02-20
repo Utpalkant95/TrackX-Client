@@ -19,15 +19,16 @@ interface IPrimarySelect {
   data:Data[];
   onValueChange : Dispatch<SetStateAction<string>>;
   value : string;
+  defaultValue ?: string
 }
 
-const PrimarySelect = ({ label, placeholder, data, onValueChange,value }: IPrimarySelect) => {
+const PrimarySelect = ({ label, placeholder, data, onValueChange,value, defaultValue }: IPrimarySelect) => {
   return (
     <>
       <Label htmlFor="exercise-select" className="text-white mb-2 block">
         {label}
       </Label>
-      <Select value={value} onValueChange={onValueChange}>
+      <Select value={value} onValueChange={onValueChange} defaultValue={defaultValue}>
         <SelectTrigger
           id="exercise-select"
           className="w-full sm:w-[180px] bg-[#2A2A2A] text-white"
