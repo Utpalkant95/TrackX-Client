@@ -6,11 +6,9 @@ import {
 } from "@/Api/userSetting";
 import { useMutation} from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useFormik } from "formik";
+import { FormikValues, useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
 import * as Yup from "yup";
-
-
 
 const validationSchema = Yup.object().shape({
   workoutReminder: Yup.object().shape({
@@ -71,11 +69,31 @@ const useUserSettings = ({data} : {data ?: IUserSetting  | undefined}) => {
       },
     };
 
+    const submissionValues = (values : FormikValues) => {
+      return {
+        workoutReminder : {
+          workoutReminder : values.workoutReminder.workoutReminder || false,
+          reminderTime : values.workoutReminder.reminderTime || "8:00 AM"
+        },
+        progessAiAlerts : {
+          plateauAlerts : values.progessAiAlerts.plateauAlerts || false,
+          goalTrackingAlerts : values.progessAiAlerts.goalTrackingAlerts || false
+        },
+        emailNotifications : {
+          receiveWeeklyProgressReports : values.emailNotifications.receiveWeeklyProgressReports || false,
+          receiveSpecialTrainingTipsUpdates : values.emailNotifications.receiveSpecialTrainingTipsUpdates || false
+        },
+      }
+    }
+
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      saveUserSettingMutate(values)
+      const newValues = submissionValues(values);
+      console.log(newValues);
+      
+      saveUserSettingMutate(newValues)
     },
   });
   return {

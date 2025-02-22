@@ -18,34 +18,26 @@ const PrimarySelect = lazy(
 const reminderTimes = [
   {
     key: "Morning (8:00 AM)",
-    value: "morning",
+    value: "8:00 AM",
   },
   {
     key: "Afternoon (2:00 PM)",
-    value: "afternoon",
+    value: "2:00 PM",
   },
   {
     key: "Evening (7:00 PM)",
-    value: "evening",
+    value: "7:00 PM",
   },
 ];
 
 export default function Settings() {
-
   const { data } = useQuery({
     queryKey: ["userSettings"],
     queryFn: getUserSetting,
   });
-  
-  const {
-    formik,
-    isResetPending,
-    isSavePending,
-    resetUserSettingMutate,
-  } = useUserSettings({data});
 
-  console.log(data);
-  
+  const { formik, isResetPending, isSavePending, resetUserSettingMutate } =
+    useUserSettings({ data });
 
   return (
     <UiLayout>
@@ -210,6 +202,7 @@ export default function Settings() {
 
         <div className="flex justify-end space-x-4 mt-4 md:mt-0">
           <Button
+            type="button"
             variant="destructive"
             onClick={() => resetUserSettingMutate()}
           >
