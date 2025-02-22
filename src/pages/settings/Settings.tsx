@@ -76,7 +76,9 @@ export default function Settings() {
                     }
                   />
                 </div>
-                {formik.values.workoutReminder.workoutReminder && (
+
+                {formik.values.workoutReminder.workoutReminder ||
+                data?.workoutReminder?.workoutReminder ? (
                   <div className="ml-6 space-y-2">
                     <PrimarySelect
                       data={reminderTimes}
@@ -95,6 +97,8 @@ export default function Settings() {
                       placeholder="Select time"
                     />
                   </div>
+                ) : (
+                  ""
                 )}
                 <Separator />
                 <div className="space-y-2">
