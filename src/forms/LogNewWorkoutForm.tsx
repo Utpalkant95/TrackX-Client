@@ -20,7 +20,7 @@ import { Slider } from "@/components/ui/slider";
 import { useLogNewWorkout } from "@/hooks";
 import { Select } from "@radix-ui/react-select";
 import { Plus, X } from "lucide-react";
-// import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 // Mock data for exercises
 const exerciseList = [
@@ -36,15 +36,18 @@ const LogNewWorkoutForm = ({
   des,
   refetch,
   type,
+  setOpenForm
 }: {
   title: string;
   des: string;
   refetch: () => void;
   type: string;
+  setOpenForm : Dispatch<SetStateAction<boolean>>;
 }) => {
   const { formik, isPending, isTemplate, isTemplatePending } = useLogNewWorkout({
     refetch: refetch,
     type,
+    setOpenForm : setOpenForm
   });
 
   // Function to add a new exercise

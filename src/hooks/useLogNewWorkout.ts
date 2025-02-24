@@ -83,15 +83,19 @@ type FormikValues = Workout | ITemplate;
 const useLogNewWorkout = ({
   refetch,
   type,
+  setOpenForm,
 }: {
   refetch: () => void;
   type: string;
+  setOpenForm: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { mutate, isPending } = useMutation({
     mutationKey: ["logNewWorkout"],
     mutationFn: logNewWorkout,
     onSuccess: (data) => {
+      formik.resetForm();
       enqueueSnackbar(data.message, { variant: "success" });
+      setOpenForm(false);
       refetch();
     },
     onError: (error: AxiosError<IRES>) => {
@@ -103,7 +107,9 @@ const useLogNewWorkout = ({
     mutationKey: ["create-template"],
     mutationFn: createTemplate,
     onSuccess: (data) => {
+      formik.resetForm();
       enqueueSnackbar(data.message, { variant: "success" });
+      setOpenForm(false);
       refetch();
     },
     onError: (error: AxiosError<IRES>) => {
@@ -132,7 +138,7 @@ const useLogNewWorkout = ({
     formik,
     isPending,
     isTemplate,
-    isTemplatePending
+    isTemplatePending,
   };
 };
 

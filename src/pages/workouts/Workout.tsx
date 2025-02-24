@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Edit2, Trash2, Repeat, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,8 @@ import {
 import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
-
+import { getTemplateById } from "@/Api/template";
+import { useSearchParams } from "react-router-dom";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -45,6 +46,9 @@ const RenderWorkoutStatsElement = ({
 };
 
 export default function Workouts() {
+  const [openForm, setOpenForm] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const { data, refetch } = useQuery({
     queryKey: ["workouts"],
     queryFn: getWorkout,
@@ -66,6 +70,17 @@ export default function Workouts() {
       enqueueSnackbar(error.response?.data.message, { variant: "error" });
     },
   });
+
+  const { data: templateData } = useQuery({
+    queryKey: ["getTemplateById"],
+    queryFn: () => getTemplateById(id),
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    console.log("templateData", templateData);
+    setOpenForm(true);
+  }, [templateData]);
 
   const {
     mutate: repeatLastWorkoutMutate,
@@ -93,12 +108,16 @@ export default function Workouts() {
         </div>
 
         <div>
-          <PrimaryDialog btn={() => <Button>Log New Workout</Button>}>
+          <PrimaryDialog
+            btn={() => <Button>Log New Workout</Button>}
+            openForm={openForm}
+          >
             <LogNewWorkout
               type="WORKOUT"
               refetch={refetch}
               title="Log New Workout"
               des="Record your exercises, sets, and reps for this workout session."
+              setOpenForm={setOpenForm}
             />
           </PrimaryDialog>
         </div>
