@@ -36,6 +36,7 @@ interface IPrimaryDailog {
   children: React.ReactNode;
   title?: string;
   description?: string;
+  openForm ?: boolean;
 }
 
 const PrimaryDailog = ({
@@ -43,9 +44,10 @@ const PrimaryDailog = ({
   children,
   title,
   description,
+  openForm
 }: IPrimaryDailog) => {
   return (
-    <Dialog>
+    <Dialog open={openForm && openForm}>
       <DialogTrigger asChild>{btn()}</DialogTrigger>
       <DialogContent>
         {title || description ? (

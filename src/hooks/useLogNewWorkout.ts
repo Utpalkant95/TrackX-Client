@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { logNewWorkout } from "@/Api/workout";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
-import { IRES } from "@/Api/interfaces/Response";
+import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { createTemplate } from "@/Api/template";
 
 const workoutValidationSchema = Yup.object().shape({
@@ -32,26 +32,6 @@ const workoutValidationSchema = Yup.object().shape({
     )
     .min(1, "At least one exercise is required"),
 });
-
-const workoutValues: Workout = {
-  exercises: [
-    {
-      name: "",
-      sets: [
-        {
-          weight: 0,
-          reps: 1,
-          difficulty: "Easy",
-        },
-      ],
-    },
-  ],
-};
-
-const templateValues: ITemplate = {
-  name: "",
-  ...workoutValues,
-};
 
 const templateValidationSchema = Yup.object().shape({
   name: Yup.string().trim().required("Template name is required"),
@@ -83,15 +63,43 @@ type FormikValues = Workout | ITemplate;
 const useLogNewWorkout = ({
   refetch,
   type,
+  setOpenForm,
+  templateData,
 }: {
   refetch: () => void;
   type: string;
+  setOpenForm: React.Dispatch<React.SetStateAction<boolean>>;
+  templateData: ITemplateData;
 }) => {
+  const workoutInitialValues: Workout = {
+    exercises: [
+      {
+        name: "",
+        sets: [
+          {
+            weight: 0,
+            reps: 1,
+            difficulty: "Easy",
+          },
+        ],
+      },
+    ],
+  };
+
+  const workoutValues = templateData ? templateData.exercises : workoutInitialValues;
+  
+  const templateValues: ITemplate = {
+    name: "",
+    ...workoutValues,
+  };
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["logNewWorkout"],
     mutationFn: logNewWorkout,
     onSuccess: (data) => {
+      formik.resetForm();
       enqueueSnackbar(data.message, { variant: "success" });
+      setOpenForm(false);
       refetch();
     },
     onError: (error: AxiosError<IRES>) => {
@@ -103,7 +111,9 @@ const useLogNewWorkout = ({
     mutationKey: ["create-template"],
     mutationFn: createTemplate,
     onSuccess: (data) => {
+      formik.resetForm();
       enqueueSnackbar(data.message, { variant: "success" });
+      setOpenForm(false);
       refetch();
     },
     onError: (error: AxiosError<IRES>) => {
@@ -132,7 +142,7 @@ const useLogNewWorkout = ({
     formik,
     isPending,
     isTemplate,
-    isTemplatePending
+    isTemplatePending,
   };
 };
 

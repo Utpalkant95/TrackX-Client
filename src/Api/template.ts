@@ -22,3 +22,10 @@ export const deleteTemplate = async (id : string | undefined) => {
     })
     return response.data as IRES;
 }
+
+export const getTemplateById = async (id : string | null) => {
+    const response = await axios.get(`http://localhost:3000/api/v1/template/get-template/${id}`, {
+        withCredentials : true
+    })
+    return response.data as IRES;
+}
