@@ -1,34 +1,21 @@
-import { lazy, useEffect, useState } from "react";
-import { format } from "date-fns";
-import { Edit2, Trash2, Repeat, ClipboardList } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { IWorkoutData } from "@/Api/interfaces/Response";
+import { PrimaryCard } from "@/components";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteWorkout,
-  getWorkout,
-  getWorkoutsStats,
-  repeatLastWorkout,
-} from "@/Api/workout";
-import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
-import { enqueueSnackbar } from "notistack";
-import { AxiosError } from "axios";
-import { getTemplateById } from "@/Api/template";
-import { useSearchParams } from "react-router-dom";
-const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
-const UiLayout = lazy(() => import("@/layout/UiLayout"));
-const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
-const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
-const PrimaryDialog = lazy(
-  () => import("@/components/PrimaryDialog/PrimaryDailog")
-);
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { UiLayout } from "@/layout";
+import { LayoutContentWrapper, LayoutGridWrapper } from "@/Wrappers";
+import { format } from "date-fns";
+import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useWorkoutAPiCalls } from "@/hooks";
+import { LogNewWorkoutForm } from "@/forms";
 
 const RenderWorkoutStatsElement = ({
   label,
@@ -44,83 +31,28 @@ const RenderWorkoutStatsElement = ({
     </div>
   );
 };
-
-export default function Workouts() {
+const Workout = () => {
   const [openForm, setOpenForm] = useState<boolean>(false);
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
-  const { data, refetch } = useQuery({
-    queryKey: ["workouts"],
-    queryFn: getWorkout,
-  });
-
-  const { data: workoutStats } = useQuery({
-    queryKey: ["workouts-stats"],
-    queryFn: getWorkoutsStats,
-  });
-
-  const { mutate } = useMutation({
-    mutationKey: ["delete workout"],
-    mutationFn: deleteWorkout,
-    onSuccess: (data: IRES) => {
-      refetch();
-      enqueueSnackbar(data.message, { variant: "success" });
-    },
-    onError: (error: AxiosError<IRES>) => {
-      enqueueSnackbar(error.response?.data.message, { variant: "error" });
-    },
-  });
-
-  const { data: templateData } = useQuery({
-    queryKey: ["getTemplateById"],
-    queryFn: () => getTemplateById(id),
-    enabled: !!id,
-  });
-
-  useEffect(() => {
-    id && setOpenForm(true);
-  }, [id]);
-
   const {
-    mutate: repeatLastWorkoutMutate,
-    isPending: repeatLastWorkoutIsPending,
-  } = useMutation({
-    mutationKey: ["repeat workout"],
-    mutationFn: repeatLastWorkout,
-    onSuccess: (data: IRES) => {
-      refetch();
-      enqueueSnackbar(data.message, { variant: "success" });
-    },
-    onError: (error: AxiosError<IRES>) => {
-      enqueueSnackbar(error.response?.data.message, { variant: "error" });
-    },
-  });  
+    data,
+    mutate,
+    repeatLastWorkoutIsPending,
+    repeatLastWorkoutMutate,
+    workoutStats,
+  } = useWorkoutAPiCalls();
   return (
     <UiLayout>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Workouts</h1>
-          <p className="text-gray-400">
-            Log new workouts and track your exercise history.
-          </p>
-        </div>
-
-        <div>
-          <PrimaryDialog
-            btn={() => <Button onClick={() => setOpenForm(true)}>Log New Workout</Button>}
-            openForm={openForm}
-          >
-            <LogNewWorkout
-              type="WORKOUT"
-              refetch={refetch}
-              title="Log New Workout"
-              des="Record your exercises, sets, and reps for this workout session."
-              setOpenForm={setOpenForm}
-              templateData={templateData?.data}
-            />
-          </PrimaryDialog>
-        </div>
-      </div>
+      <LayoutContentWrapper
+        header="Workouts"
+        des="Log new workouts and track your exercise history."
+      >
+        <Button
+          className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+          onClick={() => setOpenForm(true)}
+        >
+          <Plus className="mr-2 h-4 w-4" /> Log New Workout
+        </Button>
+      </LayoutContentWrapper>
 
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
@@ -218,4 +150,6 @@ export default function Workouts() {
       </LayoutGridWrapper>
     </UiLayout>
   );
-}
+};
+
+export default Workout;
