@@ -1,3 +1,4 @@
+import { ITemplateData } from "@/Api/interfaces/Response";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -36,18 +37,21 @@ const LogNewWorkoutForm = ({
   des,
   refetch,
   type,
-  setOpenForm
+  setOpenForm,
+  templateData
 }: {
   title: string;
   des: string;
   refetch: () => void;
   type: string;
   setOpenForm : Dispatch<SetStateAction<boolean>>;
+  templateData ?: ITemplateData
 }) => {
   const { formik, isPending, isTemplate, isTemplatePending } = useLogNewWorkout({
     refetch: refetch,
     type,
-    setOpenForm : setOpenForm
+    setOpenForm : setOpenForm,
+    templateData : templateData
   });
 
   // Function to add a new exercise

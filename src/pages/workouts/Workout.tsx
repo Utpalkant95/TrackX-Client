@@ -78,9 +78,8 @@ export default function Workouts() {
   });
 
   useEffect(() => {
-    console.log("templateData", templateData);
-    setOpenForm(true);
-  }, [templateData]);
+    id && setOpenForm(true);
+  }, [id]);
 
   const {
     mutate: repeatLastWorkoutMutate,
@@ -95,8 +94,7 @@ export default function Workouts() {
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.response?.data.message, { variant: "error" });
     },
-  });
-
+  });  
   return (
     <UiLayout>
       <div className="flex justify-between items-center mb-8">
@@ -109,7 +107,7 @@ export default function Workouts() {
 
         <div>
           <PrimaryDialog
-            btn={() => <Button>Log New Workout</Button>}
+            btn={() => <Button onClick={() => setOpenForm(true)}>Log New Workout</Button>}
             openForm={openForm}
           >
             <LogNewWorkout
@@ -118,6 +116,7 @@ export default function Workouts() {
               title="Log New Workout"
               des="Record your exercises, sets, and reps for this workout session."
               setOpenForm={setOpenForm}
+              templateData={templateData?.data}
             />
           </PrimaryDialog>
         </div>
