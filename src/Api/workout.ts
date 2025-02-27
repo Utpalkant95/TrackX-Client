@@ -51,3 +51,10 @@ export const updateWorkout = async (data  : any) => {
     })
     return response.data as IRES
 }
+
+export const createWorkoutFromTemplate = async (data : any) => {
+    const response = await axios.post("http://localhost:3000/api/v1/workout/create-workout-from-template", data, {
+        withCredentials : true
+    })
+    return response.data as IRES
+}

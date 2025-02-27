@@ -2,7 +2,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Workout } from "@/Api/interfaces/Project";
 import { useMutation } from "@tanstack/react-query";
-import { logNewWorkout, updateWorkout } from "@/Api/workout";
+import {
+  createWorkoutFromTemplate,
+  logNewWorkout,
+  updateWorkout,
+} from "@/Api/workout";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
@@ -86,6 +90,17 @@ const useLogNewWorkout = ({
       },
     });
 
+  const {mutate : createWorkoutFromTemplateMutate, isPending : createWorkoutFromTemplateIsPending} = useMutation({
+    mutationKey: ["createWorkoutFromTemplate"],
+    mutationFn: createWorkoutFromTemplate,
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    },
+  });
+
   const formik = useFormik({
     initialValues: selectedWorkout
       ? selectedWorkout
@@ -101,7 +116,7 @@ const useLogNewWorkout = ({
         };
         updateWorkoutMutate(data);
       } else if (selectedTemplate) {
-        console.log(values);
+        createWorkoutFromTemplateMutate(values);
       } else {
         logNewWorkoutMutate(values);
       }
@@ -148,6 +163,8 @@ const useLogNewWorkout = ({
     addSet,
     removeSet,
     removeExercise,
+    createWorkoutFromTemplateMutate,
+    createWorkoutFromTemplateIsPending
   };
 };
 
