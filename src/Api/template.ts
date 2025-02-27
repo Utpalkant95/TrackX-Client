@@ -1,12 +1,12 @@
 import axios from "axios";
-import { IRES } from "./interfaces/Response";
+import { IRES, ITemplateData } from "./interfaces/Response";
 import { ITemplate } from "./interfaces/Project";
 
 export const getTemplates = async () => {
     const response = await axios.get("http://localhost:3000/api/v1/template/get-templates", {
         withCredentials : true
     })
-    return response.data as IRES;
+    return response.data.data as ITemplateData[];
 }
 
 export const createTemplate = async (data : ITemplate) => {

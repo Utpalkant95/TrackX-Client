@@ -28,7 +28,6 @@ import {
   getWorkout,
   getWorkoutPerformance,
   repeatLastWorkout,
-
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
@@ -45,6 +44,10 @@ const PrimaryPopOver = lazy(
 
 const PrimaryAlert = lazy(
   () => import("@/components/PrimaryAlert/PrimaryAlert")
+);
+
+const LayoutContentWrapper = lazy(
+  () => import("@/Wrappers/LayoutContentWrapper")
 );
 
 // Mock data for progress chart
@@ -70,7 +73,12 @@ const AiInsightItem = ({
   description: string;
 }) => {
   return (
-    <PrimaryAlert title={title} description={description} Icon={Icon} alertClassName="bg-[#2A2A2A] border-orange-500"/>
+    <PrimaryAlert
+      title={title}
+      description={description}
+      Icon={Icon}
+      alertClassName="bg-[#2A2A2A] border-orange-500"
+    />
   );
 };
 
@@ -121,51 +129,45 @@ export default function Dashboard() {
 
   return (
     <UiLayout>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">
-            Track your progress and stay on top of your workouts.
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-4 md:mt-0">
-          <PrimaryPopOver
-            btn={() => (
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] justify-start text-left font-normal bg-[#2A2A2A] text-white",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-              </Button>
-            )}
-          >
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              initialFocus
-            />
-          </PrimaryPopOver>
-          <div className="flex space-x-2">
-            <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              <Link to={"/workouts"} className="flex items-center">
-                <Plus className="mr-2 h-4 w-4" /> Log Workout
-              </Link>
-            </Button>
+      <LayoutContentWrapper
+        header="Dashboard"
+        des="Track your progress and stay on top of your workouts."
+      >
+        <PrimaryPopOver
+          btn={() => (
             <Button
-              variant="outline"
-              className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+              variant={"outline"}
+              className={cn(
+                "w-[240px] justify-start text-left font-normal bg-[#2A2A2A] text-white",
+                !date && "text-muted-foreground"
+              )}
             >
-              <Link to={"/progress"}>View Progress</Link>
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
             </Button>
-          </div>
+          )}
+        >
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            initialFocus
+          />
+        </PrimaryPopOver>
+        <div className="flex space-x-2">
+          <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+            <Link to={"/workouts"} className="flex items-center">
+              <Plus className="mr-2 h-4 w-4" /> Log Workout
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+          >
+            <Link to={"/progress"}>View Progress</Link>
+          </Button>
         </div>
-      </div>
-
+      </LayoutContentWrapper>
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Today's Workout Plan */}

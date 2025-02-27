@@ -6,3 +6,5 @@ export {default as useUpdatePassword} from "./useUpdatePassword";
 export {default as useEraseAccount} from "./useEraseAccount";
 export {default as useLogNewWorkout} from "./useLogNewWorkout";
 export {default as useUserSettings} from "./useUserSettings";
+export {default as useWorkoutAPiCalls} from "./useWorkoutAPiCalls";
+export {default as useLogWorkout} from "./useLogWorkout";

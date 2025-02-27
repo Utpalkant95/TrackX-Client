@@ -56,6 +56,8 @@ export interface IWorkoutStats {
 
 export interface ITemplateData {
   _id: string;
+  userId : string;
   name: string;
   exercises: Exercise[];
+  __v : number;
 }
