@@ -1,5 +1,5 @@
 import { IWorkoutData } from "@/Api/interfaces/Response";
-import { PrimaryCard } from "@/components";
+import { PrimaryCard, PrimaryDailog } from "@/components";
 import {
   Accordion,
   AccordionContent,
@@ -13,7 +13,6 @@ import { UiLayout } from "@/layout";
 import { LayoutContentWrapper, LayoutGridWrapper } from "@/Wrappers";
 import { format } from "date-fns";
 import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
-import { useState } from "react";
 import { useWorkoutAPiCalls } from "@/hooks";
 import { LogNewWorkoutForm } from "@/forms";
 
@@ -32,7 +31,6 @@ const RenderWorkoutStatsElement = ({
   );
 };
 const Workout = () => {
-  const [openForm, setOpenForm] = useState<boolean>(false);
   const {
     data,
     mutate,
@@ -46,12 +44,21 @@ const Workout = () => {
         header="Workouts"
         des="Log new workouts and track your exercise history."
       >
-        <Button
-          className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-          onClick={() => setOpenForm(true)}
+        <PrimaryDailog
+          btn={() => (
+            <Button
+              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+             
+            >
+              <Plus className="mr-2 h-4 w-4" /> Log New Workout
+            </Button>
+          )}
+          description="Log a new workout to track your exercise history."
+          title="Log New Workout"
+          dialogClassName="bg-[#2A2A2A]"
         >
-          <Plus className="mr-2 h-4 w-4" /> Log New Workout
-        </Button>
+          <LogNewWorkoutForm />
+        </PrimaryDailog>
       </LayoutContentWrapper>
 
       <LayoutGridWrapper Cols={2}>
@@ -148,6 +155,10 @@ const Workout = () => {
           </PrimaryCard>
         </div>
       </LayoutGridWrapper>
+
+      {/* <Dialog open={openForm}>
+        <LogNewWorkoutForm des="Log a new workout" title="Log New Workout"/>
+      </Dialog> */}
     </UiLayout>
   );
 };

@@ -64,3 +64,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.custom-scrollbar {
+  min-height: 60vh;
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
