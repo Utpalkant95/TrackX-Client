@@ -44,3 +44,10 @@ export const getWorkoutPerformance = async () => {
     });
     return response.data as IRES;
 }
+
+export const updateWorkout = async (data : Workout) => {
+    const response = await axios.put("http://localhost:3000/api/v1/workout/update-workout", data, {
+        withCredentials : true
+    })
+    return response.data as IRES
+}
