@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Search, ChevronRight} from "lucide-react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Search, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,10 +13,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getTemplates } from "@/Api/template";
+import { ITemplateData } from "@/Api/interfaces/Response";
 
-const WorkoutFromTemplate = () => {
+interface IWorkoutFromTemplate {
+  setSelectedTemplate:Dispatch<SetStateAction<ITemplateData | null | undefined>>;
+  setOpenForm : Dispatch<SetStateAction<boolean>>
+}
+
+const WorkoutFromTemplate = ({
+  setSelectedTemplate: setTemplate,
+  setOpenForm
+}: IWorkoutFromTemplate) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<ITemplateData | null>(null);
   const { data } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
@@ -43,11 +52,11 @@ const WorkoutFromTemplate = () => {
             <Card
               key={template._id}
               className={`bg-[#2A2A2A] border-2 transition-all cursor-pointer hover:bg-[#3A3A3A] ${
-                selectedTemplate === template._id
+                selectedTemplate === template
                   ? "border-[#00BFFF]"
                   : "border-transparent"
               }`}
-              onClick={() => setSelectedTemplate(template._id)}
+              onClick={() => setSelectedTemplate(template)}
             >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
@@ -97,6 +106,10 @@ const WorkoutFromTemplate = () => {
       </ScrollArea>
       <div className="flex justify-end mt-4">
         <Button
+          onClick={() => {
+            setTemplate(selectedTemplate)
+            setOpenForm(true)
+          }}
           disabled={!selectedTemplate}
           className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
         >

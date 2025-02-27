@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { logNewWorkout, updateWorkout } from "@/Api/workout";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
-import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
+import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
 
 const workoutInitialValues: Workout = {
   exercises: [
@@ -49,10 +49,15 @@ const workoutValidationSchema = Yup.object().shape({
 
 interface IUseLogNewWorkout {
   selectedWorkout: IWorkoutData | undefined;
-  refetch : () => void;
+  refetch: () => void;
+  selectedTemplate: ITemplateData | null | undefined;
 }
 
-const useLogNewWorkout = ({ selectedWorkout, refetch }: IUseLogNewWorkout) => {
+const useLogNewWorkout = ({
+  selectedWorkout,
+  refetch,
+  selectedTemplate,
+}: IUseLogNewWorkout) => {
   const { mutate: logNewWorkoutMutate, isPending: logNewWorkoutIsPending } =
     useMutation({
       mutationKey: ["logNewWorkout"],
@@ -82,15 +87,21 @@ const useLogNewWorkout = ({ selectedWorkout, refetch }: IUseLogNewWorkout) => {
     });
 
   const formik = useFormik({
-    initialValues: selectedWorkout ? selectedWorkout : workoutInitialValues,
+    initialValues: selectedWorkout
+      ? selectedWorkout
+      : selectedTemplate?.exercises
+      ? { ...selectedTemplate }
+      : workoutInitialValues,
     validationSchema: workoutValidationSchema,
     onSubmit: (values) => {
       if (selectedWorkout) {
         const data = {
-          id : selectedWorkout._id,
-          data :values
-        }
+          id: selectedWorkout._id,
+          data: values,
+        };
         updateWorkoutMutate(data);
+      } else if (selectedTemplate) {
+        console.log(values);
       } else {
         logNewWorkoutMutate(values);
       }

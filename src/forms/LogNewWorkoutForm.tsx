@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select } from "@radix-ui/react-select";
 import { Plus, X } from "lucide-react";
 import { useLogWorkout } from "@/hooks";
-import { IWorkoutData } from "@/Api/interfaces/Response";
+import { ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
 
 // Mock data for exercises
 const exerciseList = [
@@ -28,11 +28,12 @@ const exerciseList = [
 interface ILogNewWorkoutForm {
   selectedWorkout: IWorkoutData | undefined;
   refetch : ()=>void;
+  selectedTemplate : ITemplateData | null | undefined;
 };
 
-const LogNewWorkoutForm = ({ selectedWorkout, refetch }: ILogNewWorkoutForm) => {
+const LogNewWorkoutForm = ({ selectedWorkout, refetch, selectedTemplate }: ILogNewWorkoutForm) => {
   const { formik, addExercise, addSet, removeExercise, removeSet, logNewWorkoutIsPending } =
-    useLogWorkout({ selectedWorkout, refetch });
+    useLogWorkout({ selectedWorkout, refetch, selectedTemplate });
   return (
     <form onSubmit={formik.handleSubmit} className="">
       <ScrollArea className="max-h-[60vh] pr-4 overflow-y-scroll custom-scrollbar">

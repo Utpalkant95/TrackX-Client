@@ -1,4 +1,4 @@
-import { IWorkoutData } from "@/Api/interfaces/Response";
+import { ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
 import { PrimaryCard, PrimaryDailog } from "@/components";
 import {
   Accordion,
@@ -17,7 +17,6 @@ import { useWorkoutAPiCalls } from "@/hooks";
 import { LogNewWorkoutForm } from "@/forms";
 import { useState } from "react";
 import { WorkoutFromTemplate } from "@/Fragments";
-
 const RenderWorkoutStatsElement = ({
   label,
   value,
@@ -37,6 +36,9 @@ const Workout = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<
     IWorkoutData | undefined
   >();
+
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ITemplateData | null>();
   const [openImportWorkout, setOpenImportWorkout] = useState<boolean>();
   const [openForm, setOpenForm] = useState<boolean>(false);
   const {
@@ -47,6 +49,7 @@ const Workout = () => {
     workoutStats,
     refetch,
   } = useWorkoutAPiCalls();
+
   return (
     <UiLayout>
       <LayoutContentWrapper
@@ -75,6 +78,7 @@ const Workout = () => {
           <LogNewWorkoutForm
             selectedWorkout={selectedWorkout}
             refetch={refetch}
+            selectedTemplate={selectedTemplate}
           />
         </PrimaryDailog>
       </LayoutContentWrapper>
@@ -190,7 +194,10 @@ const Workout = () => {
               title="Import Workout Template"
               description="Choose a template to start your workout with predefined exercises and sets."
             >
-              <WorkoutFromTemplate />
+              <WorkoutFromTemplate
+                setSelectedTemplate={setSelectedTemplate}
+                setOpenForm={setOpenForm}
+              />
             </PrimaryDailog>
           </PrimaryCard>
         </div>
