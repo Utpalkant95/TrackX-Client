@@ -16,6 +16,7 @@ import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
 import { useWorkoutAPiCalls } from "@/hooks";
 import { LogNewWorkoutForm } from "@/forms";
 import { useState } from "react";
+import { WorkoutFromTemplate } from "@/Fragments";
 
 const RenderWorkoutStatsElement = ({
   label,
@@ -36,6 +37,7 @@ const Workout = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<
     IWorkoutData | undefined
   >();
+  const [openImportWorkout, setOpenImportWorkout] = useState<boolean>();
   const [openForm, setOpenForm] = useState<boolean>(false);
   const {
     data,
@@ -43,7 +45,7 @@ const Workout = () => {
     repeatLastWorkoutIsPending,
     repeatLastWorkoutMutate,
     workoutStats,
-    refetch
+    refetch,
   } = useWorkoutAPiCalls();
   return (
     <UiLayout>
@@ -53,17 +55,27 @@ const Workout = () => {
       >
         <PrimaryDailog
           btn={() => (
-            <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]" onClick={() => setOpenForm(true)}>
+            <Button
+              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+              onClick={() => setOpenForm(true)}
+            >
               <Plus className="mr-2 h-4 w-4" /> Log New Workout
             </Button>
           )}
-          description= {selectedWorkout ? "" : "Log a new workout to track your exercise history."}
+          description={
+            selectedWorkout
+              ? ""
+              : "Log a new workout to track your exercise history."
+          }
           title={selectedWorkout ? "Edit Workout" : "Log New Workout"}
           dialogClassName="bg-[#2A2A2A]"
           onClick={() => setOpenForm(false)}
           openForm={openForm}
         >
-          <LogNewWorkoutForm selectedWorkout={selectedWorkout} refetch={refetch}/>
+          <LogNewWorkoutForm
+            selectedWorkout={selectedWorkout}
+            refetch={refetch}
+          />
         </PrimaryDailog>
       </LayoutContentWrapper>
 
@@ -162,16 +174,27 @@ const Workout = () => {
                 ? "Repeating..."
                 : "Repeat Last Workout"}
             </Button>
-            <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
-              <ClipboardList className="mr-2 h-4 w-4" /> Import from Templates
-            </Button>
+            <PrimaryDailog
+              btn={() => (
+                <Button
+                  className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+                  onClick={() => setOpenImportWorkout(true)}
+                >
+                  <ClipboardList className="mr-2 h-4 w-4" /> Import from
+                  Templates
+                </Button>
+              )}
+              dialogClassName="bg-[#2A2A2A]"
+              openForm={openImportWorkout}
+              onClick={() => setOpenImportWorkout(false)}
+              title="Import Workout Template"
+              description="Choose a template to start your workout with predefined exercises and sets."
+            >
+              <WorkoutFromTemplate />
+            </PrimaryDailog>
           </PrimaryCard>
         </div>
       </LayoutGridWrapper>
-
-      {/* <Dialog open={openForm}>
-        <LogNewWorkoutForm des="Log a new workout" title="Log New Workout"/>
-      </Dialog> */}
     </UiLayout>
   );
 };
