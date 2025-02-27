@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
 import { useWorkoutAPiCalls } from "@/hooks";
 import { LogNewWorkoutForm } from "@/forms";
+import { useState } from "react";
 
 const RenderWorkoutStatsElement = ({
   label,
@@ -31,6 +32,10 @@ const RenderWorkoutStatsElement = ({
   );
 };
 const Workout = () => {
+  const [selectedWorkout, setSelectedWorkout] = useState<
+    IWorkoutData | undefined
+  >();
+  const [openForm, setOpenForm] = useState<boolean>(false);
   const {
     data,
     mutate,
@@ -46,18 +51,17 @@ const Workout = () => {
       >
         <PrimaryDailog
           btn={() => (
-            <Button
-              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-             
-            >
+            <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]" onClick={() => setOpenForm(true)}>
               <Plus className="mr-2 h-4 w-4" /> Log New Workout
             </Button>
           )}
-          description="Log a new workout to track your exercise history."
-          title="Log New Workout"
+          description= {selectedWorkout ? "" : "Log a new workout to track your exercise history."}
+          title={selectedWorkout ? "Edit Workout" : "Log New Workout"}
           dialogClassName="bg-[#2A2A2A]"
+          onClick={() => setOpenForm(false)}
+          openForm={openForm}
         >
-          <LogNewWorkoutForm />
+          <LogNewWorkoutForm selectedWorkout={selectedWorkout} />
         </PrimaryDailog>
       </LayoutContentWrapper>
 
@@ -102,7 +106,14 @@ const Workout = () => {
                       </div>
                     ))}
                     <div className="flex justify-end space-x-2 mt-2">
-                      <Button variant="secondary" size="sm">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedWorkout(workout);
+                          setOpenForm(true);
+                        }}
+                      >
                         <Edit2 className="w-4 h-4 mr-1" /> Edit
                       </Button>
                       <Button

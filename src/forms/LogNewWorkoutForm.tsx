@@ -14,6 +14,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select } from "@radix-ui/react-select";
 import { Plus, X } from "lucide-react";
 import { useLogWorkout } from "@/hooks";
+import { IWorkoutData } from "@/Api/interfaces/Response";
 
 // Mock data for exercises
 const exerciseList = [
@@ -24,8 +25,13 @@ const exerciseList = [
   { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
 ];
 
-const LogNewWorkoutForm = () => {
-  const { formik, addExercise, addSet, removeExercise, removeSet,isPending } = useLogWorkout();
+interface ILogNewWorkoutForm {
+  selectedWorkout: IWorkoutData | undefined;
+}
+
+const LogNewWorkoutForm = ({ selectedWorkout }: ILogNewWorkoutForm) => {
+  const { formik, addExercise, addSet, removeExercise, removeSet, isPending } =
+    useLogWorkout({ selectedWorkout });
   return (
     <form onSubmit={formik.handleSubmit} className="">
       <ScrollArea className="max-h-[60vh] pr-4 overflow-y-scroll custom-scrollbar">
@@ -136,13 +142,22 @@ const LogNewWorkoutForm = () => {
           </Button>
         </div>
       </ScrollArea>
-      <DialogFooter>
-        <Button
-          type="submit"
-          className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-        >
-          {isPending ? "Logging..." : "Log Workout"}
-        </Button>
+      <DialogFooter className="">
+        {selectedWorkout ? (
+          <Button
+            type="submit"
+            className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+          >
+            {isPending ? "Updating" : "Update Workout"}
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+          >
+            {isPending ? "Logging..." : "Log Workout"}
+          </Button>
+        )}
       </DialogFooter>
     </form>
   );

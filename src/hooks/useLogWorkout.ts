@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { logNewWorkout } from "@/Api/workout";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
-import { IRES } from "@/Api/interfaces/Response";
+import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
 
 const workoutInitialValues: Workout = {
   exercises: [
@@ -47,7 +47,11 @@ const workoutValidationSchema = Yup.object().shape({
     .min(1, "At least one exercise is required"),
 });
 
-const useLogNewWorkout = () => {
+interface IUseLogNewWorkout {
+  selectedWorkout : IWorkoutData | undefined
+}
+
+const useLogNewWorkout = ({selectedWorkout} : IUseLogNewWorkout) => {
   const { mutate, isPending } = useMutation({
     mutationKey: ["logNewWorkout"],
     mutationFn: logNewWorkout,
@@ -61,7 +65,7 @@ const useLogNewWorkout = () => {
   });
 
   const formik = useFormik({
-    initialValues: workoutInitialValues,
+    initialValues: selectedWorkout ? selectedWorkout : workoutInitialValues,
     validationSchema: workoutValidationSchema,
     onSubmit: (values) => {
       mutate(values);
