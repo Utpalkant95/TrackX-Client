@@ -27,11 +27,12 @@ const exerciseList = [
 
 interface ILogNewWorkoutForm {
   selectedWorkout: IWorkoutData | undefined;
-}
+  refetch : ()=>void;
+};
 
-const LogNewWorkoutForm = ({ selectedWorkout }: ILogNewWorkoutForm) => {
-  const { formik, addExercise, addSet, removeExercise, removeSet, isPending } =
-    useLogWorkout({ selectedWorkout });
+const LogNewWorkoutForm = ({ selectedWorkout, refetch }: ILogNewWorkoutForm) => {
+  const { formik, addExercise, addSet, removeExercise, removeSet, logNewWorkoutIsPending } =
+    useLogWorkout({ selectedWorkout, refetch });
   return (
     <form onSubmit={formik.handleSubmit} className="">
       <ScrollArea className="max-h-[60vh] pr-4 overflow-y-scroll custom-scrollbar">
@@ -148,14 +149,14 @@ const LogNewWorkoutForm = ({ selectedWorkout }: ILogNewWorkoutForm) => {
             type="submit"
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
           >
-            {isPending ? "Updating" : "Update Workout"}
+            {logNewWorkoutIsPending ? "Updating" : "Update Workout"}
           </Button>
         ) : (
           <Button
             type="submit"
             className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
           >
-            {isPending ? "Logging..." : "Log Workout"}
+            {logNewWorkoutIsPending ? "Logging..." : "Log Workout"}
           </Button>
         )}
       </DialogFooter>

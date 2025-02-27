@@ -31,6 +31,7 @@ const RenderWorkoutStatsElement = ({
     </div>
   );
 };
+
 const Workout = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<
     IWorkoutData | undefined
@@ -42,6 +43,7 @@ const Workout = () => {
     repeatLastWorkoutIsPending,
     repeatLastWorkoutMutate,
     workoutStats,
+    refetch
   } = useWorkoutAPiCalls();
   return (
     <UiLayout>
@@ -61,7 +63,7 @@ const Workout = () => {
           onClick={() => setOpenForm(false)}
           openForm={openForm}
         >
-          <LogNewWorkoutForm selectedWorkout={selectedWorkout} />
+          <LogNewWorkoutForm selectedWorkout={selectedWorkout} refetch={refetch}/>
         </PrimaryDailog>
       </LayoutContentWrapper>
 

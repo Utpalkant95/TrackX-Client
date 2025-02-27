@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Workout } from "@/Api/interfaces/Project";
 import { useMutation } from "@tanstack/react-query";
-import { logNewWorkout } from "@/Api/workout";
+import { logNewWorkout, updateWorkout } from "@/Api/workout";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES, IWorkoutData } from "@/Api/interfaces/Response";
@@ -48,69 +48,95 @@ const workoutValidationSchema = Yup.object().shape({
 });
 
 interface IUseLogNewWorkout {
-  selectedWorkout : IWorkoutData | undefined
+  selectedWorkout: IWorkoutData | undefined;
+  refetch : () => void;
 }
 
-const useLogNewWorkout = ({selectedWorkout} : IUseLogNewWorkout) => {
-  const { mutate, isPending } = useMutation({
-    mutationKey: ["logNewWorkout"],
-    mutationFn: logNewWorkout,
-    onSuccess: (data) => {
-      formik.resetForm();
-      enqueueSnackbar(data.message, { variant: "success" });
-    },
-    onError: (error: AxiosError<IRES>) => {
-      enqueueSnackbar(error.response?.data.message, { variant: "error" });
-    },
-  });
+const useLogNewWorkout = ({ selectedWorkout, refetch }: IUseLogNewWorkout) => {
+  const { mutate: logNewWorkoutMutate, isPending: logNewWorkoutIsPending } =
+    useMutation({
+      mutationKey: ["logNewWorkout"],
+      mutationFn: logNewWorkout,
+      onSuccess: (data) => {
+        formik.resetForm();
+        refetch();
+        enqueueSnackbar(data.message, { variant: "success" });
+      },
+      onError: (error: AxiosError<IRES>) => {
+        enqueueSnackbar(error.response?.data.message, { variant: "error" });
+      },
+    });
+
+  const { mutate: updateWorkoutMutate, isPending: updateWorkoutIsPending } =
+    useMutation({
+      mutationKey: ["updateWorkout"],
+      mutationFn: updateWorkout,
+      onSuccess: (data) => {
+        formik.resetForm();
+        refetch();
+        enqueueSnackbar(data.message, { variant: "success" });
+      },
+      onError: (error: AxiosError<IRES>) => {
+        enqueueSnackbar(error.response?.data.message, { variant: "error" });
+      },
+    });
 
   const formik = useFormik({
     initialValues: selectedWorkout ? selectedWorkout : workoutInitialValues,
     validationSchema: workoutValidationSchema,
     onSubmit: (values) => {
-      mutate(values);
+      if (selectedWorkout) {
+        const data = {
+          id : selectedWorkout._id,
+          data :values
+        }
+        updateWorkoutMutate(data);
+      } else {
+        logNewWorkoutMutate(values);
+      }
     },
   });
 
+  // Function to add a new exercise
+  const addExercise = () => {
+    formik.setFieldValue("exercises", [
+      ...formik.values.exercises,
+      { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
+    ]);
+  };
 
-    // Function to add a new exercise
-    const addExercise = () => {
-      formik.setFieldValue("exercises", [
-        ...formik.values.exercises,
-        { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
-      ]);
-    };
-  
-    // Function to add a new set for a specific exercise
-    const addSet = (exerciseIndex: number) => {
-      formik.setFieldValue(`exercises.${exerciseIndex}.sets`, [
-        ...formik.values.exercises[exerciseIndex].sets,
-        { weight: 0, reps: 1, difficulty: "Easy" },
-      ]);
-    };
-  
-    // Function to remove a set for a specific exercise
-    const removeSet = (exerciseIndex: number, setIndex: number) => {
-      const newSets = [...formik.values.exercises[exerciseIndex].sets];
-      newSets.splice(setIndex, 1);
-      formik.setFieldValue(`exercises.${exerciseIndex}.sets`, newSets);
-    };
-  
-    // Function to remove an exercise
-    const removeExercise = (exerciseIndex: number) => {
-      formik.setFieldValue(
-        "exercises",
-        formik.values.exercises.filter((_, index) => index !== exerciseIndex)
-      );
-    };
+  // Function to add a new set for a specific exercise
+  const addSet = (exerciseIndex: number) => {
+    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, [
+      ...formik.values.exercises[exerciseIndex].sets,
+      { weight: 0, reps: 1, difficulty: "Easy" },
+    ]);
+  };
+
+  // Function to remove a set for a specific exercise
+  const removeSet = (exerciseIndex: number, setIndex: number) => {
+    const newSets = [...formik.values.exercises[exerciseIndex].sets];
+    newSets.splice(setIndex, 1);
+    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, newSets);
+  };
+
+  // Function to remove an exercise
+  const removeExercise = (exerciseIndex: number) => {
+    formik.setFieldValue(
+      "exercises",
+      formik.values.exercises.filter((_, index) => index !== exerciseIndex)
+    );
+  };
 
   return {
     formik,
-    isPending,
+    logNewWorkoutIsPending,
+    updateWorkoutMutate,
+    updateWorkoutIsPending,
     addExercise,
     addSet,
     removeSet,
-    removeExercise
+    removeExercise,
   };
 };
 
