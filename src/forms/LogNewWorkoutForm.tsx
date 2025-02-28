@@ -13,8 +13,9 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Select } from "@radix-ui/react-select";
 import { Plus, X } from "lucide-react";
-import { useLogWorkout } from "@/hooks";
-import { ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
+import { ITemplateData } from "@/Api/interfaces/Response";
+import { FormikProps } from "formik";
+import { ITemplate, Workout } from "@/Api/interfaces/Project";
 
 // Mock data for exercises
 const exerciseList = [
@@ -26,18 +27,70 @@ const exerciseList = [
 ];
 
 interface ILogNewWorkoutForm {
-  selectedWorkout: IWorkoutData | undefined;
-  refetch : ()=>void;
-  selectedTemplate : ITemplateData | null | undefined;
-};
+  refetch: () => void;
+  selectedTemplate?: ITemplateData | null | undefined;
+  formik: FormikProps<ITemplate> | FormikProps<Workout>;
+  type: "workout" | "template";
+  update : "YES" | "NO";
+  createIsPending: boolean;
+  updateIsPending: boolean;
+}
 
-const LogNewWorkoutForm = ({ selectedWorkout, refetch, selectedTemplate }: ILogNewWorkoutForm) => {
-  const { formik, addExercise, addSet, removeExercise, removeSet, logNewWorkoutIsPending } =
-    useLogWorkout({ selectedWorkout, refetch, selectedTemplate });
+const LogNewWorkoutForm = ({
+  formik,
+  type,
+  update,
+  createIsPending,
+  updateIsPending,
+}: ILogNewWorkoutForm) => {
+  // Function to add a new exercise
+  const addExercise = () => {
+    formik.setFieldValue("exercises", [
+      ...formik.values.exercises,
+      { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
+    ]);
+  };
+
+  // Function to add a new set for a specific exercise
+  const addSet = (exerciseIndex: number) => {
+    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, [
+      ...formik.values.exercises[exerciseIndex].sets,
+      { weight: 0, reps: 1, difficulty: "Easy" },
+    ]);
+  };
+
+  // Function to remove a set for a specific exercise
+  const removeSet = (exerciseIndex: number, setIndex: number) => {
+    const newSets = [...formik.values.exercises[exerciseIndex].sets];
+    newSets.splice(setIndex, 1);
+    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, newSets);
+  };
+
+  // Function to remove an exercise
+  const removeExercise = (exerciseIndex: number) => {
+    formik.setFieldValue(
+      "exercises",
+      formik.values.exercises.filter((_, index) => index !== exerciseIndex)
+    );
+  };
   return (
     <form onSubmit={formik.handleSubmit} className="">
       <ScrollArea className="max-h-[60vh] pr-4 overflow-y-scroll custom-scrollbar">
         <div className="space-y-4 py-4">
+          {type === "template" && (
+            <div className="space-y-2">
+              <Label htmlFor="template-name">Template Name</Label>
+              <Input
+                type="text"
+                name="name"
+                value={(formik.values as ITemplate).name}
+                onChange={formik.handleChange}
+                placeholder="e.g., Leg Day Routine"
+                className="bg-[#2A2A2A] text-white"
+              />
+            </div>
+          )}
+
           {formik.values.exercises.map((exercise, exerciseIndex) => (
             <Card className="bg-[#2A2A2A] p-4">
               <div className="mb-4 flex items-center justify-between">
@@ -145,21 +198,45 @@ const LogNewWorkoutForm = ({ selectedWorkout, refetch, selectedTemplate }: ILogN
         </div>
       </ScrollArea>
       <DialogFooter className="">
-        {selectedWorkout ? (
-          <Button
-            type="submit"
-            className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-          >
-            {logNewWorkoutIsPending ? "Updating" : "Update Workout"}
-          </Button>
-        ) : (
-          <Button
-            type="submit"
-            className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-          >
-            {logNewWorkoutIsPending ? "Logging..." : "Log Workout"}
-          </Button>
-        )}
+        <>
+          {type === "template" ? (
+            <>
+              {update === "YES" ? (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {updateIsPending ? "Updating" : "Update Template"}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {createIsPending ? "Creating..." : "Create Template"}
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              {update === "YES" ? (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {updateIsPending ? "Updating" : "Update Workout"}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {createIsPending ? "Logging..." : "Log Workout"}
+                </Button>
+              )}
+            </>
+          )}
+        </>
       </DialogFooter>
     </form>
   );

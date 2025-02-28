@@ -29,3 +29,10 @@ export const getTemplateById = async (id : string | null) => {
     })
     return response.data as IRES;
 }
+
+export const updateTemplate = async ({data, id} : {data : ITemplate, id : string}) => {
+    const response = await axios.put(`http://localhost:3000/api/v1/template/update-template/${id}`, data, {
+        withCredentials : true
+    })
+    return response.data as IRES;
+}

@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 import { Workout } from "@/Api/interfaces/Project";
 import { useMutation } from "@tanstack/react-query";
@@ -10,8 +10,9 @@ import {
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
+import { useEffect } from "react";
 
-const workoutInitialValues: Workout = {
+const initialValues: Workout = {
   exercises: [
     {
       name: "",
@@ -101,12 +102,8 @@ const useLogNewWorkout = ({
     },
   });
 
-  const formik = useFormik({
-    initialValues: selectedWorkout
-      ? selectedWorkout
-      : selectedTemplate?.exercises
-      ? { ...selectedTemplate }
-      : workoutInitialValues,
+  const formik : FormikProps<Workout> = useFormik({
+    initialValues,
     validationSchema: workoutValidationSchema,
     onSubmit: (values) => {
       if (selectedWorkout) {
@@ -123,46 +120,21 @@ const useLogNewWorkout = ({
     },
   });
 
-  // Function to add a new exercise
-  const addExercise = () => {
-    formik.setFieldValue("exercises", [
-      ...formik.values.exercises,
-      { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
-    ]);
-  };
+  useEffect(() => {
+    if (selectedWorkout) {
+      formik.setValues({ exercises: selectedWorkout.exercises });
+    }
+    else if (selectedTemplate) {
+      formik.setValues({ exercises: selectedTemplate.exercises });
+    }
+  }, [selectedWorkout, selectedTemplate]);
+  
 
-  // Function to add a new set for a specific exercise
-  const addSet = (exerciseIndex: number) => {
-    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, [
-      ...formik.values.exercises[exerciseIndex].sets,
-      { weight: 0, reps: 1, difficulty: "Easy" },
-    ]);
-  };
-
-  // Function to remove a set for a specific exercise
-  const removeSet = (exerciseIndex: number, setIndex: number) => {
-    const newSets = [...formik.values.exercises[exerciseIndex].sets];
-    newSets.splice(setIndex, 1);
-    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, newSets);
-  };
-
-  // Function to remove an exercise
-  const removeExercise = (exerciseIndex: number) => {
-    formik.setFieldValue(
-      "exercises",
-      formik.values.exercises.filter((_, index) => index !== exerciseIndex)
-    );
-  };
-
-  return {
+ return {
     formik,
     logNewWorkoutIsPending,
     updateWorkoutMutate,
     updateWorkoutIsPending,
-    addExercise,
-    addSet,
-    removeSet,
-    removeExercise,
     createWorkoutFromTemplateMutate,
     createWorkoutFromTemplateIsPending
   };

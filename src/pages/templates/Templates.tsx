@@ -25,20 +25,26 @@ import { deleteTemplate, getTemplates } from "@/Api/template";
 import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { LayoutContentWrapper } from "@/Wrappers";
+import { PrimaryDailog } from "@/components";
+import { useTemplate } from "@/hooks";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Templates() {
-  const navigate = useNavigate();
   const [openForm, setOpenForm] = useState<boolean>(false);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ITemplateData | null>();
+  const navigate = useNavigate();
   const { data, refetch } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
   });
 
+  const { formik, createTemplateIsPending, updateTemplateIsPending } =
+    useTemplate({ setOpenForm, refetch, selectedTemplate });
   const { mutate } = useMutation({
     mutationKey: ["deleteTemplate"],
     mutationFn: deleteTemplate,
@@ -50,34 +56,46 @@ export default function Templates() {
       enqueueSnackbar(error.message, { variant: "error" });
     },
   });
+
   return (
     <UiLayout>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold text-white">
-            Workout Templates
-          </h1>
-          <p className="text-gray-400">
-            Create and save your custom workout routines for quick logging.
-          </p>
-        </div>
-        <div>
-          <Dialog open={openForm}>
-            <DialogTrigger asChild>
-              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]" onClick={() => setOpenForm(true)}>
-                <Plus className="mr-2 h-4 w-4" /> Create New Template
-              </Button>
-            </DialogTrigger>
-            <LogNewWorkout
-              refetch={refetch}
-              title="Create New Template"
-              des="Create a new workout template with detailed set information."
-              type="TEMPLATE"
-              setOpenForm={setOpenForm}
-            />
-          </Dialog>
-        </div>
-      </div>
+      <LayoutContentWrapper
+        header="Workout Templates"
+        des="Create and save your custom workout routines for quick logging."
+      >
+        <PrimaryDailog
+          btn={() => (
+            <Button
+              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+              onClick={() => setOpenForm(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Create New Template
+            </Button>
+          )}
+          openForm={openForm}
+          dialogClassName="bg-[#2A2A2A]"
+          title={selectedTemplate ? "Update Template" : "Create New Template"}
+          description={
+            selectedTemplate
+              ? "Update and save your custom workout routines for quick logging."
+              : "Create and save your custom workout routines for quick logging."
+          }
+          onClick={() => {
+            formik.resetForm();
+            setOpenForm(false);
+            setSelectedTemplate(null);
+          }}
+        >
+          <LogNewWorkout
+            formik={formik}
+            refetch={refetch}
+            type="template"
+            createIsPending={createTemplateIsPending}
+            updateIsPending={updateTemplateIsPending}
+            update={selectedTemplate ? "YES" : "NO"}
+          />
+        </PrimaryDailog>
+      </LayoutContentWrapper>
 
       <LayoutGridWrapper Cols={2}>
         {/* Saved Templates */}
@@ -86,14 +104,21 @@ export default function Templates() {
             Saved Templates
           </h2>
           <div className="space-y-4">
-            {data?.data.map((template: ITemplateData, index: number) => (
+            {data?.map((template: ITemplateData, index: number) => (
               <Card key={index} className="bg-[#1E1E1E] text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-medium">
                     {template.name}
                   </CardTitle>
                   <div className="flex space-x-2">
-                    <Button size="icon" variant="ghost">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedTemplate(template);
+                        setOpenForm(true);
+                      }}
+                    >
                       <Pencil className="h-4 w-4 text-[#00BFFF]" />
                     </Button>
                     <AlertDialog>
@@ -129,7 +154,10 @@ export default function Templates() {
                   <CardDescription className="text-gray-400">
                     {template.exercises.length} exercises
                   </CardDescription>
-                  <Button className="mt-2 w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]" onClick={() => navigate(`/workouts?id=${template._id}`)}>
+                  <Button
+                    className="mt-2 w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                    onClick={() => navigate(`/workouts?id=${template._id}`)}
+                  >
                     Apply Template <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardContent>
