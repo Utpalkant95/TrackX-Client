@@ -35,14 +35,16 @@ const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Templates() {
   const [openForm, setOpenForm] = useState<boolean>(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<ITemplateData | null>()
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ITemplateData | null>();
   const navigate = useNavigate();
   const { data, refetch } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
   });
 
-  const {formik} = useTemplate({setOpenForm, refetch, selectedTemplate});
+  const { formik, createTemplateIsPending, updateTemplateIsPending } =
+    useTemplate({ setOpenForm, refetch, selectedTemplate });
   const { mutate } = useMutation({
     mutationKey: ["deleteTemplate"],
     mutationFn: deleteTemplate,
@@ -53,8 +55,8 @@ export default function Templates() {
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.message, { variant: "error" });
     },
-  }); 
-  
+  });
+
   return (
     <UiLayout>
       <LayoutContentWrapper
@@ -72,15 +74,26 @@ export default function Templates() {
           )}
           openForm={openForm}
           dialogClassName="bg-[#2A2A2A]"
-          title="Create New Template"
-          description="Create and save your custom workout routines for quick logging."
+          title={selectedTemplate ? "Update Template" : "Create New Template"}
+          description={
+            selectedTemplate
+              ? "Update and save your custom workout routines for quick logging."
+              : "Create and save your custom workout routines for quick logging."
+          }
           onClick={() => {
             formik.resetForm();
             setOpenForm(false);
             setSelectedTemplate(null);
           }}
         >
-          <LogNewWorkout formik={formik} refetch={refetch} type="template"/>
+          <LogNewWorkout
+            formik={formik}
+            refetch={refetch}
+            type="template"
+            createIsPending={createTemplateIsPending}
+            updateIsPending={updateTemplateIsPending}
+            update={selectedTemplate ? "YES" : "NO"}
+          />
         </PrimaryDailog>
       </LayoutContentWrapper>
 
@@ -98,10 +111,14 @@ export default function Templates() {
                     {template.name}
                   </CardTitle>
                   <div className="flex space-x-2">
-                    <Button size="icon" variant="ghost" onClick={()=>{
-                      setSelectedTemplate(template)
-                      setOpenForm(true)
-                    }}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedTemplate(template);
+                        setOpenForm(true);
+                      }}
+                    >
                       <Pencil className="h-4 w-4 text-[#00BFFF]" />
                     </Button>
                     <AlertDialog>

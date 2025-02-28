@@ -13,7 +13,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Select } from "@radix-ui/react-select";
 import { Plus, X } from "lucide-react";
-import { ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
+import { ITemplateData } from "@/Api/interfaces/Response";
 import { FormikProps } from "formik";
 import { ITemplate, Workout } from "@/Api/interfaces/Project";
 
@@ -27,21 +27,22 @@ const exerciseList = [
 ];
 
 interface ILogNewWorkoutForm {
-  selectedWorkout?: IWorkoutData | undefined;
   refetch: () => void;
   selectedTemplate?: ITemplateData | null | undefined;
   formik: FormikProps<ITemplate> | FormikProps<Workout>;
   type: "workout" | "template";
+  update : "YES" | "NO";
+  createIsPending: boolean;
+  updateIsPending: boolean;
 }
 
 const LogNewWorkoutForm = ({
-  selectedWorkout,
   formik,
   type,
+  update,
+  createIsPending,
+  updateIsPending,
 }: ILogNewWorkoutForm) => {
-  // const { formik, addExercise, addSet, removeExercise, removeSet, logNewWorkoutIsPending } =
-  //   useLogWorkout({ selectedWorkout, refetch, selectedTemplate });
-
   // Function to add a new exercise
   const addExercise = () => {
     formik.setFieldValue("exercises", [
@@ -197,54 +198,45 @@ const LogNewWorkoutForm = ({
         </div>
       </ScrollArea>
       <DialogFooter className="">
-        {selectedWorkout ? (
-          <Button
-            type="submit"
-            className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-          >
-            {/* {logNewWorkoutIsPending ? "Updating" : "Update Workout"} */}
-            Update
-          </Button>
-        ) : (
-          // <Button
-          //   type="submit"
-          //   className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-          // >
-          //   {/* {logNewWorkoutIsPending ? "Logging..." : "Log Workout"}
-          //   Log WOrkout */}
-
-          //   {type === "template" ?}
-          // </Button>
-          <>
-            {type === "template" ? (
-              <Button
-                type="submit"
-                className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-              >
-                Save Template
-              </Button>
-            ) : (
-              <>
-                {selectedWorkout ? (
-                  <Button
-                    type="submit"
-                    className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                  >
-                    {/* {logNewWorkoutIsPending ? "Updating" : "Update Workout"} */}
-                    Update
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                  >
-                    {/* {logNewWorkoutIsPending ? "Logging..." : "Log Workout"} */}
-                  </Button>
-                )}
-              </>
-            )}
-          </>
-        )}
+        <>
+          {type === "template" ? (
+            <>
+              {update === "YES" ? (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {updateIsPending ? "Updating" : "Update Template"}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {createIsPending ? "Creating..." : "Create Template"}
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              {update === "YES" ? (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {updateIsPending ? "Updating" : "Update Workout"}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                >
+                  {createIsPending ? "Logging..." : "Log Workout"}
+                </Button>
+              )}
+            </>
+          )}
+        </>
       </DialogFooter>
     </form>
   );
