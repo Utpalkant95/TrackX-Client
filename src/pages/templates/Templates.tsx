@@ -54,36 +54,6 @@ export default function Templates() {
   });
   return (
     <UiLayout>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold text-white">
-            Workout Templates
-          </h1>
-          <p className="text-gray-400">
-            Create and save your custom workout routines for quick logging.
-          </p>
-        </div>
-        <div>
-          <Dialog open={openForm}>
-            <DialogTrigger asChild>
-              <Button
-                className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                onClick={() => setOpenForm(true)}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Create New Template
-              </Button>
-            </DialogTrigger>
-            <LogNewWorkout
-              refetch={refetch}
-              title="Create New Template"
-              des="Create a new workout template with detailed set information."
-              type="TEMPLATE"
-              setOpenForm={setOpenForm}
-            />
-          </Dialog>
-        </div>
-      </div>
-
       <LayoutContentWrapper
         header="Workout Templates"
         des="Create and save your custom workout routines for quick logging."
@@ -97,6 +67,7 @@ export default function Templates() {
               <Plus className="mr-2 h-4 w-4" /> Create New Template
             </Button>
           )}
+          dialogClassName="j"
         >
           <LogNewWorkout />
         </PrimaryDailog>
