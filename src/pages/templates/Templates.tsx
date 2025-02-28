@@ -27,6 +27,8 @@ import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { LayoutContentWrapper } from "@/Wrappers";
+import { PrimaryDailog } from "@/components";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
@@ -64,7 +66,10 @@ export default function Templates() {
         <div>
           <Dialog open={openForm}>
             <DialogTrigger asChild>
-              <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]" onClick={() => setOpenForm(true)}>
+              <Button
+                className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                onClick={() => setOpenForm(true)}
+              >
                 <Plus className="mr-2 h-4 w-4" /> Create New Template
               </Button>
             </DialogTrigger>
@@ -78,6 +83,24 @@ export default function Templates() {
           </Dialog>
         </div>
       </div>
+
+      <LayoutContentWrapper
+        header="Workout Templates"
+        des="Create and save your custom workout routines for quick logging."
+      >
+        <PrimaryDailog
+          btn={() => (
+            <Button
+              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+              onClick={() => setOpenForm(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Create New Template
+            </Button>
+          )}
+        >
+          <LogNewWorkout />
+        </PrimaryDailog>
+      </LayoutContentWrapper>
 
       <LayoutGridWrapper Cols={2}>
         {/* Saved Templates */}
@@ -129,7 +152,10 @@ export default function Templates() {
                   <CardDescription className="text-gray-400">
                     {template.exercises.length} exercises
                   </CardDescription>
-                  <Button className="mt-2 w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]" onClick={() => navigate(`/workouts?id=${template._id}`)}>
+                  <Button
+                    className="mt-2 w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+                    onClick={() => navigate(`/workouts?id=${template._id}`)}
+                  >
                     Apply Template <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardContent>
