@@ -10,8 +10,9 @@ import {
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
+import { useEffect } from "react";
 
-const workoutInitialValues: Workout = {
+const initialValues: Workout = {
   exercises: [
     {
       name: "",
@@ -102,11 +103,7 @@ const useLogNewWorkout = ({
   });
 
   const formik : FormikProps<Workout> = useFormik({
-    initialValues: selectedWorkout
-      ? selectedWorkout
-      : selectedTemplate?.exercises
-      ? { ...selectedTemplate }
-      : workoutInitialValues,
+    initialValues,
     validationSchema: workoutValidationSchema,
     onSubmit: (values) => {
       if (selectedWorkout) {
@@ -122,6 +119,16 @@ const useLogNewWorkout = ({
       }
     },
   });
+
+  useEffect(() => {
+    if (selectedWorkout) {
+      formik.setValues({ exercises: selectedWorkout.exercises });
+    }
+    else if (selectedTemplate) {
+      formik.setValues({ exercises: selectedTemplate.exercises });
+    }
+  }, [selectedWorkout, selectedTemplate]);
+  
 
  return {
     formik,

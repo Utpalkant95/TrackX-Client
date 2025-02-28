@@ -13,7 +13,7 @@ import { UiLayout } from "@/layout";
 import { LayoutContentWrapper, LayoutGridWrapper } from "@/Wrappers";
 import { format } from "date-fns";
 import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
-import { useWorkoutAPiCalls } from "@/hooks";
+import { useLogWorkout, useWorkoutAPiCalls } from "@/hooks";
 import { LogNewWorkoutForm } from "@/forms";
 import { useState } from "react";
 import { WorkoutFromTemplate } from "@/Fragments";
@@ -37,6 +37,8 @@ const Workout = () => {
     IWorkoutData | undefined
   >();
 
+  
+
   const [selectedTemplate, setSelectedTemplate] =
     useState<ITemplateData | null>();
   const [openImportWorkout, setOpenImportWorkout] = useState<boolean>();
@@ -49,6 +51,8 @@ const Workout = () => {
     workoutStats,
     refetch,
   } = useWorkoutAPiCalls();
+
+  const {formik,logNewWorkoutIsPending,updateWorkoutIsPending} = useLogWorkout({refetch, selectedWorkout,selectedTemplate});
 
   return (
     <UiLayout>
@@ -76,7 +80,11 @@ const Workout = () => {
           openForm={openForm}
         >
           <LogNewWorkoutForm
-            selectedWorkout={selectedWorkout}
+            formik={formik}
+            createIsPending = {logNewWorkoutIsPending}
+            updateIsPending = {updateWorkoutIsPending}
+            type="workout"
+            update={selectedWorkout ? "YES" : "NO"}
             refetch={refetch}
             selectedTemplate={selectedTemplate}
           />
