@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 import { Workout } from "@/Api/interfaces/Project";
 import { useMutation } from "@tanstack/react-query";
@@ -101,7 +101,7 @@ const useLogNewWorkout = ({
     },
   });
 
-  const formik = useFormik({
+  const formik : FormikProps<Workout> = useFormik({
     initialValues: selectedWorkout
       ? selectedWorkout
       : selectedTemplate?.exercises
@@ -123,38 +123,7 @@ const useLogNewWorkout = ({
     },
   });
 
-  // Function to add a new exercise
-  const addExercise = () => {
-    formik.setFieldValue("exercises", [
-      ...formik.values.exercises,
-      { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
-    ]);
-  };
-
-  // Function to add a new set for a specific exercise
-  const addSet = (exerciseIndex: number) => {
-    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, [
-      ...formik.values.exercises[exerciseIndex].sets,
-      { weight: 0, reps: 1, difficulty: "Easy" },
-    ]);
-  };
-
-  // Function to remove a set for a specific exercise
-  const removeSet = (exerciseIndex: number, setIndex: number) => {
-    const newSets = [...formik.values.exercises[exerciseIndex].sets];
-    newSets.splice(setIndex, 1);
-    formik.setFieldValue(`exercises.${exerciseIndex}.sets`, newSets);
-  };
-
-  // Function to remove an exercise
-  const removeExercise = (exerciseIndex: number) => {
-    formik.setFieldValue(
-      "exercises",
-      formik.values.exercises.filter((_, index) => index !== exerciseIndex)
-    );
-  };
-
-  return {
+ return {
     formik,
     logNewWorkoutIsPending,
     updateWorkoutMutate,

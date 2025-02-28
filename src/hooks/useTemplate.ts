@@ -1,5 +1,11 @@
 import { ITemplate } from "@/Api/interfaces/Project";
-import { useFormik } from "formik";
+import { IRES } from "@/Api/interfaces/Response";
+import { createTemplate } from "@/Api/template";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { FormikProps, useFormik } from "formik";
+import { enqueueSnackbar } from "notistack";
+import { Dispatch, SetStateAction } from "react";
 import * as Yup from "yup";
 
 const initialValues: ITemplate = {
@@ -44,16 +50,37 @@ const validationSchema = Yup.object().shape({
     .min(1, "At least one exercise is required"),
 });
 
-const useTemplate = () => {
-  const formik = useFormik({
+interface IUseTemplate {
+  refetch: () => void;
+  setOpenForm: Dispatch<SetStateAction<boolean>>;
+}
+
+const useTemplate = ({ refetch, setOpenForm }: IUseTemplate) => {
+  const { mutate: createTemplateMutation, isPending: createTemplateIsPending } =
+    useMutation({
+      mutationKey: ["createTemplate"],
+      mutationFn: createTemplate,
+      onSuccess: (data) => {
+        enqueueSnackbar(data.message, { variant: "success" });
+        formik.resetForm();
+        setOpenForm(false);
+        refetch();
+      },
+      onError: (error: AxiosError<IRES>) => {
+        enqueueSnackbar(error.response?.data.message, { variant: "error" });
+      },
+    });
+  const formik: FormikProps<ITemplate> = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      createTemplateMutation(values);
     },
   });
+
   return {
     formik,
+    createTemplateIsPending,
   };
 };
 

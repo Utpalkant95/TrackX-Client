@@ -25,22 +25,23 @@ import { deleteTemplate, getTemplates } from "@/Api/template";
 import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { LayoutContentWrapper } from "@/Wrappers";
 import { PrimaryDailog } from "@/components";
+import { useTemplate } from "@/hooks";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Templates() {
-  const navigate = useNavigate();
   const [openForm, setOpenForm] = useState<boolean>(false);
+  const navigate = useNavigate();
   const { data, refetch } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
   });
 
+  const {formik} = useTemplate({setOpenForm, refetch});
   const { mutate } = useMutation({
     mutationKey: ["deleteTemplate"],
     mutationFn: deleteTemplate,
@@ -52,6 +53,7 @@ export default function Templates() {
       enqueueSnackbar(error.message, { variant: "error" });
     },
   });
+  
   return (
     <UiLayout>
       <LayoutContentWrapper
@@ -67,9 +69,16 @@ export default function Templates() {
               <Plus className="mr-2 h-4 w-4" /> Create New Template
             </Button>
           )}
-          dialogClassName="j"
+          openForm={openForm}
+          dialogClassName="bg-[#2A2A2A]"
+          title="Create New Template"
+          description="Create and save your custom workout routines for quick logging."
+          onClick={() => {
+            formik.resetForm();
+            setOpenForm(false);
+          }}
         >
-          <LogNewWorkout />
+          <LogNewWorkout formik={formik} refetch={refetch} type="template"/>
         </PrimaryDailog>
       </LayoutContentWrapper>
 
@@ -80,7 +89,7 @@ export default function Templates() {
             Saved Templates
           </h2>
           <div className="space-y-4">
-            {data?.data.map((template: ITemplateData, index: number) => (
+            {data?.map((template: ITemplateData, index: number) => (
               <Card key={index} className="bg-[#1E1E1E] text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-medium">
