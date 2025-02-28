@@ -128,10 +128,6 @@ const useLogNewWorkout = ({
     logNewWorkoutIsPending,
     updateWorkoutMutate,
     updateWorkoutIsPending,
-    addExercise,
-    addSet,
-    removeSet,
-    removeExercise,
     createWorkoutFromTemplateMutate,
     createWorkoutFromTemplateIsPending
   };

@@ -35,13 +35,14 @@ const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
 export default function Templates() {
   const [openForm, setOpenForm] = useState<boolean>(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<ITemplateData | null>()
   const navigate = useNavigate();
   const { data, refetch } = useQuery({
     queryKey: ["templates"],
     queryFn: getTemplates,
   });
 
-  const {formik} = useTemplate({setOpenForm, refetch});
+  const {formik} = useTemplate({setOpenForm, refetch, selectedTemplate});
   const { mutate } = useMutation({
     mutationKey: ["deleteTemplate"],
     mutationFn: deleteTemplate,
@@ -52,7 +53,7 @@ export default function Templates() {
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.message, { variant: "error" });
     },
-  });
+  }); 
   
   return (
     <UiLayout>
@@ -76,6 +77,7 @@ export default function Templates() {
           onClick={() => {
             formik.resetForm();
             setOpenForm(false);
+            setSelectedTemplate(null);
           }}
         >
           <LogNewWorkout formik={formik} refetch={refetch} type="template"/>
@@ -96,7 +98,10 @@ export default function Templates() {
                     {template.name}
                   </CardTitle>
                   <div className="flex space-x-2">
-                    <Button size="icon" variant="ghost">
+                    <Button size="icon" variant="ghost" onClick={()=>{
+                      setSelectedTemplate(template)
+                      setOpenForm(true)
+                    }}>
                       <Pencil className="h-4 w-4 text-[#00BFFF]" />
                     </Button>
                     <AlertDialog>
