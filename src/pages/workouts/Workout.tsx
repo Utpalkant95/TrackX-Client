@@ -36,9 +36,6 @@ const Workout = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<
     IWorkoutData | undefined
   >();
-
-  
-
   const [selectedTemplate, setSelectedTemplate] =
     useState<ITemplateData | null>();
   const [openImportWorkout, setOpenImportWorkout] = useState<boolean>();
@@ -52,7 +49,7 @@ const Workout = () => {
     refetch,
   } = useWorkoutAPiCalls();
 
-  const {formik,logNewWorkoutIsPending,updateWorkoutIsPending} = useLogWorkout({refetch, selectedWorkout,selectedTemplate});
+  const {formik,logNewWorkoutIsPending,updateWorkoutIsPending, createWorkoutFromTemplateIsPending} = useLogWorkout({refetch, selectedWorkout,selectedTemplate, setOpenForm, });
 
   return (
     <UiLayout>
@@ -76,12 +73,16 @@ const Workout = () => {
           }
           title={selectedWorkout ? "Edit Workout" : "Log New Workout"}
           dialogClassName="bg-[#2A2A2A]"
-          onClick={() => setOpenForm(false)}
+          onClick={() => {
+            setOpenForm(false);
+            setSelectedTemplate(null);
+            setSelectedWorkout(undefined);
+          }}
           openForm={openForm}
         >
           <LogNewWorkoutForm
             formik={formik}
-            createIsPending = {logNewWorkoutIsPending}
+            createIsPending = {logNewWorkoutIsPending || createWorkoutFromTemplateIsPending}
             updateIsPending = {updateWorkoutIsPending}
             type="workout"
             update={selectedWorkout ? "YES" : "NO"}

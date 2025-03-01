@@ -10,7 +10,7 @@ import {
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 const initialValues: Workout = {
   exercises: [
@@ -56,12 +56,14 @@ interface IUseLogNewWorkout {
   selectedWorkout: IWorkoutData | undefined;
   refetch: () => void;
   selectedTemplate: ITemplateData | null | undefined;
+  setOpenForm : Dispatch<SetStateAction<boolean>>;
 }
 
 const useLogNewWorkout = ({
   selectedWorkout,
   refetch,
   selectedTemplate,
+  setOpenForm
 }: IUseLogNewWorkout) => {
   const { mutate: logNewWorkoutMutate, isPending: logNewWorkoutIsPending } =
     useMutation({
@@ -71,6 +73,7 @@ const useLogNewWorkout = ({
         formik.resetForm();
         refetch();
         enqueueSnackbar(data.message, { variant: "success" });
+        setOpenForm(false);
       },
       onError: (error: AxiosError<IRES>) => {
         enqueueSnackbar(error.response?.data.message, { variant: "error" });
@@ -129,7 +132,6 @@ const useLogNewWorkout = ({
     }
   }, [selectedWorkout, selectedTemplate]);
   
-
  return {
     formik,
     logNewWorkoutIsPending,

@@ -73,6 +73,7 @@ const LogNewWorkoutForm = ({
       formik.values.exercises.filter((_, index) => index !== exerciseIndex)
     );
   };
+
   return (
     <form onSubmit={formik.handleSubmit} className="">
       <ScrollArea className="max-h-[60vh] pr-4 overflow-y-scroll custom-scrollbar">
@@ -199,7 +200,7 @@ const LogNewWorkoutForm = ({
       </ScrollArea>
       <DialogFooter className="">
         <>
-          {type === "template" ? (
+          {/* {type === "template" ? (
             <>
               {update === "YES" ? (
                 <Button
@@ -235,7 +236,17 @@ const LogNewWorkoutForm = ({
                 </Button>
               )}
             </>
-          )}
+          )} */}
+
+          {update === "NO" ? (
+            <Button type="submit" className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"> 
+              {createIsPending ? "Logging..." : "Log Workout"}
+            </Button>
+          ) : (
+            <Button type="submit" className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+              {updateIsPending ? "Updating..." : "Update Workout"}
+            </Button>
+          )} 
         </>
       </DialogFooter>
     </form>
