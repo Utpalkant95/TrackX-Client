@@ -28,11 +28,9 @@ import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "@/Api/User";
+import { PrimaryCard } from "@/components";
 
 const ProfileAvatarFrag = lazy(() => import("@/Fragments/ProfileAvatarFrag"));
-const ProfileSectionWrapperAtom = lazy(
-  () => import("@/atmos/ProfileSectionWrapperAtom")
-);
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
@@ -55,7 +53,7 @@ export default function Profile() {
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
-    hour12: true, // 12-hour format
+    hour12: true,
   });
 
   return (
@@ -65,7 +63,8 @@ export default function Profile() {
       <LayoutGridWrapper>
         {/* User Information Section */}
         <div className="md:col-span-2">
-          <ProfileSectionWrapperAtom title="Basic Information" className="mb-8">
+          <PrimaryCard
+           title="Basic Information" cardClassName="mb-8">
             <div className="grid gap-4">
               <div className="flex items-center">
                 <User className="mr-2 h-5 w-5 text-[#00BFFF]" />
@@ -80,8 +79,8 @@ export default function Profile() {
                 <span>Joined: {formattedDateTime}</span>
               </div>
             </div>
-          </ProfileSectionWrapperAtom>
-          <ProfileSectionWrapperAtom title="Fitness Stats">
+          </PrimaryCard>
+          <PrimaryCard title="Fitness Stats">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col items-center rounded-lg bg-gray-800 p-4">
                 <Dumbbell className="mb-2 h-8 w-8 text-[#00BFFF]" />
@@ -104,14 +103,14 @@ export default function Profile() {
                 <span className="text-sm text-gray-400">Workout Streak</span>
               </div>
             </div>
-          </ProfileSectionWrapperAtom>
+          </PrimaryCard>
         </div>
 
         {/* Settings & Preferences */}
         <div>
-          <ProfileSectionWrapperAtom
+          <PrimaryCard
             title="Settings & Preferences"
-            className="mb-8"
+            cardClassName="mb-8"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -129,10 +128,6 @@ export default function Profile() {
                   onCheckedChange={setNotificationsEnabled}
                 />
               </div>
-              {/* <Button className="w-full" variant="secondary">
-            <Bell className="mr-2 h-4 w-4" />
-            Notification Settings
-          </Button> */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button className="w-full" variant="secondary">
@@ -189,8 +184,8 @@ export default function Profile() {
                 </AlertDialogContent>
               </AlertDialog>
             </div>
-          </ProfileSectionWrapperAtom>
-          <ProfileSectionWrapperAtom title="Account Actions" className="">
+          </PrimaryCard>
+          <PrimaryCard title="Account Actions">
             <Button
               className="w-full bg-red-600 hover:bg-red-700"
               variant="destructive"
@@ -227,7 +222,7 @@ export default function Profile() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </ProfileSectionWrapperAtom>
+          </PrimaryCard>
         </div>
       </LayoutGridWrapper>
     </UiLayout>

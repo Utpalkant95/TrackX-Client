@@ -42,7 +42,7 @@ interface IPrimaryCard {
 const PrimaryCard = ({
   children,
   title,
-  cardClassName = "bg-[#1E1E1E] text-white",
+  cardClassName,
   cardContentClassName,
   cardHeaderClassName,
   cardTitleClassName,
@@ -50,7 +50,7 @@ const PrimaryCard = ({
   des,
 }: IPrimaryCard) => {
   return (
-    <Card className={cardClassName}>
+    <Card className={`bg-[#1E1E1E] text-white ${cardClassName}`}>
       {title && (
         <CardHeader className={cardHeaderClassName}>
         {title && (
