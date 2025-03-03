@@ -8,5 +8,5 @@ export const getPersonalBest = async () => {
 
 export const getAiInsights = async () => {
     const response = await axios.get("http://localhost:3000/api/v1/progress/ai-insights", {withCredentials : true});
-    return response.data as IAIInsight[];
+    return response.data.data as IAIInsight[];
 }

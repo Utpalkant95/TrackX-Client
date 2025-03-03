@@ -76,7 +76,7 @@ export interface IPersonalBests {
 }
 
 interface IAIInsight {
-  type: "plateauDetected" | "workoutSuggestion" | "recoveryAlert"; 
+  type: "plateauDetected" | "workoutSuggestion" | "recoveryAlert" | "info"; 
   message: string;
   exercise?: string;
 }

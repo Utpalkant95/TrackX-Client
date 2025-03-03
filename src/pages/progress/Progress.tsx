@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
-import { getPersonalBest } from "@/Api/progress";
+import { getAiInsights, getPersonalBest } from "@/Api/progress";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -119,6 +119,11 @@ export default function Progress() {
   const { data: personalBest } = useQuery({
     queryKey: ["persoanl-best"],
     queryFn: getPersonalBest,
+  });
+
+  const {data : aiInsights} = useQuery({
+    queryKey: ["ai-insights"],
+    queryFn: getAiInsights,
   });
   return (
     <UiLayout>
@@ -300,19 +305,15 @@ export default function Progress() {
 
           {/* AI-Based Insights & Recommendations */}
           <PrimaryCard title="AI Insights" cardContentClassName="space-y-4">
-            <PrimaryAlert
-              title="Plateau Detected"
-              description="No progress detected in Deadlifts for 2 weeks. Consider adjusting sets or weight."
-            />
-            <PrimaryAlert
-              title="Workout Suggestion"
-              description="Try increasing weight by 2.5kg next session for progressive overload."
-            />
-            <PrimaryAlert
-              title="Recovery Alert"
-              description="You've worked out 6 days in a row. Consider a rest day for
-                optimal muscle recovery."
-            />
+            {aiInsights?.map((insight) => {
+              return (
+                <PrimaryAlert
+                alertClassName="bg-[#2A2A2A] border-orange-500"
+                title={insight.type.replace(/([A-Z])/g, ' $1').toLocaleUpperCase()}
+                description={insight.message}
+              />
+              )
+            })}
           </PrimaryCard>
 
           {/* Quick Actions */}
