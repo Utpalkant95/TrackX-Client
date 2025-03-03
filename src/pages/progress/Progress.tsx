@@ -88,6 +88,8 @@ export default function Progress() {
     enabled: !!selectedExercise,
   });
 
+  
+
   return (
     <UiLayout>
       <LayoutContentWrapper
