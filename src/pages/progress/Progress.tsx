@@ -17,6 +17,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
+import { useQuery } from "@tanstack/react-query";
+import { getPersonalBest } from "@/Api/progress";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -83,6 +85,28 @@ const dateRanges = [
   },
 ];
 
+const _RenderPersonalBest = ({
+  heading,
+  value,
+  exercise,
+  unit,
+}: {
+  heading: string;
+  value: string;
+  exercise?: string | undefined;
+  unit: string | undefined;
+}) => {
+  return (
+    <div>
+      <Label className="text-gray-400">{heading}</Label>
+      <p className="text-2xl font-bold text-white">
+        {value} {unit}{" "}
+        <span className="text-sm text-gray-400">({exercise})</span>
+      </p>
+    </div>
+  );
+};
+
 export default function Progress() {
   const [selectedExercise, setSelectedExercise] = useState("");
   const [dateRange, setDateRange] = useState("30");
@@ -92,6 +116,10 @@ export default function Progress() {
 
   const data = generateMockData(Number.parseInt(dateRange));
 
+  const { data: personalBest } = useQuery({
+    queryKey: ["persoanl-best"],
+    queryFn: getPersonalBest,
+  });
   return (
     <UiLayout>
       <div className="mb-8">
@@ -248,28 +276,25 @@ export default function Progress() {
           {/* Personal Best Achievements */}
           <PrimaryCard title="Personal Bests">
             <div className="space-y-4">
-              <div>
-                <Label className="text-gray-400">Heaviest Weight Lifted</Label>
-                <p className="text-2xl font-bold text-white">
-                  100 kg{" "}
-                  <span className="text-sm text-gray-400">
-                    ({selectedExercise})
-                  </span>
-                </p>
-              </div>
-              <div>
-                <Label className="text-gray-400">Max Reps in Single Set</Label>
-                <p className="text-2xl font-bold text-white">
-                  15 reps{" "}
-                  <span className="text-sm text-gray-400">
-                    ({selectedExercise})
-                  </span>
-                </p>
-              </div>
-              <div>
-                <Label className="text-gray-400">Longest Workout Streak</Label>
-                <p className="text-2xl font-bold text-white">14 days</p>
-              </div>
+              <_RenderPersonalBest
+                heading="Heaviest Weight Lifted"
+                value={String(personalBest?.heaviestWeight.weight)}
+                exercise={personalBest?.heaviestWeight.exercise}
+                unit={personalBest?.heaviestWeight.unit}
+              />
+              <_RenderPersonalBest
+                heading="Max Reps in Single Set"
+                value={String(personalBest?.maxReps.reps)}
+                exercise={personalBest?.maxReps.exercise}
+                unit="Reps"
+              />
+
+              <_RenderPersonalBest
+                heading="Longest Workout Streak"
+                value={String(personalBest?.longestStreak)}
+                exercise={String(personalBest?.longestStreak)}
+                unit="Days"
+              />
             </div>
           </PrimaryCard>
 

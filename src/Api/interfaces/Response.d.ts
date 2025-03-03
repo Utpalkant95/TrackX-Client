@@ -61,3 +61,16 @@ export interface ITemplateData {
   exercises: Exercise[];
   __v : number;
 }
+
+export interface IPersonalBests {
+  heaviestWeight: {
+    exercise: string;  // Name of the exercise where the heaviest weight was lifted
+    weight: number;    // The maximum weight lifted
+    unit: string;      // Unit of weight (e.g., "kg", "lbs")
+  };
+  maxReps: {
+    exercise: string;  // Name of the exercise where max reps were performed in a single set
+    reps: number;      // The highest number of reps done in a single set
+  };
+  longestStreak: number;  // The longest streak of consecutive workout days
+}
