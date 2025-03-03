@@ -11,26 +11,24 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { CalendarIcon, Download, Share2, Target } from "lucide-react";
+import { CalendarIcon, Download, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
-import { getAiInsights, getPersonalBest, getWeeklyProgress } from "@/Api/progress";
+import { getPersonalBest, getWeeklyProgress } from "@/Api/progress";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const PrimaryPopover = lazy(
   () => import("@/components/PrimaryPopOver/PrimaryPopOver")
 );
-const PrimaryAlert = lazy(
-  () => import("@/components/PrimaryAlert/PrimaryAlert")
-);
 const PrimarySelect = lazy(
   () => import("@/components/PrimarySelect/PrimarySelect")
 );
+const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
 
 // Mock data for the progress chart
 const generateMockData = (days: number) => {
@@ -121,15 +119,10 @@ export default function Progress() {
     queryFn: getPersonalBest,
   });
 
-  const {data : aiInsights} = useQuery({
-    queryKey: ["ai-insights"],
-    queryFn: getAiInsights,
+  const { data: weeklyProgress } = useQuery({
+    queryKey: ["weekly-progress"],
+    queryFn: getWeeklyProgress,
   });
-
-  const {data : weeklyProgress} = useQuery({
-    queryKey : ["weekly-progress"],
-    queryFn : getWeeklyProgress
-  })
   return (
     <UiLayout>
       <div className="mb-8">
@@ -272,7 +265,6 @@ export default function Progress() {
           {/* Weekly Progress Comparison */}
           <PrimaryCard title="Weekly Progress">
             <div className="space-y-2">
-
               <p className="text-green-400">
                 {weeklyProgress?.data.weightProgress}
               </p>
@@ -310,25 +302,12 @@ export default function Progress() {
           </PrimaryCard>
 
           {/* AI-Based Insights & Recommendations */}
-          <PrimaryCard title="AI Insights" cardContentClassName="space-y-4">
-            {aiInsights?.map((insight) => {
-              return (
-                <PrimaryAlert
-                alertClassName="bg-[#2A2A2A] border-orange-500"
-                title={insight.type.replace(/([A-Z])/g, ' $1').toLocaleUpperCase()}
-                description={insight.message}
-              />
-              )
-            })}
-          </PrimaryCard>
+          <AiInsights />
 
           {/* Quick Actions */}
           <PrimaryCard title="Quick Actions" cardContentClassName="space-y-4">
             <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
               <Download className="mr-2 h-4 w-4" /> Download Report
-            </Button>
-            <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
-              <Share2 className="mr-2 h-4 w-4" /> Share Progress
             </Button>
             <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
               <Target className="mr-2 h-4 w-4" /> Set New Goal
