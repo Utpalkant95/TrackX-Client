@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
-import { getAiInsights, getPersonalBest } from "@/Api/progress";
+import { getAiInsights, getPersonalBest, getWeeklyProgress } from "@/Api/progress";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -125,6 +125,11 @@ export default function Progress() {
     queryKey: ["ai-insights"],
     queryFn: getAiInsights,
   });
+
+  const {data : weeklyProgress} = useQuery({
+    queryKey : ["weekly-progress"],
+    queryFn : getWeeklyProgress
+  })
   return (
     <UiLayout>
       <div className="mb-8">
@@ -267,11 +272,12 @@ export default function Progress() {
           {/* Weekly Progress Comparison */}
           <PrimaryCard title="Weekly Progress">
             <div className="space-y-2">
+
               <p className="text-green-400">
-                You lifted 10% more weight this week compared to last.
+                {weeklyProgress?.data.weightProgress}
               </p>
               <p className="text-blue-400">
-                Reps increased by 5 on average in the last 7 days.
+                {weeklyProgress?.data.repsProgress}
               </p>
             </div>
           </PrimaryCard>

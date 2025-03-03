@@ -80,3 +80,11 @@ interface IAIInsight {
   message: string;
   exercise?: string;
 }
+
+interface IWeeklyProgress {
+  success: boolean;
+  data: {
+    weightProgress: string;
+    repsProgress: string;
+  };
+}
