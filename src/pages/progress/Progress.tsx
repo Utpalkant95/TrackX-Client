@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
-import { getPersonalBest } from "@/Api/progress";
+import { getAiInsights, getPersonalBest, getWeeklyProgress } from "@/Api/progress";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -120,6 +120,16 @@ export default function Progress() {
     queryKey: ["persoanl-best"],
     queryFn: getPersonalBest,
   });
+
+  const {data : aiInsights} = useQuery({
+    queryKey: ["ai-insights"],
+    queryFn: getAiInsights,
+  });
+
+  const {data : weeklyProgress} = useQuery({
+    queryKey : ["weekly-progress"],
+    queryFn : getWeeklyProgress
+  })
   return (
     <UiLayout>
       <div className="mb-8">
@@ -262,11 +272,12 @@ export default function Progress() {
           {/* Weekly Progress Comparison */}
           <PrimaryCard title="Weekly Progress">
             <div className="space-y-2">
+
               <p className="text-green-400">
-                You lifted 10% more weight this week compared to last.
+                {weeklyProgress?.data.weightProgress}
               </p>
               <p className="text-blue-400">
-                Reps increased by 5 on average in the last 7 days.
+                {weeklyProgress?.data.repsProgress}
               </p>
             </div>
           </PrimaryCard>
@@ -300,19 +311,15 @@ export default function Progress() {
 
           {/* AI-Based Insights & Recommendations */}
           <PrimaryCard title="AI Insights" cardContentClassName="space-y-4">
-            <PrimaryAlert
-              title="Plateau Detected"
-              description="No progress detected in Deadlifts for 2 weeks. Consider adjusting sets or weight."
-            />
-            <PrimaryAlert
-              title="Workout Suggestion"
-              description="Try increasing weight by 2.5kg next session for progressive overload."
-            />
-            <PrimaryAlert
-              title="Recovery Alert"
-              description="You've worked out 6 days in a row. Consider a rest day for
-                optimal muscle recovery."
-            />
+            {aiInsights?.map((insight) => {
+              return (
+                <PrimaryAlert
+                alertClassName="bg-[#2A2A2A] border-orange-500"
+                title={insight.type.replace(/([A-Z])/g, ' $1').toLocaleUpperCase()}
+                description={insight.message}
+              />
+              )
+            })}
           </PrimaryCard>
 
           {/* Quick Actions */}

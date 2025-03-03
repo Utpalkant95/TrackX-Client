@@ -74,3 +74,17 @@ export interface IPersonalBests {
   };
   longestStreak: number;  // The longest streak of consecutive workout days
 }
+
+interface IAIInsight {
+  type: "plateauDetected" | "workoutSuggestion" | "recoveryAlert" | "info"; 
+  message: string;
+  exercise?: string;
+}
+
+interface IWeeklyProgress {
+  success: boolean;
+  data: {
+    weightProgress: string;
+    repsProgress: string;
+  };
+}
