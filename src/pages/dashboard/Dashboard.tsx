@@ -7,7 +7,6 @@ import {
   Dumbbell,
   Zap,
   Flame,
-  AlertTriangle,
   LucideProps,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +29,7 @@ import {
   repeatLastWorkout,
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
+import { AiInsights } from "@/Fragments";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -41,11 +41,6 @@ const CardFooter = lazy(() =>
 const PrimaryPopOver = lazy(
   () => import("@/components/PrimaryPopOver/PrimaryPopOver")
 );
-
-const PrimaryAlert = lazy(
-  () => import("@/components/PrimaryAlert/PrimaryAlert")
-);
-
 const LayoutContentWrapper = lazy(
   () => import("@/Wrappers/LayoutContentWrapper")
 );
@@ -60,27 +55,6 @@ const progressData = [
   { day: "Sat", weight: 260, reps: 32 },
   { day: "Sun", weight: 270, reps: 35 },
 ];
-
-const AiInsightItem = ({
-  Icon,
-  description,
-  title,
-}: {
-  Icon: React.ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-  >;
-  title: string;
-  description: string;
-}) => {
-  return (
-    <PrimaryAlert
-      title={title}
-      description={description}
-      Icon={Icon}
-      alertClassName="bg-[#2A2A2A] border-orange-500"
-    />
-  );
-};
 
 const PersonalBestItem = ({
   Icon,
@@ -272,28 +246,7 @@ export default function Dashboard() {
           </div>
 
           {/* AI-Based Insights & Recommendations */}
-          <PrimaryCard title="AI Insights">
-            <div className="flex flex-col space-y-4">
-              <AiInsightItem
-                Icon={AlertTriangle}
-                title="Plateau Detected"
-                description="No progress in Squats for 2 weeks. Consider adjusting weight
-                  or reps."
-              />
-              <AiInsightItem
-                Icon={Zap}
-                title="Workout Suggestion"
-                description="Try increasing Bench Press weight by 2.5kg next session for
-                  progressive overload."
-              />
-              <AiInsightItem
-                Icon={AlertTriangle}
-                title="Recovery Alert"
-                description="You've worked out 6 days in a row. Consider taking a rest day
-                  for better recovery."
-              />
-            </div>
-          </PrimaryCard>
+          <AiInsights />
         </div>
       </LayoutGridWrapper>
     </UiLayout>
