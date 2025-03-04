@@ -17,6 +17,8 @@ import { useLogWorkout, useWorkoutAPiCalls } from "@/hooks";
 import { LogNewWorkoutForm } from "@/forms";
 import { useState } from "react";
 import { WorkoutFromTemplate } from "@/Fragments";
+import { useQuery } from "@tanstack/react-query";
+import { getBodyPartList, getEquipmentsList, getExerciseByEquipmentsAndBodyPart } from "@/Api/exercise";
 const RenderWorkoutStatsElement = ({
   label,
   value,
@@ -51,6 +53,20 @@ const Workout = () => {
 
   const {formik,logNewWorkoutIsPending,updateWorkoutIsPending, createWorkoutFromTemplateIsPending} = useLogWorkout({refetch, selectedWorkout,selectedTemplate, setOpenForm, });
 
+  const {data : bodyParts} = useQuery({
+    queryKey: ["bodyParts"],
+    queryFn: getBodyPartList,
+  });
+
+  const {data : equipments} = useQuery({
+    queryKey : ["equipments"],
+    queryFn :getEquipmentsList,
+  });
+
+  const {data : exercises} = useQuery({
+    queryKey: ["exercies"],
+    queryFn : () => getExerciseByEquipmentsAndBodyPart({bodyPart : "back", equipment : "cable"}),
+  });
   return (
     <UiLayout>
       <LayoutContentWrapper

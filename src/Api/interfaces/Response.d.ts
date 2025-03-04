@@ -88,3 +88,9 @@ interface IWeeklyProgress {
     repsProgress: string;
   };
 }
+interface IExercise {
+  _id : string;
+  id : string;
+  name : string;
+  gifUrl : string;
+}
