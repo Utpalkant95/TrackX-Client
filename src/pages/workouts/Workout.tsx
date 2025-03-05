@@ -50,7 +50,6 @@ const Workout = () => {
   } = useWorkoutAPiCalls();
 
   const {formik,logNewWorkoutIsPending,updateWorkoutIsPending, createWorkoutFromTemplateIsPending} = useLogWorkout({refetch, selectedWorkout,selectedTemplate, setOpenForm, });
-
   return (
     <UiLayout>
       <LayoutContentWrapper

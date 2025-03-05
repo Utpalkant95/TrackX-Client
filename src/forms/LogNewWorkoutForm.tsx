@@ -4,34 +4,25 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Select } from "@radix-ui/react-select";
 import { Plus, X } from "lucide-react";
-import { ITemplateData } from "@/Api/interfaces/Response";
+import { IExercise, ITemplateData } from "@/Api/interfaces/Response";
 import { FormikProps } from "formik";
 import { ITemplate, Workout } from "@/Api/interfaces/Project";
-
-// Mock data for exercises
-const exerciseList = [
-  { id: 1, name: "Squats", image: "/exercises/squats.png" },
-  { id: 2, name: "Bench Press", image: "/exercises/bench-press.png" },
-  { id: 3, name: "Deadlifts", image: "/exercises/deadlifts.png" },
-  { id: 4, name: "Shoulder Press", image: "/exercises/shoulder-press.png" },
-  { id: 5, name: "Bicep Curls", image: "/exercises/bicep-curls.png" },
-];
+import { PrimarySelect } from "@/components";
+import {
+  getBodyPartList,
+  getEquipmentsList,
+  getExerciseByEquipmentsAndBodyPart,
+} from "@/Api/exercise";
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 interface ILogNewWorkoutForm {
   refetch: () => void;
   selectedTemplate?: ITemplateData | null | undefined;
   formik: FormikProps<ITemplate> | FormikProps<Workout>;
   type: "workout" | "template";
-  update : "YES" | "NO";
+  update: "YES" | "NO";
   createIsPending: boolean;
   updateIsPending: boolean;
 }
@@ -43,11 +34,83 @@ const LogNewWorkoutForm = ({
   createIsPending,
   updateIsPending,
 }: ILogNewWorkoutForm) => {
+  const { data: bodyParts } = useQuery({
+    queryKey: ["bodyParts"],
+    queryFn: getBodyPartList,
+  });
+
+  const { data: equipments } = useQuery({
+    queryKey: ["equipments"],
+    queryFn: getEquipmentsList,
+  });
+
+  const exerciseQueries = useQueries({
+    queries: formik.values.exercises.map((exercise) => ({
+      queryKey: ["exercise", exercise.bodyPart, exercise.equipment],
+      queryFn: () =>
+        getExerciseByEquipmentsAndBodyPart({
+          bodyPart: exercise.bodyPart,
+          equipment: exercise.equipment,
+        }),
+      enabled: !!exercise.bodyPart && !!exercise.equipment,
+    })),
+  });
+
+  // Extract data for each exercise
+  const exercisesData = exerciseQueries.map((query) => query.data);
+
+  console.log("exercisesData", exercisesData);
+
+  const BODYPARTDATA = () => {
+    if (bodyParts) {
+      return bodyParts.map((item) => ({
+        value: item,
+        key: item,
+      }));
+    }
+  };
+
+  const ENQUIPMENTDATA = () => {
+    if (equipments) {
+      return equipments.map((item) => ({
+        key: item,
+        value: item,
+      }));
+    }
+  };
+
+  // const EXERCISEDATA = (index : number) => {
+  //   const exercises = exercisesData[index];
+  //   if (exercises) {
+  //       return exercises.map((item : IExercise) => ({
+  //         key: item?.name,
+  //         value: item?.name,
+  //       })),
+  //   }
+  // };
+
+  const EXERCISEDATA = (index: number) => {
+    const exercises = exercisesData?.[index]; // Ensure exercisesData is defined
+    if (!exercises) return []; // Return an empty array if undefined
+
+    return exercises.map((item: IExercise) => ({
+      key: item.name,
+      value: item.name,
+    }));
+  };
+  const BDData = BODYPARTDATA();
+  const EQData = ENQUIPMENTDATA();
+
   // Function to add a new exercise
   const addExercise = () => {
     formik.setFieldValue("exercises", [
       ...formik.values.exercises,
-      { name: "", sets: [{ weight: 0, reps: 1, difficulty: "Easy" }] },
+      {
+        name: "",
+        bodyPart: "",
+        equipment: "",
+        sets: [{ weight: 0, reps: 1, difficulty: "Easy" }],
+      },
     ]);
   };
 
@@ -92,7 +155,7 @@ const LogNewWorkoutForm = ({
             </div>
           )}
 
-          {formik.values.exercises.map((exercise, exerciseIndex) => (
+          {/* {formik.values.exercises.map((exercise, exerciseIndex) => (
             <Card className="bg-[#2A2A2A] p-4">
               <div className="mb-4 flex items-center justify-between">
                 <Label>Exercise</Label>
@@ -104,30 +167,38 @@ const LogNewWorkoutForm = ({
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-              <Select
+              <PrimarySelect
+                onValueChange={(value) =>
+                  formik.setFieldValue(
+                    `exercises.${exerciseIndex}.bodyPart`,
+                    value
+                  )
+                }
+                placeholder="Select Body Part"
+                value={exercise.bodyPart}
+                data={BDData}
+              />
+
+              <PrimarySelect
+                onValueChange={(value) =>
+                  formik.setFieldValue(
+                    `exercises.${exerciseIndex}.equipment`,
+                    value
+                  )
+                }
+                placeholder="Select Equipment"
+                value={exercise.equipment}
+                data={EQData}
+              />
+
+              <PrimarySelect
+                value={exercise.name}
+                data={EXData}
                 onValueChange={(value) =>
                   formik.setFieldValue(`exercises.${exerciseIndex}.name`, value)
                 }
-                value={exercise.name}
-              >
-                <SelectTrigger className="mb-4 bg-[#3A3A3A] text-white">
-                  <SelectValue placeholder="Select exercise" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#3A3A3A] text-white">
-                  {exerciseList.map((ex) => (
-                    <SelectItem key={ex.id} value={ex.name}>
-                      <div className="flex items-center">
-                        <img
-                          src={ex.image || "/placeholder.svg"}
-                          alt={ex.name}
-                          className="mr-2 h-6 w-6 rounded"
-                        />
-                        {ex.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                placeholder="Select Exercise"
+              />
               {exercise.sets.map((set, setIndex) => (
                 <div className="mb-4 space-y-2">
                   <div className="flex items-center justify-between">
@@ -192,7 +263,124 @@ const LogNewWorkoutForm = ({
                 <Plus className="mr-2 h-4 w-4" /> Add Another Set
               </Button>
             </Card>
-          ))}
+          ))} */}
+
+          {formik.values.exercises.map((exercise, exerciseIndex) => {
+            const EXData = EXERCISEDATA(exerciseIndex);
+            return (
+              <Card className="bg-[#2A2A2A] p-4">
+                <div className="mb-4 flex items-center justify-between">
+                  <Label>Exercise</Label>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeExercise(exerciseIndex)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <PrimarySelect
+                  onValueChange={(value) =>
+                    formik.setFieldValue(
+                      `exercises.${exerciseIndex}.bodyPart`,
+                      value
+                    )
+                  }
+                  placeholder="Select Body Part"
+                  value={exercise.bodyPart}
+                  data={BDData}
+                />
+
+                <PrimarySelect
+                  onValueChange={(value) =>
+                    formik.setFieldValue(
+                      `exercises.${exerciseIndex}.equipment`,
+                      value
+                    )
+                  }
+                  placeholder="Select Equipment"
+                  value={exercise.equipment}
+                  data={EQData}
+                />
+
+                <PrimarySelect
+                  value={exercise.name}
+                  data={EXData}
+                  onValueChange={(value) =>
+                    formik.setFieldValue(
+                      `exercises.${exerciseIndex}.name`,
+                      value
+                    )
+                  }
+                  placeholder="Select Exercise"
+                />
+                {exercise.sets.map((set, setIndex) => (
+                  <div className="mb-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label>Set</Label>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeSet(exerciseIndex, setIndex)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label>Weight (kg)</Label>
+                        <Input
+                          type="number"
+                          value={set.weight}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          name={`exercises.${exerciseIndex}.sets.${setIndex}.weight`}
+                          className="bg-[#3A3A3A] text-white"
+                        />
+                      </div>
+                      <div>
+                        <Label>Reps</Label>
+                        <Input
+                          type="number"
+                          value={set.reps}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          name={`exercises.${exerciseIndex}.sets.${setIndex}.reps`}
+                          className="bg-[#3A3A3A] text-white"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Difficulty</Label>
+                      <Slider
+                        min={1}
+                        max={3}
+                        step={1}
+                        value={[
+                          ["Easy", "Medium", "Hard"].indexOf(set.difficulty) +
+                            1,
+                        ]}
+                        onValueChange={(value) => {
+                          formik.setFieldValue(
+                            `exercises.${exerciseIndex}.sets.${setIndex}.difficulty`,
+                            ["Easy", "Medium", "Hard"][value[0] - 1]
+                          );
+                        }}
+                        className="py-4"
+                      />
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  onClick={() => addSet(exerciseIndex)}
+                  variant="outline"
+                  className="mt-2 w-full"
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Add Another Set
+                </Button>
+              </Card>
+            );
+          })}
           <Button onClick={addExercise} variant="secondary" className="w-full">
             <Plus className="mr-2 h-4 w-4" /> Add Another Exercise
           </Button>
@@ -200,53 +388,21 @@ const LogNewWorkoutForm = ({
       </ScrollArea>
       <DialogFooter className="">
         <>
-          {/* {type === "template" ? (
-            <>
-              {update === "YES" ? (
-                <Button
-                  type="submit"
-                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                >
-                  {updateIsPending ? "Updating" : "Update Template"}
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                >
-                  {createIsPending ? "Creating..." : "Create Template"}
-                </Button>
-              )}
-            </>
-          ) : (
-            <>
-              {update === "YES" ? (
-                <Button
-                  type="submit"
-                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                >
-                  {updateIsPending ? "Updating" : "Update Workout"}
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
-                >
-                  {createIsPending ? "Logging..." : "Log Workout"}
-                </Button>
-              )}
-            </>
-          )} */}
-
           {update === "NO" ? (
-            <Button type="submit" className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"> 
+            <Button
+              type="submit"
+              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+            >
               {createIsPending ? "Logging..." : "Log Workout"}
             </Button>
           ) : (
-            <Button type="submit" className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+            <Button
+              type="submit"
+              className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]"
+            >
               {updateIsPending ? "Updating..." : "Update Workout"}
             </Button>
-          )} 
+          )}
         </>
       </DialogFooter>
     </form>

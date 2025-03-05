@@ -28,6 +28,8 @@ interface ExerciseSet {
 }
 
 interface Exercise {
+  bodyPart: string;
+  equipment: string;
   name: string;
   sets: ExerciseSet[];
   _id: string;
@@ -87,4 +89,10 @@ interface IWeeklyProgress {
     weightProgress: string;
     repsProgress: string;
   };
+}
+interface IExercise {
+  _id : string;
+  id : string;
+  name : string;
+  gifUrl : string;
 }

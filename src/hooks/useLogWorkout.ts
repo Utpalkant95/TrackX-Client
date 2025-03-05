@@ -6,7 +6,7 @@ import {
   createWorkoutFromTemplate,
   logNewWorkout,
   updateWorkout,
-} from "@/Api/workout";
+} from "@/Api/workout"; 
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
@@ -15,6 +15,8 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 const initialValues: Workout = {
   exercises: [
     {
+      bodyPart : "",
+      equipment: "",
       name: "",
       sets: [
         {
@@ -32,6 +34,8 @@ const workoutValidationSchema = Yup.object().shape({
     .of(
       Yup.object().shape({
         name: Yup.string().trim().required("Exercise name is required"),
+        bodyPart : Yup.string().trim().required("Body part is required"),
+        equipment: Yup.string().trim().required("Equipment is required"),
         sets: Yup.array()
           .of(
             Yup.object().shape({
@@ -67,7 +71,7 @@ const useLogNewWorkout = ({
 }: IUseLogNewWorkout) => {
   const { mutate: logNewWorkoutMutate, isPending: logNewWorkoutIsPending } =
     useMutation({
-      mutationKey: ["logNewWorkout"],
+      mutationKey: ["logNewWorkout"], 
       mutationFn: logNewWorkout,
       onSuccess: (data) => {
         formik.resetForm();
@@ -119,6 +123,7 @@ const useLogNewWorkout = ({
         createWorkoutFromTemplateMutate(values);
       } else {
         logNewWorkoutMutate(values);
+        console.log(values);
       }
     },
   });

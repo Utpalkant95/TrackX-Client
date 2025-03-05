@@ -13,6 +13,8 @@ const initialValues: ITemplate = {
   exercises: [
     {
       name: "",
+      bodyPart: "",
+      equipment: "",
       sets: [
         {
           weight: 0,
