@@ -28,6 +28,8 @@ interface ExerciseSet {
 }
 
 interface Exercise {
+  bodyPart: string;
+  equipment: string;
   name: string;
   sets: ExerciseSet[];
   _id: string;

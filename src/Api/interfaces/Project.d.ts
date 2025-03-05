@@ -31,7 +31,9 @@ interface Set {
 }
 
 export interface Exercise {
-  name: string
+  name: string;
+  bodyPart : string;
+  equipment : string;
   sets: Set[]
 }
 

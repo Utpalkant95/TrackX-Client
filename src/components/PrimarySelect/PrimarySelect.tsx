@@ -8,23 +8,26 @@ import {
   SelectValue,
 } from "../ui/select";
 
-type Data = {
-  key : string;
-  value : string;
-}
+// type Data = {
+//   key : string;
+//   value : string;
+// }
 
 interface IPrimarySelect {
-  label: string;
+  label?: string;
   placeholder: string;
-  data:Data[];
+  data:{
+    key : string,
+    value : string
+  }[] | undefined;
   onValueChange : Dispatch<SetStateAction<string>>;
   value : string;
-  defaultValue ?: string
+  defaultValue ?: string;
 }
 
 const PrimarySelect = ({ label, placeholder, data, onValueChange,value, defaultValue }: IPrimarySelect) => {
   return (
-    <>
+    <div className="w-full">
       <Label htmlFor="exercise-select" className="text-white mb-2 block">
         {label}
       </Label>
@@ -36,14 +39,14 @@ const PrimarySelect = ({ label, placeholder, data, onValueChange,value, defaultV
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="bg-[#2A2A2A] text-white">
-          {data.map((item) => (
+          {data?.map((item) => (
             <SelectItem key={item.key} value={item.value}>
               {item.key}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-    </>
+    </div>
   );
 };
 
