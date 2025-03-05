@@ -28,6 +28,7 @@ const PrimaryPopover = lazy(
 const PrimarySelect = lazy(
   () => import("@/components/PrimarySelect/PrimarySelect")
 );
+const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
 const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
 
 // Mock data for the progress chart
@@ -125,12 +126,7 @@ export default function Progress() {
   });
   return (
     <UiLayout>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Progress Tracker</h1>
-        <p className="text-gray-400">
-          Analyze your workout performance over time.
-        </p>
-      </div>
+      <LayoutContentWrapper header="Progress Tracker" des="Analyze your workout performance over time." />
 
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">

@@ -1,22 +1,20 @@
 import { ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
-import { PrimaryCard, PrimaryDailog } from "@/components";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
+const PrimaryDailog = lazy(() => import("@/components/PrimaryDialog/PrimaryDailog"));
+const UiLayout = lazy(() => import("@/layout/UiLayout"));
+const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
+const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const LogNewWorkoutForm = lazy(() => import("@/forms/LogNewWorkoutForm"));
+const WorkoutFromTemplate = lazy(() => import("@/Fragments/WorkoutFromTemplate"));
+import {Accordion,AccordionContent,AccordionItem,AccordionTrigger} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { UiLayout } from "@/layout";
-import { LayoutContentWrapper, LayoutGridWrapper } from "@/Wrappers";
 import { format } from "date-fns";
 import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
 import { useLogWorkout, useWorkoutAPiCalls } from "@/hooks";
-import { LogNewWorkoutForm } from "@/forms";
-import { useState } from "react";
-import { WorkoutFromTemplate } from "@/Fragments";
+import { lazy, useState } from "react";
+
 const RenderWorkoutStatsElement = ({
   label,
   value,
@@ -33,11 +31,8 @@ const RenderWorkoutStatsElement = ({
 };
 
 const Workout = () => {
-  const [selectedWorkout, setSelectedWorkout] = useState<
-    IWorkoutData | undefined
-  >();
-  const [selectedTemplate, setSelectedTemplate] =
-    useState<ITemplateData | null>();
+  const [selectedWorkout, setSelectedWorkout] = useState<IWorkoutData | undefined>();
+  const [selectedTemplate, setSelectedTemplate] = useState<ITemplateData | null>();
   const [openImportWorkout, setOpenImportWorkout] = useState<boolean>();
   const [openForm, setOpenForm] = useState<boolean>(false);
   const {

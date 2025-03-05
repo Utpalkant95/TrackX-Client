@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PrimaryCard } from "@/components";
+const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 import { useUserSettings } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getUserSetting } from "@/Api/userSetting";
@@ -14,6 +14,7 @@ const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimarySelect = lazy(
   () => import("@/components/PrimarySelect/PrimarySelect")
 );
+const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
 
 const reminderTimes = [
   {
@@ -41,10 +42,7 @@ export default function Settings() {
 
   return (
     <UiLayout>
-      <h1 className="mb-2 text-3xl font-bold text-white">Settings</h1>
-      <p className="mb-8 text-gray-400">
-        Manage your preferences and account settings.
-      </p>
+      <LayoutContentWrapper header="Settings" des="Manage your account settings."/>
 
       <form onSubmit={formik.handleSubmit}>
         <LayoutGridWrapper Cols={2}>

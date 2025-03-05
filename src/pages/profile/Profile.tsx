@@ -28,8 +28,7 @@ import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "@/Api/User";
-import { PrimaryCard } from "@/components";
-
+const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const ProfileAvatarFrag = lazy(() => import("@/Fragments/ProfileAvatarFrag"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));

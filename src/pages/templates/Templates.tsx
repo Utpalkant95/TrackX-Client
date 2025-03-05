@@ -26,8 +26,9 @@ import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { LayoutContentWrapper } from "@/Wrappers";
-import { PrimaryDailog } from "@/components";
+const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
+const PrimaryDailog = lazy(() => import("@/components/PrimaryDialog/PrimaryDailog"));
+const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 import { useTemplate } from "@/hooks";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
@@ -171,24 +172,18 @@ export default function Templates() {
           <h2 className="mb-4 text-2xl font-semibold text-white">
             Import from History
           </h2>
-          <Card className="bg-[#1E1E1E] text-white">
-            <CardHeader>
-              <CardTitle>Create Template from Past Workout</CardTitle>
-              <CardDescription>
-                Select a past workout to create a new template.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search past workouts"
-                  className="bg-[#2A2A2A] pl-8 text-white"
-                />
-              </div>
-              {/* Add a list or calendar component to show past workouts */}
-            </CardContent>
-          </Card>
+          <PrimaryCard
+            title="Create Template from Past Workout"
+            des=" Select a past workout to create a new template."
+          >
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search past workouts"
+                className="bg-[#2A2A2A] pl-8 text-white"
+              />
+            </div>
+          </PrimaryCard>
         </div>
       </LayoutGridWrapper>
     </UiLayout>

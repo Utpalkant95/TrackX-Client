@@ -29,7 +29,6 @@ import {
   repeatLastWorkout,
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
-import { AiInsights } from "@/Fragments";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -44,7 +43,7 @@ const PrimaryPopOver = lazy(
 const LayoutContentWrapper = lazy(
   () => import("@/Wrappers/LayoutContentWrapper")
 );
-
+const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
 // Mock data for progress chart
 const progressData = [
   { day: "Mon", weight: 200, reps: 30 },
@@ -251,4 +250,4 @@ export default function Dashboard() {
       </LayoutGridWrapper>
     </UiLayout>
   );
-}
+};
