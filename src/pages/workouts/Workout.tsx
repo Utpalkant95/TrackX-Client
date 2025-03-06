@@ -1,3 +1,4 @@
+import { lazy, useState } from "react";
 import { ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const PrimaryDailog = lazy(() => import("@/components/PrimaryDialog/PrimaryDailog"));
@@ -13,7 +14,6 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { ClipboardList, Edit2, Plus, Repeat, Trash2 } from "lucide-react";
 import { useLogWorkout, useWorkoutAPiCalls } from "@/hooks";
-import { lazy, useState } from "react";
 
 const RenderWorkoutStatsElement = ({
   label,
