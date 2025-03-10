@@ -13,8 +13,7 @@ export const getWorkoutsStats = async () => {
     const response = await axios.get("http://localhost:3000/api/v1/workout/get-workouts-stats", {
         withCredentials : true
     })
-
-    return response.data.data as IWorkoutStats
+    return response.data.data as IWorkoutStats[]
 }
 
 export const logNewWorkout = async (data : Workout) => {

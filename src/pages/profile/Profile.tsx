@@ -10,6 +10,7 @@ import {
   Lock,
   LogOut,
   Trash2,
+  LucideProps,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -27,16 +28,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { getUserProfile } from "@/Api/User";
+import { getFitnessStats, getUserProfile } from "@/Api/User";
+import { IFitnessStats } from "@/Api/interfaces/Response";
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const ProfileAvatarFrag = lazy(() => import("@/Fragments/ProfileAvatarFrag"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 
+const ICONS = [Dumbbell, Zap, Award, Flame];
+
+const _RenderFitnessStats = ({
+  data,
+  ICON,
+}: {
+  data: IFitnessStats;
+  ICON: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+}) => {
+  return (
+    <div className="flex flex-col items-center rounded-lg bg-gray-800 p-4">
+      <ICON className="mb-2 h-8 w-8 text-[#00BFFF]" />
+      <span className="text-2xl font-bold">{data.value}</span>
+      <span className="text-sm text-gray-400">{data.title}</span>
+    </div>
+  );
+};
+
 export default function Profile() {
   const { data, refetch } = useQuery({
     queryKey: ["get-user-profile"],
     queryFn: getUserProfile,
+  });
+
+  const { data: fitnessStats } = useQuery({
+    queryKey: ["get-fitness-stats"],
+    queryFn: getFitnessStats,
   });
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -62,8 +89,7 @@ export default function Profile() {
       <LayoutGridWrapper>
         {/* User Information Section */}
         <div className="md:col-span-2">
-          <PrimaryCard
-           title="Basic Information" cardClassName="mb-8">
+          <PrimaryCard title="Basic Information" cardClassName="mb-8">
             <div className="grid gap-4">
               <div className="flex items-center">
                 <User className="mr-2 h-5 w-5 text-[#00BFFF]" />
@@ -81,36 +107,19 @@ export default function Profile() {
           </PrimaryCard>
           <PrimaryCard title="Fitness Stats">
             <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col items-center rounded-lg bg-gray-800 p-4">
-                <Dumbbell className="mb-2 h-8 w-8 text-[#00BFFF]" />
-                <span className="text-2xl font-bold">42</span>
-                <span className="text-sm text-gray-400">Total Workouts</span>
-              </div>
-              <div className="flex flex-col items-center rounded-lg bg-gray-800 p-4">
-                <Zap className="mb-2 h-8 w-8 text-[#00BFFF]" />
-                <span className="text-2xl font-bold">Chest Day</span>
-                <span className="text-sm text-gray-400">Most Frequent</span>
-              </div>
-              <div className="flex flex-col items-center rounded-lg bg-gray-800 p-4">
-                <Award className="mb-2 h-8 w-8 text-[#00BFFF]" />
-                <span className="text-2xl font-bold">225 lbs</span>
-                <span className="text-sm text-gray-400">Personal Best</span>
-              </div>
-              <div className="flex flex-col items-center rounded-lg bg-gray-800 p-4">
-                <Flame className="mb-2 h-8 w-8 text-[#00BFFF]" />
-                <span className="text-2xl font-bold">7 Days</span>
-                <span className="text-sm text-gray-400">Workout Streak</span>
-              </div>
+              {fitnessStats?.map((stat, index : number) => {
+                const ICON = ICONS[index]
+                return (
+                  <_RenderFitnessStats data={stat} ICON={ICON}/>
+                )
+              })}
             </div>
           </PrimaryCard>
         </div>
 
         {/* Settings & Preferences */}
         <div>
-          <PrimaryCard
-            title="Settings & Preferences"
-            cardClassName="mb-8"
-          >
+          <PrimaryCard title="Settings & Preferences" cardClassName="mb-8">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span>Dark Mode</span>

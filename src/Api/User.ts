@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IRES, IUserProfile } from "./interfaces/Response";
+import { IFitnessStats, IRES, IUserProfile } from "./interfaces/Response";
 
 export const getUserProfile = async () => {
     const response = await axios.get("http://localhost:3000/api/v1/user/get-user-profile", {
@@ -13,4 +13,11 @@ export const uploadAvatar = async (data : FormData) => {
         withCredentials : true
     })
     return response.data as IRES;
+}
+
+export const getFitnessStats = async () => {
+    const response = await axios.get("http://localhost:3000/api/v1/user/fitness-stats", {
+        withCredentials : true
+    })
+    return response.data.data as IFitnessStats[];
 }

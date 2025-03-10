@@ -51,9 +51,8 @@ export interface IWorkoutResponse {
 
 
 export interface IWorkoutStats {
-  totalWorkouts : number;
-  mostFrequentExercise: string,
-  totalWeightLifted : number
+  title : string;
+  value : string;
 }
 
 export interface ITemplateData {
@@ -101,4 +100,9 @@ export interface IProgressGraph {
   date : string;
   reps : number;
   weight : number
+}
+
+export interface IFitnessStats {
+  title : string;
+  value : string;
 }
