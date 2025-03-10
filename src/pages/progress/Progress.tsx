@@ -1,5 +1,4 @@
 import { lazy, useState } from "react";
-import { format, subDays, addDays } from "date-fns";
 import {
   LineChart,
   Line,
@@ -17,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { getPersonalBest, getWeeklyProgress } from "@/Api/progress";
+import { getPersonalBest, getProgressGraph, getWeeklyProgress } from "@/Api/progress";
 import { useSelectExercise } from "@/hooks";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
@@ -29,21 +28,6 @@ const LayoutContentWrapper = lazy(
   () => import("@/Wrappers/LayoutContentWrapper")
 );
 const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
-
-// Mock data for the progress chart
-const generateMockData = (days: number) => {
-  const data = [];
-  const startDate = subDays(new Date(), days - 1);
-  for (let i = 0; i < days; i++) {
-    const date = addDays(startDate, i);
-    data.push({
-      date: format(date, "MMM dd"),
-      weight: Math.floor(Math.random() * 20) + 80,
-      reps: Math.floor(Math.random() * 5) + 8,
-    });
-  }
-  return data;
-};
 
 const dateRanges = [
   {
@@ -98,8 +82,6 @@ export default function Progress() {
   const [showWeight, setShowWeight] = useState(true);
   const [chartType, setChartType] = useState<"line" | "bar">("line");
 
-  const data = generateMockData(Number.parseInt(dateRange));
-
   const { data: personalBest } = useQuery({
     queryKey: ["persoanl-best"],
     queryFn: getPersonalBest,
@@ -109,6 +91,13 @@ export default function Progress() {
     queryKey: ["weekly-progress"],
     queryFn: getWeeklyProgress,
   });
+
+  const {data : ProgressGraph} = useQuery({
+    queryKey: ["getProgressGraph"],
+    queryFn: () =>getProgressGraph(selectedExercise),
+    enabled : !!selectedExercise
+  });
+  
   return (
     <UiLayout>
       <LayoutContentWrapper
@@ -202,7 +191,7 @@ export default function Progress() {
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 {chartType === "line" ? (
-                  <LineChart data={data}>
+                  <LineChart data={ProgressGraph}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                     <XAxis dataKey="date" stroke="#888" />
                     <YAxis stroke="#888" />
@@ -221,7 +210,7 @@ export default function Progress() {
                     />
                   </LineChart>
                 ) : (
-                  <BarChart data={data}>
+                  <BarChart data={ProgressGraph}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                     <XAxis dataKey="date" stroke="#888" />
                     <YAxis stroke="#888" />
