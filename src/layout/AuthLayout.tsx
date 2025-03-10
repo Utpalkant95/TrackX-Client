@@ -8,8 +8,6 @@ const FallbackScreen = lazy(
 const AuthLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  console.log("isAuthenticated", isAuthenticated);
-
   if (isLoading) return <FallbackScreen />;
   return isAuthenticated ? (
     <Navigate to="/" replace />

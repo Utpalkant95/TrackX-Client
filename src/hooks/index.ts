@@ -8,3 +8,4 @@ export {default as useUserSettings} from "./useUserSettings";
 export {default as useWorkoutAPiCalls} from "./useWorkoutAPiCalls";
 export {default as useLogWorkout} from "./useLogWorkout";
 export {default as useTemplate} from "./useTemplate";
+export {default as useSelectExercise} from "./useSelectExercise";

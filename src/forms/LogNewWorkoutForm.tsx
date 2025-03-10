@@ -55,11 +55,7 @@ const LogNewWorkoutForm = ({
       enabled: !!exercise.bodyPart && !!exercise.equipment,
     })),
   });
-
-  // Extract data for each exercise
   const exercisesData = exerciseQueries.map((query) => query.data);
-
-  console.log("exercisesData", exercisesData);
 
   const BODYPARTDATA = () => {
     if (bodyParts) {
@@ -79,19 +75,9 @@ const LogNewWorkoutForm = ({
     }
   };
 
-  // const EXERCISEDATA = (index : number) => {
-  //   const exercises = exercisesData[index];
-  //   if (exercises) {
-  //       return exercises.map((item : IExercise) => ({
-  //         key: item?.name,
-  //         value: item?.name,
-  //       })),
-  //   }
-  // };
-
   const EXERCISEDATA = (index: number) => {
-    const exercises = exercisesData?.[index]; // Ensure exercisesData is defined
-    if (!exercises) return []; // Return an empty array if undefined
+    const exercises = exercisesData?.[index];
+    if (!exercises) return [];
 
     return exercises.map((item: IExercise) => ({
       key: item.name,
@@ -154,117 +140,6 @@ const LogNewWorkoutForm = ({
               />
             </div>
           )}
-
-          {/* {formik.values.exercises.map((exercise, exerciseIndex) => (
-            <Card className="bg-[#2A2A2A] p-4">
-              <div className="mb-4 flex items-center justify-between">
-                <Label>Exercise</Label>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeExercise(exerciseIndex)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <PrimarySelect
-                onValueChange={(value) =>
-                  formik.setFieldValue(
-                    `exercises.${exerciseIndex}.bodyPart`,
-                    value
-                  )
-                }
-                placeholder="Select Body Part"
-                value={exercise.bodyPart}
-                data={BDData}
-              />
-
-              <PrimarySelect
-                onValueChange={(value) =>
-                  formik.setFieldValue(
-                    `exercises.${exerciseIndex}.equipment`,
-                    value
-                  )
-                }
-                placeholder="Select Equipment"
-                value={exercise.equipment}
-                data={EQData}
-              />
-
-              <PrimarySelect
-                value={exercise.name}
-                data={EXData}
-                onValueChange={(value) =>
-                  formik.setFieldValue(`exercises.${exerciseIndex}.name`, value)
-                }
-                placeholder="Select Exercise"
-              />
-              {exercise.sets.map((set, setIndex) => (
-                <div className="mb-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Set</Label>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeSet(exerciseIndex, setIndex)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Label>Weight (kg)</Label>
-                      <Input
-                        type="number"
-                        value={set.weight}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        name={`exercises.${exerciseIndex}.sets.${setIndex}.weight`}
-                        className="bg-[#3A3A3A] text-white"
-                      />
-                    </div>
-                    <div>
-                      <Label>Reps</Label>
-                      <Input
-                        type="number"
-                        value={set.reps}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        name={`exercises.${exerciseIndex}.sets.${setIndex}.reps`}
-                        className="bg-[#3A3A3A] text-white"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Difficulty</Label>
-                    <Slider
-                      min={1}
-                      max={3}
-                      step={1}
-                      value={[
-                        ["Easy", "Medium", "Hard"].indexOf(set.difficulty) + 1,
-                      ]}
-                      onValueChange={(value) => {
-                        formik.setFieldValue(
-                          `exercises.${exerciseIndex}.sets.${setIndex}.difficulty`,
-                          ["Easy", "Medium", "Hard"][value[0] - 1]
-                        );
-                      }}
-                      className="py-4"
-                    />
-                  </div>
-                </div>
-              ))}
-              <Button
-                onClick={() => addSet(exerciseIndex)}
-                variant="outline"
-                className="mt-2 w-full"
-              >
-                <Plus className="mr-2 h-4 w-4" /> Add Another Set
-              </Button>
-            </Card>
-          ))} */}
-
           {formik.values.exercises.map((exercise, exerciseIndex) => {
             const EXData = EXERCISEDATA(exerciseIndex);
             return (

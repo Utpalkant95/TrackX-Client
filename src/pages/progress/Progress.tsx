@@ -1,5 +1,4 @@
 import { lazy, useState } from "react";
-import { format, subDays, addDays } from "date-fns";
 import {
   LineChart,
   Line,
@@ -11,63 +10,24 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { CalendarIcon, Download, Target } from "lucide-react";
+import { Download, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
-import { getPersonalBest, getWeeklyProgress } from "@/Api/progress";
+import { getPersonalBest, getProgressGraph, getWeeklyProgress } from "@/Api/progress";
+import { useSelectExercise } from "@/hooks";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
-const PrimaryPopover = lazy(
-  () => import("@/components/PrimaryPopOver/PrimaryPopOver")
-);
 const PrimarySelect = lazy(
   () => import("@/components/PrimarySelect/PrimarySelect")
 );
-const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
+const LayoutContentWrapper = lazy(
+  () => import("@/Wrappers/LayoutContentWrapper")
+);
 const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
-
-// Mock data for the progress chart
-const generateMockData = (days: number) => {
-  const data = [];
-  const startDate = subDays(new Date(), days - 1);
-  for (let i = 0; i < days; i++) {
-    const date = addDays(startDate, i);
-    data.push({
-      date: format(date, "MMM dd"),
-      weight: Math.floor(Math.random() * 20) + 80,
-      reps: Math.floor(Math.random() * 5) + 8,
-    });
-  }
-  return data;
-};
-
-const exercises = [
-  {
-    key: "Bench Press",
-    value: "Bench Press",
-  },
-  {
-    key: "Squats",
-    value: "Squats",
-  },
-  {
-    key: "Deadlifts",
-    value: "Deadlifts",
-  },
-  {
-    key: "Shoulder Press",
-    value: "Shoulder Press",
-  },
-  {
-    key: "Bicep Curls",
-    value: "Bicep Curls",
-  },
-];
 
 const dateRanges = [
   {
@@ -107,13 +67,20 @@ const _RenderPersonalBest = ({
 };
 
 export default function Progress() {
-  const [selectedExercise, setSelectedExercise] = useState("");
+  const {
+    BDData,
+    EQData,
+    EXData,
+    selectedBodyPart,
+    selectedEquipment,
+    setSelectedBodyPart,
+    setSelectedEquipment,
+    selectedExercise,
+    setSelectedExercise,
+  } = useSelectExercise();
   const [dateRange, setDateRange] = useState("30");
   const [showWeight, setShowWeight] = useState(true);
-  const [date, setDate] = useState<Date>();
   const [chartType, setChartType] = useState<"line" | "bar">("line");
-
-  const data = generateMockData(Number.parseInt(dateRange));
 
   const { data: personalBest } = useQuery({
     queryKey: ["persoanl-best"],
@@ -124,9 +91,19 @@ export default function Progress() {
     queryKey: ["weekly-progress"],
     queryFn: getWeeklyProgress,
   });
+
+  const {data : ProgressGraph} = useQuery({
+    queryKey: ["getProgressGraph"],
+    queryFn: () =>getProgressGraph(selectedExercise),
+    enabled : !!selectedExercise
+  });
+  
   return (
     <UiLayout>
-      <LayoutContentWrapper header="Progress Tracker" des="Analyze your workout performance over time." />
+      <LayoutContentWrapper
+        header="Progress Tracker"
+        des="Analyze your workout performance over time."
+      />
 
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
@@ -135,7 +112,25 @@ export default function Progress() {
             <div className="flex flex-wrap gap-4">
               <div className="w-full sm:w-auto">
                 <PrimarySelect
-                  data={exercises}
+                  data={BDData}
+                  label="Select Body Part"
+                  placeholder="Select Body Part"
+                  onValueChange={setSelectedBodyPart}
+                  value={selectedBodyPart}
+                />
+              </div>
+              <div className="w-full sm:w-auto">
+                <PrimarySelect
+                  data={EQData}
+                  label="Select Equipment"
+                  placeholder="Select Equipment"
+                  onValueChange={setSelectedEquipment}
+                  value={selectedEquipment}
+                />
+              </div>
+              <div className="w-full sm:w-auto">
+                <PrimarySelect
+                  data={EXData}
                   label="Select Exercise"
                   placeholder="Select exercise"
                   onValueChange={setSelectedExercise}
@@ -151,29 +146,7 @@ export default function Progress() {
                   value={dateRange}
                 />
               </div>
-              <div className="w-full sm:w-auto flex items-end">
-                <PrimaryPopover
-                  btn={() => (
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full sm:w-[200px] justify-start text-left font-normal bg-[#2A2A2A] text-white",
-                        !date && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date ? format(date, "PPP") : <span>Custom range</span>}
-                    </Button>
-                  )}
-                >
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    initialFocus
-                  />
-                </PrimaryPopover>
-              </div>
+              {/* aur inputs */}
             </div>
           </PrimaryCard>
 
@@ -218,7 +191,7 @@ export default function Progress() {
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 {chartType === "line" ? (
-                  <LineChart data={data}>
+                  <LineChart data={ProgressGraph}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                     <XAxis dataKey="date" stroke="#888" />
                     <YAxis stroke="#888" />
@@ -237,7 +210,7 @@ export default function Progress() {
                     />
                   </LineChart>
                 ) : (
-                  <BarChart data={data}>
+                  <BarChart data={ProgressGraph}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                     <XAxis dataKey="date" stroke="#888" />
                     <YAxis stroke="#888" />

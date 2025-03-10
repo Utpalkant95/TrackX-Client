@@ -96,3 +96,9 @@ interface IExercise {
   name : string;
   gifUrl : string;
 }
+
+export interface IProgressGraph {
+  date : string;
+  reps : number;
+  weight : number
+}
