@@ -156,18 +156,14 @@ const Workout = () => {
         <div className="space-y-8">
           {/* Quick Workout Stats */}
           <PrimaryCard title="Quick Stats">
-            <RenderWorkoutStatsElement
-              label="Total Weight Lifted"
-              value={String(workoutStats?.totalWorkouts)}
+          {workoutStats?.map((workout) => {
+            return (
+              <RenderWorkoutStatsElement
+              label={workout.title}
+              value={workout.value}
             />
-            <RenderWorkoutStatsElement
-              label="Most Frequent Exercise"
-              value={String(workoutStats?.mostFrequentExercise)}
-            />
-            <RenderWorkoutStatsElement
-              label="Total Weight Lifted (Last 7 Days)"
-              value={String(workoutStats?.totalWeightLifted + " kg")}
-            />
+            )
+          })}
           </PrimaryCard>
 
           {/* Quick Actions */}

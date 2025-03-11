@@ -37,6 +37,7 @@ interface IPrimaryCard {
   Icon?: React.ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
   >;
+  headerComp?: React.ReactNode;
 }
 
 const PrimaryCard = ({
@@ -48,19 +49,23 @@ const PrimaryCard = ({
   cardTitleClassName,
   Icon,
   des,
+  headerComp,
 }: IPrimaryCard) => {
   return (
     <Card className={`bg-[#1E1E1E] text-white ${cardClassName}`}>
       {title && (
         <CardHeader className={cardHeaderClassName}>
-        {title && (
-          <CardTitle className={cardTitleClassName}>
-            {Icon && <Icon className="h-4 w-4 inline-block mr-1" />}
-            {title}
-          </CardTitle>
-        )}
-        {des && <CardDescription>{des}</CardDescription>}
-      </CardHeader>
+          <div className="flex justify-between items-center">
+            {title && (
+              <CardTitle className={cardTitleClassName}>
+                {Icon && <Icon className="h-4 w-4 inline-block mr-1" />}
+                {title}
+              </CardTitle>
+            )}
+            {headerComp && <div>{headerComp}</div>}
+          </div>
+          {des && <CardDescription>{des}</CardDescription>}
+        </CardHeader>
       )}
       <CardContent className={cardContentClassName}>{children}</CardContent>
     </Card>

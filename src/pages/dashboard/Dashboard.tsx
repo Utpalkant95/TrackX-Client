@@ -1,8 +1,7 @@
-import { lazy, useState } from "react";
+import { lazy } from "react";
 import { format } from "date-fns";
 import {
-  CalendarIcon,
-  Plus,
+
   ArrowRight,
   Dumbbell,
   Zap,
@@ -11,17 +10,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getWorkout,
@@ -29,6 +17,9 @@ import {
   repeatLastWorkout,
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
+import { IRES } from "@/Api/interfaces/Response";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -37,23 +28,11 @@ const CardFooter = lazy(() =>
     default: module.CardFooter,
   }))
 );
-const PrimaryPopOver = lazy(
-  () => import("@/components/PrimaryPopOver/PrimaryPopOver")
-);
 const LayoutContentWrapper = lazy(
   () => import("@/Wrappers/LayoutContentWrapper")
 );
 const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
-// Mock data for progress chart
-const progressData = [
-  { day: "Mon", weight: 200, reps: 30 },
-  { day: "Tue", weight: 220, reps: 28 },
-  { day: "Wed", weight: 230, reps: 32 },
-  { day: "Thu", weight: 240, reps: 30 },
-  { day: "Fri", weight: 250, reps: 34 },
-  { day: "Sat", weight: 260, reps: 32 },
-  { day: "Sun", weight: 270, reps: 35 },
-];
+const ProgressGraphFrag = lazy(() => import("@/Fragments/ProgressGraphFrag"));
 
 const PersonalBestItem = ({
   Icon,
@@ -82,17 +61,21 @@ const PersonalBestItem = ({
 };
 
 export default function Dashboard() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [chartMetric] = useState<"weight" | "reps">("weight");
-
   const { data: workouts } = useQuery({
     queryKey: ["get-recent-workouts"],
-    queryFn: getWorkout,
+    queryFn: () => getWorkout(7),
   });
 
   const { mutate: repeatLastWorkoutMutate, isPending } = useMutation({
     mutationKey: ["repeat-last-workout"],
     mutationFn: repeatLastWorkout,
+
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    }
   });
 
   const { data: performanceData } = useQuery({
@@ -105,42 +88,7 @@ export default function Dashboard() {
       <LayoutContentWrapper
         header="Dashboard"
         des="Track your progress and stay on top of your workouts."
-      >
-        <PrimaryPopOver
-          btn={() => (
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-[240px] justify-start text-left font-normal bg-[#2A2A2A] text-white",
-                !date && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
-            </Button>
-          )}
-        >
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            initialFocus
-          />
-        </PrimaryPopOver>
-        <div className="flex space-x-2">
-          <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-            <Link to={"/workouts"} className="flex items-center">
-              <Plus className="mr-2 h-4 w-4" /> Log Workout
-            </Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
-          >
-            <Link to={"/progress"}>View Progress</Link>
-          </Button>
-        </div>
-      </LayoutContentWrapper>
+       />
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Today's Workout Plan */}
@@ -148,9 +96,11 @@ export default function Dashboard() {
             <p className="text-gray-400 mb-4">
               No workout scheduled for today.
             </p>
+            <Link to={"/workouts"}>
             <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
               Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+            </Link>
           </PrimaryCard>
 
           {/* Recent Workouts */}
@@ -197,30 +147,7 @@ export default function Dashboard() {
 
         <div className="space-y-8">
           {/* Progress & Analytics Overview */}
-          <PrimaryCard title="Weekly Progress">
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={progressData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                  <XAxis dataKey="day" stroke="#888" />
-                  <YAxis stroke="#888" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1E1E1E",
-                      border: "none",
-                    }}
-                    itemStyle={{ color: "#00BFFF" }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey={chartMetric}
-                    stroke="#00BFFF"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </PrimaryCard>
+          <ProgressGraphFrag data={[]} selectedExercise="Weekly Progress"/>
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
@@ -250,4 +177,4 @@ export default function Dashboard() {
       </LayoutGridWrapper>
     </UiLayout>
   );
-};
+}

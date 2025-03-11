@@ -1,22 +1,13 @@
 import { lazy, useState } from "react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { Download, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { getPersonalBest, getProgressGraph, getWeeklyProgress } from "@/Api/progress";
+import {
+  getPersonalBest,
+  getProgressGraph,
+  getWeeklyProgress,
+} from "@/Api/progress";
 import { useSelectExercise } from "@/hooks";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
@@ -28,6 +19,7 @@ const LayoutContentWrapper = lazy(
   () => import("@/Wrappers/LayoutContentWrapper")
 );
 const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
+const ProgressGraphFrag = lazy(() => import("@/Fragments/ProgressGraphFrag"));
 
 const dateRanges = [
   {
@@ -78,9 +70,7 @@ export default function Progress() {
     selectedExercise,
     setSelectedExercise,
   } = useSelectExercise();
-  const [dateRange, setDateRange] = useState("30");
-  const [showWeight, setShowWeight] = useState(true);
-  const [chartType, setChartType] = useState<"line" | "bar">("line");
+  const [dateRange, setDateRange] = useState<string>("30");
 
   const { data: personalBest } = useQuery({
     queryKey: ["persoanl-best"],
@@ -92,12 +82,12 @@ export default function Progress() {
     queryFn: getWeeklyProgress,
   });
 
-  const {data : ProgressGraph} = useQuery({
+  const { data: ProgressGraph } = useQuery({
     queryKey: ["getProgressGraph"],
-    queryFn: () =>getProgressGraph(selectedExercise),
-    enabled : !!selectedExercise
+    queryFn: () => getProgressGraph(selectedExercise),
+    enabled: !!selectedExercise,
   });
-  
+
   return (
     <UiLayout>
       <LayoutContentWrapper
@@ -151,85 +141,11 @@ export default function Progress() {
           </PrimaryCard>
 
           {/* Progress Visualization */}
-          <PrimaryCard title={` ${selectedExercise} Progress`}>
-            <div className="flex justify-between items-center mb-4">
-              <div className="space-x-2">
-                <Switch
-                  id="weight-toggle"
-                  checked={showWeight}
-                  onCheckedChange={setShowWeight}
-                />
-                <Label htmlFor="weight-toggle" className="text-white">
-                  {showWeight ? "Weight" : "Reps"}
-                </Label>
-              </div>
-              <div className="space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setChartType("line")}
-                  className={cn(
-                    "bg-[#2A2A2A] text-white",
-                    chartType === "line" && "bg-[#00BFFF]"
-                  )}
-                >
-                  Line
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setChartType("bar")}
-                  className={cn(
-                    "bg-[#2A2A2A] text-white",
-                    chartType === "bar" && "bg-[#00BFFF]"
-                  )}
-                >
-                  Bar
-                </Button>
-              </div>
-            </div>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                {chartType === "line" ? (
-                  <LineChart data={ProgressGraph}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                    <XAxis dataKey="date" stroke="#888" />
-                    <YAxis stroke="#888" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1E1E1E",
-                        border: "none",
-                      }}
-                      itemStyle={{ color: "#00BFFF" }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey={showWeight ? "weight" : "reps"}
-                      stroke="#00BFFF"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                ) : (
-                  <BarChart data={ProgressGraph}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                    <XAxis dataKey="date" stroke="#888" />
-                    <YAxis stroke="#888" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1E1E1E",
-                        border: "none",
-                      }}
-                      itemStyle={{ color: "#00BFFF" }}
-                    />
-                    <Bar
-                      dataKey={showWeight ? "weight" : "reps"}
-                      fill="#00BFFF"
-                    />
-                  </BarChart>
-                )}
-              </ResponsiveContainer>
-            </div>
-          </PrimaryCard>
+
+          <ProgressGraphFrag
+            data={ProgressGraph}
+            selectedExercise={` ${selectedExercise} Progress`}
+          />
 
           {/* Weekly Progress Comparison */}
           <PrimaryCard title="Weekly Progress">
