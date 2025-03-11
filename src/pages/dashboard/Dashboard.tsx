@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { format } from "date-fns";
 import {
-  Plus,
+
   ArrowRight,
   Dumbbell,
   Zap,
@@ -17,6 +17,9 @@ import {
   repeatLastWorkout,
 } from "@/Api/workout";
 import { Link } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
+import { IRES } from "@/Api/interfaces/Response";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -66,6 +69,13 @@ export default function Dashboard() {
   const { mutate: repeatLastWorkoutMutate, isPending } = useMutation({
     mutationKey: ["repeat-last-workout"],
     mutationFn: repeatLastWorkout,
+
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    }
   });
 
   const { data: performanceData } = useQuery({
@@ -78,21 +88,7 @@ export default function Dashboard() {
       <LayoutContentWrapper
         header="Dashboard"
         des="Track your progress and stay on top of your workouts."
-      >
-        <div className="flex space-x-2">
-          <Button className="bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-            <Link to={"/workouts"} className="flex items-center">
-              <Plus className="mr-2 h-4 w-4" /> Log Workout
-            </Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
-          >
-            <Link to={"/progress"}>View Progress</Link>
-          </Button>
-        </div>
-      </LayoutContentWrapper>
+       />
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Today's Workout Plan */}
@@ -100,9 +96,11 @@ export default function Dashboard() {
             <p className="text-gray-400 mb-4">
               No workout scheduled for today.
             </p>
+            <Link to={"/workouts"}>
             <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
               Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+            </Link>
           </PrimaryCard>
 
           {/* Recent Workouts */}
