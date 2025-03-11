@@ -1,20 +1,7 @@
 import { lazy, useState } from "react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { Download, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getPersonalBest, getProgressGraph, getWeeklyProgress } from "@/Api/progress";
 import { useSelectExercise } from "@/hooks";
@@ -28,6 +15,7 @@ const LayoutContentWrapper = lazy(
   () => import("@/Wrappers/LayoutContentWrapper")
 );
 const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
+const ProgressGraphFrag = lazy(() => import("@/Fragments/ProgressGraphFrag"));
 
 const dateRanges = [
   {
@@ -78,9 +66,7 @@ export default function Progress() {
     selectedExercise,
     setSelectedExercise,
   } = useSelectExercise();
-  const [dateRange, setDateRange] = useState("30");
-  const [showWeight, setShowWeight] = useState(true);
-  const [chartType, setChartType] = useState<"line" | "bar">("line");
+  const [dateRange, setDateRange] = useState<string>("30");
 
   const { data: personalBest } = useQuery({
     queryKey: ["persoanl-best"],
@@ -151,7 +137,7 @@ export default function Progress() {
           </PrimaryCard>
 
           {/* Progress Visualization */}
-          <PrimaryCard title={` ${selectedExercise} Progress`}>
+          {/* <PrimaryCard title={` ${selectedExercise} Progress`}>
             <div className="flex justify-between items-center mb-4">
               <div className="space-x-2">
                 <Switch
@@ -229,7 +215,9 @@ export default function Progress() {
                 )}
               </ResponsiveContainer>
             </div>
-          </PrimaryCard>
+          </PrimaryCard> */}
+
+          <ProgressGraphFrag data={ProgressGraph} selectedExercise={selectedExercise}/>
 
           {/* Weekly Progress Comparison */}
           <PrimaryCard title="Weekly Progress">

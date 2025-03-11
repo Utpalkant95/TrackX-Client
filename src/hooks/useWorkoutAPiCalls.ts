@@ -7,7 +7,7 @@ import { enqueueSnackbar } from "notistack";
 const useWorkoutAPiCalls = () => {
   const { data, refetch } = useQuery({
     queryKey: ["workouts"],
-    queryFn: getWorkout,
+    queryFn:() =>getWorkout(26),
   });
 
   const { data: workoutStats } = useQuery({
