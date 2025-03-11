@@ -87,7 +87,7 @@ export default function Dashboard() {
 
   const { data: workouts } = useQuery({
     queryKey: ["get-recent-workouts"],
-    queryFn: getWorkout,
+    queryFn: () =>getWorkout(7),
   });
 
   const { mutate: repeatLastWorkoutMutate, isPending } = useMutation({

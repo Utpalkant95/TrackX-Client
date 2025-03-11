@@ -2,8 +2,8 @@ import axios from "axios";
 import { IRES, IWorkoutResponse, IWorkoutStats } from "./interfaces/Response";
 import { Workout } from "./interfaces/Project";
 
-export const getWorkout = async () => {
-    const response = await axios.get("http://localhost:3000/api/v1/workout/get-workouts", {
+export const getWorkout = async (limit ?: number | undefined) => {
+    const response = await axios.get(`http://localhost:3000/api/v1/workout/get-workouts/${limit}`, {
         withCredentials : true
     })
     return response.data as IWorkoutResponse;
