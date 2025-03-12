@@ -27,9 +27,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getFitnessStats, getUserProfile } from "@/Api/User";
-import { IFitnessStats } from "@/Api/interfaces/Response";
+import { IFitnessStats, IRES } from "@/Api/interfaces/Response";
+import { updateWorkoutReminder } from "@/Api/userSetting";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const ProfileAvatarFrag = lazy(() => import("@/Fragments/ProfileAvatarFrag"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
@@ -65,8 +68,7 @@ export default function Profile() {
     queryKey: ["get-fitness-stats"],
     queryFn: getFitnessStats,
   });
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const { mutate } = useLogout();
   const { formik, isPending } = useUpdatePassword();
   const { isPending: erasePending, mutate: eraseMutate } = useEraseAccount();
@@ -82,6 +84,16 @@ export default function Profile() {
     hour12: true,
   });
 
+  const {mutate : saveUserSettingMutate} = useMutation({
+    mutationKey : ["workout-remindere"],
+    mutationFn : updateWorkoutReminder,
+    onSuccess : (data) => {
+      enqueueSnackbar(data.message, {variant : "success"})
+    },
+    onError : (error : AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, {variant : "error"})
+    }
+  });
   return (
     <UiLayout>
       <ProfileAvatarFrag data={data} refetch={refetch} />
@@ -132,8 +144,7 @@ export default function Profile() {
               <div className="flex items-center justify-between">
                 <span>Workout Reminders</span>
                 <Switch
-                  checked={notificationsEnabled}
-                  onCheckedChange={setNotificationsEnabled}
+                  onCheckedChange={(value)=>saveUserSettingMutate(value)}
                 />
               </div>
               <AlertDialog>
