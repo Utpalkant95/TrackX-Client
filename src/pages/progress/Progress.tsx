@@ -39,21 +39,14 @@ const dateRanges = [
 const _RenderPersonalBest = ({
   heading,
   value,
-  exercise,
-  unit,
 }: {
   heading: string;
   value: string;
-  exercise?: string | undefined;
-  unit: string | undefined;
 }) => {
   return (
     <div>
       <Label className="text-gray-400">{heading}</Label>
-      <p className="text-2xl font-bold text-white">
-        {value} {unit}{" "}
-        <span className="text-sm text-gray-400">({exercise})</span>
-      </p>
+      <p className="text-2xl font-bold text-white">{value} </p>
     </div>
   );
 };
@@ -76,6 +69,7 @@ export default function Progress() {
     queryKey: ["persoanl-best"],
     queryFn: getPersonalBest,
   });
+  console.log("personalBest", personalBest);
 
   const { data: weeklyProgress } = useQuery({
     queryKey: ["weekly-progress"],
@@ -87,8 +81,6 @@ export default function Progress() {
     queryFn: () => getProgressGraph(selectedExercise),
     enabled: !!selectedExercise,
   });
-
-  
 
   return (
     <UiLayout>
@@ -166,25 +158,14 @@ export default function Progress() {
           {/* Personal Best Achievements */}
           <PrimaryCard title="Personal Bests">
             <div className="space-y-4">
-              <_RenderPersonalBest
-                heading="Heaviest Weight Lifted"
-                value={String(personalBest?.heaviestWeight.weight)}
-                exercise={personalBest?.heaviestWeight.exercise}
-                unit={personalBest?.heaviestWeight.unit}
-              />
-              <_RenderPersonalBest
-                heading="Max Reps in Single Set"
-                value={String(personalBest?.maxReps.reps)}
-                exercise={personalBest?.maxReps.exercise}
-                unit="Reps"
-              />
-
-              <_RenderPersonalBest
-                heading="Longest Workout Streak"
-                value={String(personalBest?.longestStreak)}
-                exercise={String(personalBest?.longestStreak)}
-                unit="Days"
-              />
+              {personalBest?.map((item) => {
+                return (
+                  <_RenderPersonalBest
+                    heading={item.title}
+                    value={item.value}
+                  />
+                );
+              })}
             </div>
           </PrimaryCard>
 
