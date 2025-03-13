@@ -2,13 +2,17 @@ import { lazy, useState } from "react";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getPersonalBest,
   getProgressGraph,
+  getProgressReport,
   getWeeklyProgress,
 } from "@/Api/progress";
 import { useSelectExercise } from "@/hooks";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
+import { IRES } from "@/Api/interfaces/Response";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -81,6 +85,17 @@ export default function Progress() {
     queryFn: () => getProgressGraph(selectedExercise),
     enabled: !!selectedExercise,
   });
+
+  const {mutate : progressReportMutate} = useMutation({
+    mutationKey: ["getProgressReport"],
+    mutationFn : getProgressReport,
+    onSuccess : (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    },
+  })
 
   return (
     <UiLayout>
@@ -174,7 +189,7 @@ export default function Progress() {
 
           {/* Quick Actions */}
           <PrimaryCard title="Quick Actions" cardContentClassName="space-y-4">
-            <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
+            <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]" onClick={() =>progressReportMutate()}>
               <Download className="mr-2 h-4 w-4" /> Download Report
             </Button>
           </PrimaryCard>
