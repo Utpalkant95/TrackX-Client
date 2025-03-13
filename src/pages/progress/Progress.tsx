@@ -1,5 +1,5 @@
 import { lazy, useState } from "react";
-import { Download, Target } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
@@ -195,9 +195,6 @@ export default function Progress() {
           <PrimaryCard title="Quick Actions" cardContentClassName="space-y-4">
             <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]">
               <Download className="mr-2 h-4 w-4" /> Download Report
-            </Button>
-            <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              <Target className="mr-2 h-4 w-4" /> Set New Goal
             </Button>
           </PrimaryCard>
         </div>

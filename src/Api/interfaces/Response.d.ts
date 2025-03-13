@@ -15,6 +15,7 @@ export interface IUserProfile {
       public_id: string;
       secure_url: string;
     };
+    preferences : string;
     createdAt: string;
   };
 }

@@ -21,3 +21,10 @@ export const getFitnessStats = async () => {
     })
     return response.data.data as IFitnessStats[];
 }
+
+export const updatePreferences = async (preferences : string) => {
+    const response = await axios.put(`http://localhost:3000/api/v1/user/update-preferences/${preferences}`, {}, {
+        withCredentials : true
+    })
+    return response.data as IRES
+}

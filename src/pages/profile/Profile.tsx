@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { lazy } from "react";
 import {
   User,
   Mail,
@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getFitnessStats, getUserProfile } from "@/Api/User";
+import { getFitnessStats, getUserProfile, updatePreferences } from "@/Api/User";
 import { IFitnessStats, IRES } from "@/Api/interfaces/Response";
 import { updateWorkoutReminder } from "@/Api/userSetting";
 import { enqueueSnackbar } from "notistack";
@@ -68,7 +68,6 @@ export default function Profile() {
     queryKey: ["get-fitness-stats"],
     queryFn: getFitnessStats,
   });
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const { mutate } = useLogout();
   const { formik, isPending } = useUpdatePassword();
   const { isPending: erasePending, mutate: eraseMutate } = useEraseAccount();
@@ -84,16 +83,31 @@ export default function Profile() {
     hour12: true,
   });
 
-  const {mutate : saveUserSettingMutate} = useMutation({
-    mutationKey : ["workout-remindere"],
-    mutationFn : updateWorkoutReminder,
-    onSuccess : (data) => {
-      enqueueSnackbar(data.message, {variant : "success"})
+  const { mutate: saveUserSettingMutate } = useMutation({
+    mutationKey: ["workout-remindere"],
+    mutationFn: updateWorkoutReminder,
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
     },
-    onError : (error : AxiosError<IRES>) => {
-      enqueueSnackbar(error.response?.data.message, {variant : "error"})
-    }
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.response?.data.message, { variant: "error" });
+    },
   });
+
+  const { mutate: updatePreferencesMutate } = useMutation({
+    mutationKey: ["update-preferences"],
+    mutationFn: updatePreferences,
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+      refetch();
+    },
+    onError: (error: AxiosError<IRES>) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
+  console.log("data", data);
+
   return (
     <UiLayout>
       <ProfileAvatarFrag data={data} refetch={refetch} />
@@ -119,11 +133,9 @@ export default function Profile() {
           </PrimaryCard>
           <PrimaryCard title="Fitness Stats">
             <div className="grid grid-cols-2 gap-4">
-              {fitnessStats?.map((stat, index : number) => {
-                const ICON = ICONS[index]
-                return (
-                  <_RenderFitnessStats data={stat} ICON={ICON}/>
-                )
+              {fitnessStats?.map((stat, index: number) => {
+                const ICON = ICONS[index];
+                return <_RenderFitnessStats data={stat} ICON={ICON} />;
               })}
             </div>
           </PrimaryCard>
@@ -134,17 +146,18 @@ export default function Profile() {
           <PrimaryCard title="Settings & Preferences" cardClassName="mb-8">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span>Dark Mode</span>
-                <Switch checked={isDarkMode} onCheckedChange={setIsDarkMode} />
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Use Metric System (kg)</span>
-                <Switch />
+                <span>Use Metric System ({data?.data?.preferences})</span>
+                <Switch
+                  checked={data?.data?.preferences === "kg" ? false : true}
+                  onCheckedChange={(value) =>
+                    updatePreferencesMutate(value ? "lbs" : "kg")
+                  }
+                />
               </div>
               <div className="flex items-center justify-between">
                 <span>Workout Reminders</span>
                 <Switch
-                  onCheckedChange={(value)=>saveUserSettingMutate(value)}
+                  onCheckedChange={(value) => saveUserSettingMutate(value)}
                 />
               </div>
               <AlertDialog>
