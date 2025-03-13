@@ -3,7 +3,7 @@ import { IAIInsight, IPersonalBests, IProgressGraph, IWeeklyProgress} from "./in
 
 export const getPersonalBest = async () => {
     const response = await axios.get("http://localhost:3000/api/v1/progress/personal-best", {withCredentials : true});
-    return response.data as IPersonalBests;
+    return response.data.data as IPersonalBests[];
 }
 
 export const getAiInsights = async () => {
