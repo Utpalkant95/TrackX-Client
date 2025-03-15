@@ -73,7 +73,6 @@ export default function Progress() {
     queryKey: ["persoanl-best"],
     queryFn: getPersonalBest,
   });
-  console.log("personalBest", personalBest);
 
   const { data: weeklyProgress } = useQuery({
     queryKey: ["weekly-progress"],

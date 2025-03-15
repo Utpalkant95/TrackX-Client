@@ -1,13 +1,6 @@
-import { lazy } from "react";
+import { lazy, useState } from "react";
 import { format } from "date-fns";
-import {
-
-  ArrowRight,
-  Dumbbell,
-  Zap,
-  Flame,
-  LucideProps,
-} from "lucide-react";
+import { ArrowRight, Dumbbell, Zap, Flame, LucideProps } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,6 +13,7 @@ import { Link } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES } from "@/Api/interfaces/Response";
+import { getProgressGraph } from "@/Api/progress";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -58,9 +52,10 @@ const PersonalBestItem = ({
       <p className="text-xs text-muted-foreground">{description}</p>
     </PrimaryCard>
   );
-};
+}; 
 
 export default function Dashboard() {
+  const [selectedExercise, setSelectedExercise] = useState<string>("");
   const { data: workouts } = useQuery({
     queryKey: ["get-recent-workouts"],
     queryFn: () => getWorkout(7),
@@ -75,7 +70,7 @@ export default function Dashboard() {
     },
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.response?.data.message, { variant: "error" });
-    }
+    },
   });
 
   const { data: performanceData } = useQuery({
@@ -83,12 +78,17 @@ export default function Dashboard() {
     queryFn: getWorkoutPerformance,
   });
 
+  const { data: ProgressGraph } = useQuery({
+    queryKey: ["getProgressGraph", selectedExercise],
+    queryFn: () => getProgressGraph(selectedExercise),
+    enabled: !!selectedExercise,
+  });
   return (
     <UiLayout>
       <LayoutContentWrapper
         header="Dashboard"
         des="Track your progress and stay on top of your workouts."
-       />
+      />
       <LayoutGridWrapper Cols={2}>
         <div className="space-y-8">
           {/* Today's Workout Plan */}
@@ -97,9 +97,9 @@ export default function Dashboard() {
               No workout scheduled for today.
             </p>
             <Link to={"/workouts"}>
-            <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
-              Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+              <Button className="w-full bg-[#00BFFF] text-white hover:bg-[#00A0D0]">
+                Quick Start Workout <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </Link>
           </PrimaryCard>
 
@@ -147,7 +147,7 @@ export default function Dashboard() {
 
         <div className="space-y-8">
           {/* Progress & Analytics Overview */}
-          <ProgressGraphFrag data={[]} selectedExercise="Weekly Progress"/>
+          <ProgressGraphFrag data={ProgressGraph} selectedExercise="Weekly Progress" setSelectedExercise={setSelectedExercise} />
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">

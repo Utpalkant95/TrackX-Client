@@ -20,7 +20,7 @@ interface IPrimarySelect {
     key : string,
     value : string
   }[] | undefined;
-  onValueChange : Dispatch<SetStateAction<string>>;
+  onValueChange ?: Dispatch<SetStateAction<string>>;
   value : string;
   defaultValue ?: string;
 }
