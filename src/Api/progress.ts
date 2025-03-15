@@ -31,9 +31,9 @@ export const getWeeklyProgress = async () => {
   return response.data as IWeeklyProgress;
 };
 
-export const getProgressGraph = async (exerciseName: string) => {
+export const getProgressGraph = async ({exerciseName, dateRange = "7"} : {exerciseName : string, dateRange ?: string}) => {
   const response = await axios.get(
-    `http://localhost:3000/api/v1/progress/progress-graph/${exerciseName}`,
+    `http://localhost:3000/api/v1/progress/progress-graph/${exerciseName}/${dateRange}`,
     { withCredentials: true }
   );
   return response.data.data as IProgressGraph[];
