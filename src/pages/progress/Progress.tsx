@@ -81,8 +81,8 @@ export default function Progress() {
   }));
 
   const { data: ProgressGraph } = useQuery({
-    queryKey: ["getProgressGraph", selectedExercise],
-    queryFn: () => getProgressGraph(selectedExercise),
+    queryKey: ["getProgressGraph", selectedExercise, dateRange],
+    queryFn: () => getProgressGraph({ exerciseName: selectedExercise, dateRange }),
     enabled: !!selectedExercise,
   });
 
