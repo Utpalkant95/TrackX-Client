@@ -52,7 +52,7 @@ const PersonalBestItem = ({
       <p className="text-xs text-muted-foreground">{description}</p>
     </PrimaryCard>
   );
-}; 
+};
 
 export default function Dashboard() {
   const [selectedExercise, setSelectedExercise] = useState<string>("");
@@ -147,7 +147,12 @@ export default function Dashboard() {
 
         <div className="space-y-8">
           {/* Progress & Analytics Overview */}
-          <ProgressGraphFrag data={ProgressGraph} selectedExercise="Weekly Progress" setSelectedExercise={setSelectedExercise} />
+          <ProgressGraphFrag
+            data={ProgressGraph}
+            selectedExercise="Weekly Progress"
+            setSelectedExercise={setSelectedExercise}
+            flag={true}
+          />
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">

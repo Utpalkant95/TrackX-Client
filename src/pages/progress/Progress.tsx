@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  getExerciseList,
   getPersonalBest,
   getProgressGraph,
   getProgressReport,
@@ -56,17 +57,7 @@ const _RenderPersonalBest = ({
 };
 
 export default function Progress() {
-  const {
-    BDData,
-    EQData,
-    EXData,
-    selectedBodyPart,
-    selectedEquipment,
-    setSelectedBodyPart,
-    setSelectedEquipment,
-    selectedExercise,
-    setSelectedExercise,
-  } = useSelectExercise();
+  const { selectedExercise, setSelectedExercise } = useSelectExercise();
   const [dateRange, setDateRange] = useState<string>("30");
 
   const { data: personalBest } = useQuery({
@@ -79,22 +70,32 @@ export default function Progress() {
     queryFn: getWeeklyProgress,
   });
 
+  const { data } = useQuery({
+    queryKey: ["exercises"],
+    queryFn: getExerciseList,
+  });
+
+  const tempExer = data?.map((item) => ({
+    key: item,
+    value: item,
+  }));
+
   const { data: ProgressGraph } = useQuery({
-    queryKey: ["getProgressGraph"],
+    queryKey: ["getProgressGraph", selectedExercise],
     queryFn: () => getProgressGraph(selectedExercise),
     enabled: !!selectedExercise,
   });
 
-  const {mutate : progressReportMutate} = useMutation({
+  const { mutate: progressReportMutate } = useMutation({
     mutationKey: ["getProgressReport"],
-    mutationFn : getProgressReport,
-    onSuccess : (data) => {
+    mutationFn: getProgressReport,
+    onSuccess: (data) => {
       enqueueSnackbar(data.message, { variant: "success" });
     },
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.response?.data.message, { variant: "error" });
     },
-  })
+  });
 
   return (
     <UiLayout>
@@ -110,25 +111,7 @@ export default function Progress() {
             <div className="flex flex-wrap gap-4">
               <div className="w-full sm:w-auto">
                 <PrimarySelect
-                  data={BDData}
-                  label="Select Body Part"
-                  placeholder="Select Body Part"
-                  onValueChange={setSelectedBodyPart}
-                  value={selectedBodyPart}
-                />
-              </div>
-              <div className="w-full sm:w-auto">
-                <PrimarySelect
-                  data={EQData}
-                  label="Select Equipment"
-                  placeholder="Select Equipment"
-                  onValueChange={setSelectedEquipment}
-                  value={selectedEquipment}
-                />
-              </div>
-              <div className="w-full sm:w-auto">
-                <PrimarySelect
-                  data={EXData}
+                  data={tempExer}
                   label="Select Exercise"
                   placeholder="Select exercise"
                   onValueChange={setSelectedExercise}
@@ -188,7 +171,10 @@ export default function Progress() {
 
           {/* Quick Actions */}
           <PrimaryCard title="Quick Actions" cardContentClassName="space-y-4">
-            <Button className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]" onClick={() =>progressReportMutate()}>
+            <Button
+              className="w-full bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+              onClick={() => progressReportMutate()}
+            >
               <Download className="mr-2 h-4 w-4" /> Download Report
             </Button>
           </PrimaryCard>

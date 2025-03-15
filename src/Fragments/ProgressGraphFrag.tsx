@@ -22,14 +22,25 @@ const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 interface IProgressGraphFrag {
   selectedExercise?: string;
   data: IProgressGraph[] | undefined;
-  setSelectedExercise ?: Dispatch<SetStateAction<string>>;
+  setSelectedExercise?: Dispatch<SetStateAction<string>>;
+  flag?: boolean;
 }
 
-const ProgressGraphFrag = ({ selectedExercise, data, setSelectedExercise }: IProgressGraphFrag) => {
+const ProgressGraphFrag = ({
+  selectedExercise,
+  data,
+  setSelectedExercise,
+  flag,
+}: IProgressGraphFrag) => {
   const [showWeight, setShowWeight] = useState<boolean>(true);
   const [chartType, setChartType] = useState<"line" | "bar">("line");
   return (
-    <PrimaryCard title={selectedExercise} headerComp={<SelectExerciseFrag setSelectedExercise={setSelectedExercise}/>}>
+    <PrimaryCard
+      title={selectedExercise}
+      headerComp={
+        flag && <SelectExerciseFrag setSelectedExercise={setSelectedExercise} />
+      }
+    >
       <div className="flex justify-between items-center mb-4">
         <div className="space-x-2">
           <Switch
