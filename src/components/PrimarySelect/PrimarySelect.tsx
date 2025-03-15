@@ -27,14 +27,14 @@ interface IPrimarySelect {
 
 const PrimarySelect = ({ label, placeholder, data, onValueChange,value, defaultValue }: IPrimarySelect) => {
   return (
-    <div className="w-full">
-      <Label htmlFor="exercise-select" className="text-white mb-2 block">
+    <>
+      <Label htmlFor="exercise-select" className="text-white mb-2 block w-full">
         {label}
       </Label>
-      <Select value={value} onValueChange={onValueChange} defaultValue={defaultValue}>
+      <Select value={value} onValueChange={onValueChange} defaultValue={defaultValue} >
         <SelectTrigger
           id="exercise-select"
-          className="w-full sm:w-[180px] bg-[#2A2A2A] text-white"
+          className="w-full  bg-[#2A2A2A] text-white"
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -46,7 +46,7 @@ const PrimarySelect = ({ label, placeholder, data, onValueChange,value, defaultV
           ))}
         </SelectContent>
       </Select>
-    </div>
+    </>
   );
 };
 

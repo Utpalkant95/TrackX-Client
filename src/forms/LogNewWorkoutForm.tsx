@@ -10,12 +10,9 @@ import { IExercise, ITemplateData } from "@/Api/interfaces/Response";
 import { FormikProps } from "formik";
 import { ITemplate, Workout } from "@/Api/interfaces/Project";
 import { PrimarySelect } from "@/components";
-import {
-  getBodyPartList,
-  getEquipmentsList,
-  getExerciseByEquipmentsAndBodyPart,
-} from "@/Api/exercise";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { getExerciseByEquipmentsAndBodyPart } from "@/Api/exercise";
+import { useQueries } from "@tanstack/react-query";
+import { useSelectExercise } from "@/hooks";
 
 interface ILogNewWorkoutForm {
   refetch: () => void;
@@ -34,15 +31,7 @@ const LogNewWorkoutForm = ({
   createIsPending,
   updateIsPending,
 }: ILogNewWorkoutForm) => {
-  const { data: bodyParts } = useQuery({
-    queryKey: ["bodyParts"],
-    queryFn: getBodyPartList,
-  });
-
-  const { data: equipments } = useQuery({
-    queryKey: ["equipments"],
-    queryFn: getEquipmentsList,
-  });
+  const { BDData, EQData } = useSelectExercise();
 
   const exerciseQueries = useQueries({
     queries: formik.values.exercises.map((exercise) => ({
@@ -57,24 +46,6 @@ const LogNewWorkoutForm = ({
   });
   const exercisesData = exerciseQueries.map((query) => query.data);
 
-  const BODYPARTDATA = () => {
-    if (bodyParts) {
-      return bodyParts.map((item) => ({
-        value: item,
-        key: item,
-      }));
-    }
-  };
-
-  const ENQUIPMENTDATA = () => {
-    if (equipments) {
-      return equipments.map((item) => ({
-        key: item,
-        value: item,
-      }));
-    }
-  };
-
   const EXERCISEDATA = (index: number) => {
     const exercises = exercisesData?.[index];
     if (!exercises) return [];
@@ -84,8 +55,6 @@ const LogNewWorkoutForm = ({
       value: item.name,
     }));
   };
-  const BDData = BODYPARTDATA();
-  const EQData = ENQUIPMENTDATA();
 
   // Function to add a new exercise
   const addExercise = () => {
@@ -145,7 +114,7 @@ const LogNewWorkoutForm = ({
             return (
               <Card className="bg-[#2A2A2A] p-4">
                 <div className="mb-4 flex items-center justify-between">
-                  <Label>Exercise</Label>
+                  <Label>Exercise {exerciseIndex + 1}</Label>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -192,7 +161,7 @@ const LogNewWorkoutForm = ({
                 {exercise.sets.map((set, setIndex) => (
                   <div className="mb-4 space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label>Set</Label>
+                      <Label>Set {setIndex + 1}</Label>
                       <Button
                         variant="ghost"
                         size="icon"
