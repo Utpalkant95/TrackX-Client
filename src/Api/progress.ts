@@ -60,3 +60,11 @@ export const getProgressReport = async () => {
   }
   return response.data as IRES;
 };
+
+export const getExerciseList = async () => {
+  const response = await axios.get(
+    "http://localhost:3000/api/v1/progress/exercise-list",
+    { withCredentials: true }
+  );
+  return response.data.data as string[];
+}

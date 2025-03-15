@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { lazy, useState } from "react";
+import { Dispatch, lazy, SetStateAction, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -15,19 +15,32 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import SelectExerciseFrag from "./SelectExerciseFrag";
 
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 
 interface IProgressGraphFrag {
-  selectedExercise ?: string;
+  selectedExercise?: string;
   data: IProgressGraph[] | undefined;
+  setSelectedExercise?: Dispatch<SetStateAction<string>>;
+  flag?: boolean;
 }
 
-const ProgressGraphFrag = ({ selectedExercise, data }: IProgressGraphFrag) => {
+const ProgressGraphFrag = ({
+  selectedExercise,
+  data,
+  setSelectedExercise,
+  flag,
+}: IProgressGraphFrag) => {
   const [showWeight, setShowWeight] = useState<boolean>(true);
   const [chartType, setChartType] = useState<"line" | "bar">("line");
   return (
-    <PrimaryCard title={selectedExercise}>
+    <PrimaryCard
+      title={selectedExercise}
+      headerComp={
+        flag && <SelectExerciseFrag setSelectedExercise={setSelectedExercise} />
+      }
+    >
       <div className="flex justify-between items-center mb-4">
         <div className="space-x-2">
           <Switch
