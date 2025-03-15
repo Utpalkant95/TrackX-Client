@@ -34,8 +34,8 @@ const PrimarySelect = ({ label, placeholder, data, onValueChange,value, defaultV
       <Select value={value} onValueChange={onValueChange} defaultValue={defaultValue} >
         <SelectTrigger
           id="exercise-select"
-          className="w-full  bg-[#2A2A2A] text-white"
-        >
+          className="w-full sm:min-w-[180px] bg-[#2A2A2A] text-white"
+        > 
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="bg-[#2A2A2A] text-white">
