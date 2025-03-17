@@ -76,17 +76,18 @@ const PrimaryAlertDialog = ({
       <AlertDialogTrigger asChild>{trigger()}</AlertDialogTrigger>
 
       <AlertDialogContent className="bg-gray-900 text-white">
-        {title ||
-          (des && (
-            <AlertDialogHeader>
-              {title && <AlertDialogTitle>{title}</AlertDialogTitle>}
-              {des && (
-                <AlertDialogDescription className="text-gray-400">
-                  {des}
-                </AlertDialogDescription>
-              )}
-            </AlertDialogHeader>
-          ))}
+        {title || des ? (
+          <AlertDialogHeader>
+            {title && <AlertDialogTitle>{title}</AlertDialogTitle>}
+            {des && (
+              <AlertDialogDescription className="text-gray-400">
+                {des}
+              </AlertDialogDescription>
+            )}
+          </AlertDialogHeader>
+        ) : (
+          ""
+        )}
         {children}
         <AlertDialogFooter>
           <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">

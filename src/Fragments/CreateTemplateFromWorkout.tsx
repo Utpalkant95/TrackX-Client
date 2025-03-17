@@ -3,10 +3,6 @@ const Input = lazy(() =>
   import("@/components/ui/input").then((module) => ({ default: module.Input }))
 );
 
-const Label = lazy(() =>
-  import("@/components/ui/label").then((module) => ({ default: module.Label }))
-);
-
 interface ICreateTemplateFromWorkout {
   setTemplateName: Dispatch<SetStateAction<string>>;
 }
@@ -15,7 +11,6 @@ const CreateTemplateFromWorkout = ({
 }: ICreateTemplateFromWorkout) => {
   return (
     <>
-      <Label htmlFor="template-name" className="text-white w-full">Template Name</Label>
       <Input
         type="text"
         id="template-name"

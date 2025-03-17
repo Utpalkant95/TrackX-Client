@@ -1,7 +1,11 @@
+import { IRES } from "@/Api/interfaces/Response";
+import { createTemplateByWorkout } from "@/Api/template";
 import { getWorkout } from "@/Api/workout";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { format } from "date-fns";
+import { enqueueSnackbar } from "notistack";
 import { lazy, useState } from "react";
 
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -36,8 +40,18 @@ const RecentWorkoutFrag = ({ title, des, flag }: IRecentWorkoutFrag) => {
   const formData = {
     name: templateName,
     workoutId: selectedWorkoutId,
-  }
-  
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["create-template-by-workout"],
+    mutationFn: createTemplateByWorkout,
+    onSuccess: (data) => {
+      enqueueSnackbar(data.message, { variant: "success" });
+    },
+    onError: (error: AxiosError<IRES>) =>
+      enqueueSnackbar(error.response?.data.message, { variant: "error" }),
+  });
+
   return (
     <PrimaryCard title={title} des={des}>
       <ScrollArea className="h-[300px] pr-4">
@@ -67,10 +81,13 @@ const RecentWorkoutFrag = ({ title, des, flag }: IRecentWorkoutFrag) => {
                     Select
                   </Button>
                 )}
-                btnName="Create Template"
-                onClick={() =>console.log(formData)}
+                btnName={isPending ? "Creating..." : "Create Template"}
+                onClick={() => mutate(formData)}
+                disabled={isPending}
+                title="Create Template"
+                des="Are you sure you want to create a template from this workout?"
               >
-                <CreateTemplateFromWorkout setTemplateName={setTemplateName}/>
+                <CreateTemplateFromWorkout setTemplateName={setTemplateName} />
               </PrimaryAlertDialog>
             )}
           </div>
