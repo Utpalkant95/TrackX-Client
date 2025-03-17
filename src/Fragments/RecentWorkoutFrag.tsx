@@ -12,6 +12,9 @@ const ScrollArea = lazy(() =>
   }))
 );
 const RecentWorkoutAtom = lazy(() => import("@/atmos/RecentWorkoutAtom"));
+const PrimaryAlertDialog = lazy(
+  () => import("@/components/PrimaryAlertDialog/PrimaryAlertDialog")
+);
 
 interface IRecentWorkoutFrag {
   title: string;
@@ -47,15 +50,20 @@ const RecentWorkoutFrag = ({
               ))}
             </PrimaryCard>
             {flag && (
-              <Button
-                className="absolute bottom-2 right-2"
-                variant="ghost"
-                onClick={() =>
-                  setSelectedWorkout && setSelectedWorkout(workout)
-                }
-              >
-                Select
-              </Button>
+              <PrimaryAlertDialog
+                trigger={() => (
+                  <Button
+                    className="absolute bottom-2 right-2"
+                    variant="ghost"
+                    onClick={() =>
+                      setSelectedWorkout && setSelectedWorkout(workout)
+                    }
+                  >
+                    Select
+                  </Button>
+                )}
+                btnName="Create Template"
+              />
             )}
           </div>
         ))}
