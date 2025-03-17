@@ -1,9 +1,8 @@
-import { IWorkoutData } from "@/Api/interfaces/Response";
 import { getWorkout } from "@/Api/workout";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Dispatch, lazy, SetStateAction } from "react";
+import { lazy, useState } from "react";
 
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const ScrollArea = lazy(() =>
@@ -15,24 +14,30 @@ const RecentWorkoutAtom = lazy(() => import("@/atmos/RecentWorkoutAtom"));
 const PrimaryAlertDialog = lazy(
   () => import("@/components/PrimaryAlertDialog/PrimaryAlertDialog")
 );
+const CreateTemplateFromWorkout = lazy(
+  () => import("@/Fragments/CreateTemplateFromWorkout")
+);
 
 interface IRecentWorkoutFrag {
   title: string;
   des?: string;
   flag?: boolean;
-  setSelectedWorkout?: Dispatch<SetStateAction<IWorkoutData | undefined>>;
 }
-const RecentWorkoutFrag = ({
-  title,
-  des,
-  flag,
-  setSelectedWorkout,
-}: IRecentWorkoutFrag) => {
+const RecentWorkoutFrag = ({ title, des, flag }: IRecentWorkoutFrag) => {
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<
+    string | undefined
+  >("");
+  const [templateName, setTemplateName] = useState<string>("");
   const { data: workouts } = useQuery({
     queryKey: ["get-recent-workouts"],
     queryFn: () => getWorkout(7),
   });
 
+  const formData = {
+    name: templateName,
+    workoutId: selectedWorkoutId,
+  }
+  
   return (
     <PrimaryCard title={title} des={des}>
       <ScrollArea className="h-[300px] pr-4">
@@ -56,14 +61,17 @@ const RecentWorkoutFrag = ({
                     className="absolute bottom-2 right-2"
                     variant="ghost"
                     onClick={() =>
-                      setSelectedWorkout && setSelectedWorkout(workout)
+                      setSelectedWorkoutId && setSelectedWorkoutId(workout._id)
                     }
                   >
                     Select
                   </Button>
                 )}
                 btnName="Create Template"
-              />
+                onClick={() =>console.log(formData)}
+              >
+                <CreateTemplateFromWorkout setTemplateName={setTemplateName}/>
+              </PrimaryAlertDialog>
             )}
           </div>
         ))}

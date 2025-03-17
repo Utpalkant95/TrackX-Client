@@ -22,7 +22,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteTemplate, getTemplates } from "@/Api/template";
 import { enqueueSnackbar } from "notistack";
-import { IRES, ITemplateData, IWorkoutData } from "@/Api/interfaces/Response";
+import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 const LayoutContentWrapper = lazy(
@@ -41,9 +41,6 @@ export default function Templates() {
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [selectedTemplate, setSelectedTemplate] =
     useState<ITemplateData | null>();
-  const [selectedWorkout, setSelectedWorkout] = useState<
-    IWorkoutData | undefined
-  >();
   const navigate = useNavigate();
   const { data, refetch } = useQuery({
     queryKey: ["templates"],
@@ -182,7 +179,6 @@ export default function Templates() {
             title="Create Template from Past Workout"
             des="Select a past workout to create a new template."
             flag={true}
-            setSelectedWorkout={setSelectedWorkout}
           />
         </div>
       </LayoutGridWrapper>
