@@ -80,7 +80,7 @@ export default function Dashboard() {
 
   const { data: ProgressGraph } = useQuery({
     queryKey: ["getProgressGraph", selectedExercise],
-    queryFn: () => getProgressGraph(selectedExercise),
+    queryFn: () => getProgressGraph({exerciseName : selectedExercise}),
     enabled: !!selectedExercise,
   });
   return (
