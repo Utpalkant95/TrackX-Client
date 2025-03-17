@@ -14,17 +14,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -37,6 +26,9 @@ const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const ProfileAvatarFrag = lazy(() => import("@/Fragments/ProfileAvatarFrag"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const PrimaryAlertDialog = lazy(
+  () => import("@/components/PrimaryAlertDialog/PrimaryAlertDialog")
+);
 
 const ICONS = [Dumbbell, Zap, Award, Flame];
 
@@ -105,9 +97,6 @@ export default function Profile() {
       enqueueSnackbar(error.message, { variant: "error" });
     },
   });
-
-  console.log("data", data);
-
   return (
     <UiLayout>
       <ProfileAvatarFrag data={data} refetch={refetch} />
@@ -160,100 +149,72 @@ export default function Profile() {
                   onCheckedChange={(value) => saveUserSettingMutate(value)}
                 />
               </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
+              <PrimaryAlertDialog
+                trigger={() => (
                   <Button className="w-full" variant="secondary">
                     <Lock className="mr-2 h-4 w-4" />
                     Change Password
                   </Button>
-                </AlertDialogTrigger>
-
-                <AlertDialogContent className="bg-gray-900 text-white">
-                  <div className="relative">
-                    <Lock
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={18}
-                    />
-                    <Input
-                      type="password"
-                      value={formik.values.oldPassword}
-                      onChange={formik.handleChange}
-                      placeholder="Old Password"
-                      name="oldPassword"
-                      autoComplete="off"
-                      className="pl-10 bg-[#2A2A2A] border-gray-600 text-white placeholder-gray-400"
-                    />
-                  </div>
-                  <div className="relative">
-                    <Lock
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={18}
-                    />
-                    <Input
-                      type="password"
-                      value={formik.values.newPassword}
-                      onChange={formik.handleChange}
-                      placeholder="New Password"
-                      name="newPassword"
-                      autoComplete="off"
-                      className="pl-10 bg-[#2A2A2A] border-gray-600 text-white placeholder-gray-400"
-                    />
-                  </div>
-
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      className=" bg-[#00BFFF] hover:bg-[#33CCFF] text-white"
-                      type="submit"
-                      disabled={isPending}
-                      onClick={() => formik.handleSubmit()}
-                    >
-                      {isPending ? "Updating..." : "Update Password"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                )}
+                btnName={isPending ? "Updating..." : "Update Password"}
+                disabled={isPending}
+                onClick={() => formik.handleSubmit()}
+              >
+                <div className="relative">
+                  <Lock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
+                  <Input
+                    type="password"
+                    value={formik.values.oldPassword}
+                    onChange={formik.handleChange}
+                    placeholder="Old Password"
+                    name="oldPassword"
+                    autoComplete="off"
+                    className="pl-10 bg-[#2A2A2A] border-gray-600 text-white placeholder-gray-400"
+                  />
+                </div>
+                <div className="relative">
+                  <Lock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
+                  <Input
+                    type="password"
+                    value={formik.values.newPassword}
+                    onChange={formik.handleChange}
+                    placeholder="New Password"
+                    name="newPassword"
+                    autoComplete="off"
+                    className="pl-10 bg-[#2A2A2A] border-gray-600 text-white placeholder-gray-400"
+                  />
+                </div>
+              </PrimaryAlertDialog>
             </div>
           </PrimaryCard>
           <PrimaryCard title="Account Actions">
             <Button
-              className="w-full bg-red-600 hover:bg-red-700"
+              className="w-full bg-red-600 hover:bg-red-700 mb-2"
               variant="destructive"
               onClick={() => mutate()}
             >
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild className="mt-4">
+            <PrimaryAlertDialog
+              trigger={() => (
                 <Button className="w-full" variant="secondary">
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete Account
                 </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="bg-gray-900 text-white">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription className="text-gray-400">
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-red-600 text-white hover:bg-red-700"
-                    onClick={() => eraseMutate()}
-                  >
-                    {erasePending ? "Deleting..." : "Delete Account"}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+              )}
+              title="Are you absolutely sure?"
+              des="This action cannot be undone. This will permanently delete your account and remove your data from our servers."
+              btnName={erasePending ? "Deleting..." : "Delete Account"}
+              disabled={erasePending}
+              onClick={() => eraseMutate()}
+            />
           </PrimaryCard>
         </div>
       </LayoutGridWrapper>

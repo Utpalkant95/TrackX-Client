@@ -1,8 +1,9 @@
+import { IWorkoutData } from "@/Api/interfaces/Response";
 import { getWorkout } from "@/Api/workout";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { lazy } from "react";
+import { Dispatch, lazy, SetStateAction } from "react";
 
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
 const ScrollArea = lazy(() =>
@@ -16,8 +17,14 @@ interface IRecentWorkoutFrag {
   title: string;
   des?: string;
   flag?: boolean;
+  setSelectedWorkout?: Dispatch<SetStateAction<IWorkoutData | undefined>>;
 }
-const RecentWorkoutFrag = ({ title, des, flag }: IRecentWorkoutFrag) => {
+const RecentWorkoutFrag = ({
+  title,
+  des,
+  flag,
+  setSelectedWorkout,
+}: IRecentWorkoutFrag) => {
   const { data: workouts } = useQuery({
     queryKey: ["get-recent-workouts"],
     queryFn: () => getWorkout(7),
@@ -40,7 +47,13 @@ const RecentWorkoutFrag = ({ title, des, flag }: IRecentWorkoutFrag) => {
               ))}
             </PrimaryCard>
             {flag && (
-              <Button className="absolute bottom-2 right-2" variant="ghost">
+              <Button
+                className="absolute bottom-2 right-2"
+                variant="ghost"
+                onClick={() =>
+                  setSelectedWorkout && setSelectedWorkout(workout)
+                }
+              >
                 Select
               </Button>
             )}
