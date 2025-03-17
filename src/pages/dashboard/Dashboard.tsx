@@ -14,6 +14,7 @@ import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { IRES } from "@/Api/interfaces/Response";
 import { getProgressGraph } from "@/Api/progress";
+import { RecentWorkoutAtom } from "@/atmos";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
@@ -116,19 +117,7 @@ export default function Dashboard() {
                   cardTitleClassName="text-lg text-[#edfafa]"
                 >
                   {workout.exercises.map((exercise, index) => (
-                    <div key={index} className="mb-2">
-                      <p className="font-semibold text-[#edfafa]">
-                        {exercise.name}
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        {exercise.sets.map((set, setIndex) => (
-                          <span key={setIndex}>
-                            {set.weight}kg x {set.reps}
-                            {setIndex < exercise.sets.length - 1 ? ", " : ""}
-                          </span>
-                        ))}
-                      </p>
-                    </div>
+                    <RecentWorkoutAtom exercise={exercise} key={index}/>
                   ))}
                 </PrimaryCard>
               ))}
