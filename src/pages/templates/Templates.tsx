@@ -1,5 +1,5 @@
 import { lazy, useState } from "react";
-import { Plus, Pencil, Trash2, ChevronRight, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,13 +25,17 @@ import { enqueueSnackbar } from "notistack";
 import { IRES, ITemplateData } from "@/Api/interfaces/Response";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
-const PrimaryDailog = lazy(() => import("@/components/PrimaryDialog/PrimaryDailog"));
-const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
+const LayoutContentWrapper = lazy(
+  () => import("@/Wrappers/LayoutContentWrapper")
+);
+const PrimaryDailog = lazy(
+  () => import("@/components/PrimaryDialog/PrimaryDailog")
+);
 import { useTemplate } from "@/hooks";
 const LogNewWorkout = lazy(() => import("@/forms/LogNewWorkoutForm"));
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
+const RecentWorkoutFrag = lazy(() => import("@/Fragments/RecentWorkoutFrag"));
 
 export default function Templates() {
   const [openForm, setOpenForm] = useState<boolean>(false);
@@ -57,7 +60,6 @@ export default function Templates() {
       enqueueSnackbar(error.message, { variant: "error" });
     },
   });
-
   return (
     <UiLayout>
       <LayoutContentWrapper
@@ -172,18 +174,11 @@ export default function Templates() {
           <h2 className="mb-4 text-2xl font-semibold text-white">
             Import from History
           </h2>
-          <PrimaryCard
+          <RecentWorkoutFrag
             title="Create Template from Past Workout"
-            des=" Select a past workout to create a new template."
-          >
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search past workouts"
-                className="bg-[#2A2A2A] pl-8 text-white"
-              />
-            </div>
-          </PrimaryCard>
+            des="Select a past workout to create a new template."
+            flag={true}
+          />
         </div>
       </LayoutGridWrapper>
     </UiLayout>
