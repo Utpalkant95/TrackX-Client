@@ -99,3 +99,9 @@ export interface IFitnessStats {
   title : string;
   value : string;
 }
+
+export interface IWorkoutPerformance {
+  title : string;
+  value : string;
+  valueTitle : string;
+}
