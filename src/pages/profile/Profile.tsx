@@ -15,9 +15,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { useEraseAccount, useLogout, useUpdatePassword } from "@/hooks";
+import { useEraseAccount, useLogout, useUpdatePassword, useUserProfile, useUserSetting } from "@/hooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getFitnessStats, getUserProfile, updatePreferences } from "@/Api/User";
+import { getFitnessStats, updatePreferences } from "@/Api/User";
 import { IFitnessStats, IRES } from "@/Api/interfaces/Response";
 import { updateWorkoutReminder } from "@/Api/userSetting";
 import { enqueueSnackbar } from "notistack";
@@ -51,10 +51,8 @@ const _RenderFitnessStats = ({
 };
 
 export default function Profile() {
-  const { data, refetch } = useQuery({
-    queryKey: ["get-user-profile"],
-    queryFn: getUserProfile,
-  });
+  const {data, refetch} = useUserProfile();
+  const {data : userSetting, refetch:userSettingRefetch} = useUserSetting();
 
   const { data: fitnessStats } = useQuery({
     queryKey: ["get-fitness-stats"],
@@ -80,6 +78,7 @@ export default function Profile() {
     mutationFn: updateWorkoutReminder,
     onSuccess: (data) => {
       enqueueSnackbar(data.message, { variant: "success" });
+      userSettingRefetch();
     },
     onError: (error: AxiosError<IRES>) => {
       enqueueSnackbar(error.response?.data.message, { variant: "error" });
@@ -146,6 +145,7 @@ export default function Profile() {
               <div className="flex items-center justify-between">
                 <span>Workout Reminders</span>
                 <Switch
+                  checked={userSetting?.workoutReminder.workoutReminder}  
                   onCheckedChange={(value) => saveUserSettingMutate(value)}
                 />
               </div>

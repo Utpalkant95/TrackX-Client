@@ -9,3 +9,6 @@ export {default as useWorkoutAPiCalls} from "./useWorkoutAPiCalls";
 export {default as useLogWorkout} from "./useLogWorkout";
 export {default as useTemplate} from "./useTemplate";
 export {default as useSelectExercise} from "./useSelectExercise";
+export {default as useUserProfile} from "./useUserProfile";
+export {default as useRecentWorkout} from "./useRecentWorkout";
+export {default as useUserSetting} from "./useUserSetting";

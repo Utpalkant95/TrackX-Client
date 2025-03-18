@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { useLogout } from "@/hooks";
+import { useLogout, useUserProfile } from "@/hooks";
 import { lazy } from "react";
 
 const MobileMenu = lazy(() => import("./MobileNavBar"));
@@ -37,6 +37,7 @@ const navItems = [
 export default function Navbar() {
   const pathname = useLocation().pathname;
   const {mutate} = useLogout();
+  const {data} = useUserProfile();
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-[#121212] px-4 py-2">
@@ -69,7 +70,7 @@ export default function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
-                <AvatarImage src="/avatar.png" alt="User" />
+                <AvatarImage src= {data?.data?.avatar.secure_url} alt="User" />
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>

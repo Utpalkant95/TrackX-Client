@@ -1,8 +1,8 @@
 import { IRES } from "@/Api/interfaces/Response";
 import { createTemplateByWorkout } from "@/Api/template";
-import { getWorkout } from "@/Api/workout";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRecentWorkout } from "@/hooks";
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { format } from "date-fns";
 import { enqueueSnackbar } from "notistack";
@@ -32,10 +32,7 @@ const RecentWorkoutFrag = ({ title, des, flag }: IRecentWorkoutFrag) => {
     string | undefined
   >("");
   const [templateName, setTemplateName] = useState<string>("");
-  const { data: workouts } = useQuery({
-    queryKey: ["get-recent-workouts"],
-    queryFn: () => getWorkout(7),
-  });
+  const { workouts } = useRecentWorkout();
 
   const formData = {
     name: templateName,
