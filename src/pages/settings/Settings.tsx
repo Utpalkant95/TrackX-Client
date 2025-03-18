@@ -6,15 +6,15 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 const PrimaryCard = lazy(() => import("@/components/PrimaryCard/PrimaryCard"));
-import { useUserSettings } from "@/hooks";
-import { useQuery } from "@tanstack/react-query";
-import { getUserSetting } from "@/Api/userSetting";
+import { useUserSetting, useUserSettings } from "@/hooks";
 const UiLayout = lazy(() => import("@/layout/UiLayout"));
 const LayoutGridWrapper = lazy(() => import("@/Wrappers/LayoutGridWrapper"));
 const PrimarySelect = lazy(
   () => import("@/components/PrimarySelect/PrimarySelect")
 );
-const LayoutContentWrapper = lazy(() => import("@/Wrappers/LayoutContentWrapper"));
+const LayoutContentWrapper = lazy(
+  () => import("@/Wrappers/LayoutContentWrapper")
+);
 
 const reminderTimes = [
   {
@@ -32,17 +32,17 @@ const reminderTimes = [
 ];
 
 export default function Settings() {
-  const { data } = useQuery({
-    queryKey: ["userSettings"],
-    queryFn: getUserSetting,
-  });
+  const { data, refetch } = useUserSetting();
 
   const { formik, isResetPending, isSavePending, resetUserSettingMutate } =
-    useUserSettings({ data });
+    useUserSettings({ data, refetch });
 
   return (
     <UiLayout>
-      <LayoutContentWrapper header="Settings" des="Manage your account settings."/>
+      <LayoutContentWrapper
+        header="Settings"
+        des="Manage your account settings."
+      />
 
       <form onSubmit={formik.handleSubmit}>
         <LayoutGridWrapper Cols={2}>

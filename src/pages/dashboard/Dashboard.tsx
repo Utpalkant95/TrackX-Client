@@ -15,6 +15,8 @@ const AiInsights = lazy(() => import("@/Fragments/AiInsights"));
 const ProgressGraphFrag = lazy(() => import("@/Fragments/ProgressGraphFrag"));
 const RecentWorkoutFrag = lazy(() => import("@/Fragments/RecentWorkoutFrag"));
 
+const ICONS = [Dumbbell, Flame, Zap];
+
 const PersonalBestItem = ({
   Icon,
   description,
@@ -76,7 +78,7 @@ export default function Dashboard() {
 
           {/* Recent Workouts */}
 
-          <RecentWorkoutFrag title="Recent Workouts"/>
+          <RecentWorkoutFrag title="Recent Workouts" />
         </div>
 
         <div className="space-y-8">
@@ -90,24 +92,17 @@ export default function Dashboard() {
 
           {/* Personal Bests */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-            <PersonalBestItem
-              Icon={Dumbbell}
-              title="Heaviest Lift"
-              description={performanceData?.data?.heaviestLiftExercise}
-              exerciseName={performanceData?.data?.heaviestLift}
-            />
-            <PersonalBestItem
-              Icon={Flame}
-              title="Longest Streak"
-              description={performanceData?.data?.StreakDate}
-              exerciseName={performanceData?.data?.longestStreak}
-            />
-            <PersonalBestItem
-              Icon={Zap}
-              title="Most Frequent"
-              description={`${performanceData?.data?.mostFrequentExerciseCount} x times`}
-              exerciseName={performanceData?.data?.mostFrequentExercise}
-            />
+            {performanceData?.map((item, index) => {
+              const ICON = ICONS[index];
+              return (
+                <PersonalBestItem
+                  Icon={ICON}
+                  title= {item.title}
+                  description={item.valueTitle}
+                  exerciseName={item.value}
+                />
+              );
+            })}
           </div>
 
           {/* AI-Based Insights & Recommendations */}

@@ -29,13 +29,14 @@ const validationSchema = Yup.object().shape({
   }),
 });
 
-const useUserSettings = ({data} : {data ?: IUserSetting  | undefined}) => {
+const useUserSettings = ({data, refetch} : {data ?: IUserSetting  | undefined, refetch : () => void}) => {
   const { mutate: saveUserSettingMutate, isPending: isSavePending } =
     useMutation({
       mutationKey: ["saveuserSetting"],
       mutationFn: saveUserSetting,
       onSuccess: (data) => {
         enqueueSnackbar(data.message, { variant: "success" });
+        refetch();
       },
       onError: (error: AxiosError<IRES>) => {
         enqueueSnackbar(error.response?.data.message, { variant: "error" });
@@ -48,6 +49,7 @@ const useUserSettings = ({data} : {data ?: IUserSetting  | undefined}) => {
       mutationFn: resetUserSetting,
       onSuccess: (data) => {
         enqueueSnackbar(data?.message, { variant: "success" });
+        refetch()
       },
       onError: (error: AxiosError<IRES>) => {
         enqueueSnackbar(error.response?.data.message, { variant: "error" });
