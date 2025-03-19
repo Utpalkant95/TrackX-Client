@@ -7,9 +7,11 @@ import {
   IWeeklyProgress,
 } from "./interfaces/Response";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
+
 export const getPersonalBest = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/progress/personal-best",
+    `${API_BASE_URL}/progress/personal-best`,
     { withCredentials: true }
   );
   return response.data.data as IPersonalBests[];
@@ -17,7 +19,7 @@ export const getPersonalBest = async () => {
 
 export const getAiInsights = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/progress/ai-insights",
+    `${API_BASE_URL}/progress/ai-insights`,
     { withCredentials: true }
   );
   return response.data.data as IAIInsight[];
@@ -25,15 +27,15 @@ export const getAiInsights = async () => {
 
 export const getWeeklyProgress = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/progress/weekly-progress",
+    `${API_BASE_URL}/progress/weekly-progress`,
     { withCredentials: true }
   );
   return response.data as IWeeklyProgress;
 };
 
-export const getProgressGraph = async ({exerciseName, dateRange = "7"} : {exerciseName : string, dateRange ?: string}) => {
+export const getProgressGraph = async ({exerciseName, dateRange = `7`} : {exerciseName : string, dateRange ?: string}) => {
   const response = await axios.get(
-    `http://localhost:3000/api/v1/progress/progress-graph/${exerciseName}/${dateRange}`,
+    `${API_BASE_URL}/progress/progress-graph/${exerciseName}/${dateRange}`,
     { withCredentials: true }
   );
   return response.data.data as IProgressGraph[];
@@ -41,8 +43,8 @@ export const getProgressGraph = async ({exerciseName, dateRange = "7"} : {exerci
 
 export const getProgressReport = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/progress/progress-report",
-    { withCredentials: true, responseType: "blob" }
+    `${API_BASE_URL}/progress/progress-report`,
+    { withCredentials: true, responseType: `blob` }
   );
 
   try {
@@ -63,7 +65,7 @@ export const getProgressReport = async () => {
 
 export const getExerciseList = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/progress/exercise-list",
+    `${API_BASE_URL}/progress/exercise-list`,
     { withCredentials: true }
   );
   return response.data.data as string[];

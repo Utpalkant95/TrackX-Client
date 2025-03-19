@@ -2,9 +2,11 @@ import axios from "axios";
 import { IRES, ITemplateData } from "./interfaces/Response";
 import { ITemplate } from "./interfaces/Project";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
+
 export const getTemplates = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/template/get-templates",
+    `${API_BASE_URL}/template/get-templates`,
     {
       withCredentials: true,
     }
@@ -14,7 +16,7 @@ export const getTemplates = async () => {
 
 export const createTemplate = async (data: ITemplate) => {
   const response = await axios.post(
-    "http://localhost:3000/api/v1/template/create-template",
+    `${API_BASE_URL}/template/create-template`,
     data,
     {
       withCredentials: true,
@@ -25,7 +27,7 @@ export const createTemplate = async (data: ITemplate) => {
 
 export const deleteTemplate = async (id: string | undefined) => {
   const response = await axios.delete(
-    `http://localhost:3000/api/v1/template/delete-template/${id}`,
+    `${API_BASE_URL}/template/delete-template/${id}`,
     {
       withCredentials: true,
     }
@@ -35,7 +37,7 @@ export const deleteTemplate = async (id: string | undefined) => {
 
 export const getTemplateById = async (id: string | null) => {
   const response = await axios.get(
-    `http://localhost:3000/api/v1/template/get-template/${id}`,
+    `${API_BASE_URL}/template/get-template/${id}`,
     {
       withCredentials: true,
     }
@@ -51,7 +53,7 @@ export const updateTemplate = async ({
   id: string;
 }) => {
   const response = await axios.put(
-    `http://localhost:3000/api/v1/template/update-template/${id}`,
+    `${API_BASE_URL}/template/update-template/${id}`,
     data,
     {
       withCredentials: true,
@@ -65,7 +67,7 @@ export const createTemplateByWorkout = async (data: {
   workoutId: string | undefined;
 }) => {
   const response = await axios.post(
-    "http://localhost:3000/api/v1/template/create-template-by-workout",
+    `${API_BASE_URL}/template/create-template-by-workout`,
     data,
     {
       withCredentials: true,

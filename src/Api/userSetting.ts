@@ -2,9 +2,11 @@ import axios from "axios";
 import { IRES } from "./interfaces/Response";
 import { IUserSetting } from "./interfaces/Project";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
+
 export const saveUserSetting = async (data: IUserSetting) => {
   const response = await axios.put(
-    "http://localhost:3000/api/v1/userSetting/save-user-setting",
+    `${API_BASE_URL}/userSetting/save-user-setting`,
     data,
     {
       withCredentials: true,
@@ -15,7 +17,7 @@ export const saveUserSetting = async (data: IUserSetting) => {
 
 export const resetUserSetting = async () => {
   const response = await axios.delete(
-    "http://localhost:3000/api/v1/userSetting/reset-user-setting",
+    `${API_BASE_URL}/userSetting/reset-user-setting`,
     {
       withCredentials: true,
     }
@@ -25,7 +27,7 @@ export const resetUserSetting = async () => {
 
 export const getUserSetting = async () => {
   const response = await axios.get(
-    "http://localhost:3000/api/v1/userSetting/get-user-setting",
+    `${API_BASE_URL}/userSetting/get-user-setting`,
     {
       withCredentials: true,
     }
@@ -35,7 +37,7 @@ export const getUserSetting = async () => {
 
 export const updateWorkoutReminder = async (workoutReminder: boolean) => {
   const response = await axios.put(
-    `http://localhost:3000/api/v1/userSetting/workout-reminder/${workoutReminder}`,
+    `${API_BASE_URL}/userSetting/workout-reminder/${workoutReminder}`,
     {},
     {
       withCredentials: true,
