@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IExercise } from "./interfaces/Response";
-const API_BASE_URL = process.env.API_BASE_URL;
+const API_BASE_URL = "https://trackx-backend.onrender.com/api/v1"
 
 export const getBodyPartList = async () => {
   const response = await axios.get(`${API_BASE_URL}/exercise/body-part-list`, {

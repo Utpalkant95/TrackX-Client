@@ -2,7 +2,7 @@ import axios from "axios";
 import { IREQLOGIN, IREQREGISTER, IUPDATEPASSWORD } from "./interfaces/Request";
 import { IRES } from "./interfaces/Response";
 
-const API_BASE_URL = process.env.API_BASE_URL
+const API_BASE_URL = "https://trackx-backend.onrender.com/api/v1"
 
 export const Register = async (data : IREQREGISTER) => {
     const response = await axios.post(`${API_BASE_URL}/auth/register`, data, {

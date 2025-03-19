@@ -2,7 +2,7 @@ import axios from "axios";
 import { IRES, ITemplateData } from "./interfaces/Response";
 import { ITemplate } from "./interfaces/Project";
 
-const API_BASE_URL = process.env.API_BASE_URL;
+const API_BASE_URL = "https://trackx-backend.onrender.com/api/v1"
 export const getTemplates = async () => {
   const response = await axios.get(`${API_BASE_URL}/template/get-templates`, {
     withCredentials: true,

@@ -7,7 +7,7 @@ import {
 } from "./interfaces/Response";
 import { Workout } from "./interfaces/Project";
 
-const API_BASE_URL = process.env.API_BASE_URL;
+const API_BASE_URL = "https://trackx-backend.onrender.com/api/v1"
 
 export const getWorkout = async (limit?: number | undefined) => {
   const response = await axios.get(

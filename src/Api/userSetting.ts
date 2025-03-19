@@ -2,7 +2,7 @@ import axios from "axios";
 import { IRES } from "./interfaces/Response";
 import { IUserSetting } from "./interfaces/Project";
 
-const API_BASE_URL = process.env.API_BASE_URL;
+const API_BASE_URL ="https://trackx-backend.onrender.com/api/v1"
 
 export const saveUserSetting = async (data: IUserSetting) => {
   const response = await axios.put(
