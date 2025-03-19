@@ -22,9 +22,9 @@ const useLogin = () => {
     mutationKey: ["login"],
     mutationFn: Login,
     onSuccess: (data: IRES) => {
-      window.location.reload();
       formik.resetForm();
       enqueueSnackbar(data.message, { variant: "success" });
+      window.location.reload();
       navigate("/");
     },
     onError: (error: AxiosError<IRES>) => {
