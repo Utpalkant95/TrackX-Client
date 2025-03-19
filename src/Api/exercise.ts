@@ -1,21 +1,18 @@
 import axios from "axios";
 import { IExercise } from "./interfaces/Response";
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
-
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export const getBodyPartList = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/exercise/body-part-list`,
-    { withCredentials: true }
-  );
+  const response = await axios.get(`${API_BASE_URL}/exercise/body-part-list`, {
+    withCredentials: true,
+  });
   return response.data.data as string[];
 };
 
 export const getEquipmentsList = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/exercise/equipments-list`,
-    { withCredentials: true }
-  );
+  const response = await axios.get(`${API_BASE_URL}/exercise/equipments-list`, {
+    withCredentials: true,
+  });
   return response.data.data as string[];
 };
 

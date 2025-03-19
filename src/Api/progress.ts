@@ -7,33 +7,36 @@ import {
   IWeeklyProgress,
 } from "./interfaces/Response";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export const getPersonalBest = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/progress/personal-best`,
-    { withCredentials: true }
-  );
+  const response = await axios.get(`${API_BASE_URL}/progress/personal-best`, {
+    withCredentials: true,
+  });
   return response.data.data as IPersonalBests[];
 };
 
 export const getAiInsights = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/progress/ai-insights`,
-    { withCredentials: true }
-  );
+  const response = await axios.get(`${API_BASE_URL}/progress/ai-insights`, {
+    withCredentials: true,
+  });
   return response.data.data as IAIInsight[];
 };
 
 export const getWeeklyProgress = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/progress/weekly-progress`,
-    { withCredentials: true }
-  );
+  const response = await axios.get(`${API_BASE_URL}/progress/weekly-progress`, {
+    withCredentials: true,
+  });
   return response.data as IWeeklyProgress;
 };
 
-export const getProgressGraph = async ({exerciseName, dateRange = `7`} : {exerciseName : string, dateRange ?: string}) => {
+export const getProgressGraph = async ({
+  exerciseName,
+  dateRange = `7`,
+}: {
+  exerciseName: string;
+  dateRange?: string;
+}) => {
   const response = await axios.get(
     `${API_BASE_URL}/progress/progress-graph/${exerciseName}/${dateRange}`,
     { withCredentials: true }
@@ -42,10 +45,10 @@ export const getProgressGraph = async ({exerciseName, dateRange = `7`} : {exerci
 };
 
 export const getProgressReport = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/progress/progress-report`,
-    { withCredentials: true, responseType: `blob` }
-  );
+  const response = await axios.get(`${API_BASE_URL}/progress/progress-report`, {
+    withCredentials: true,
+    responseType: `blob`,
+  });
 
   try {
     // Create a download link dynamically
@@ -64,9 +67,8 @@ export const getProgressReport = async () => {
 };
 
 export const getExerciseList = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/progress/exercise-list`,
-    { withCredentials: true }
-  );
+  const response = await axios.get(`${API_BASE_URL}/progress/exercise-list`, {
+    withCredentials: true,
+  });
   return response.data.data as string[];
-}
+};
