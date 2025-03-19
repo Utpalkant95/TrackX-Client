@@ -7,7 +7,7 @@ import {
 } from "./interfaces/Response";
 import { Workout } from "./interfaces/Project";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL 
 
 export const getWorkout = async (limit?: number | undefined) => {
   const response = await axios.get(

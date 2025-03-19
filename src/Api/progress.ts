@@ -7,7 +7,7 @@ import {
   IWeeklyProgress,
 } from "./interfaces/Response";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 export const getPersonalBest = async () => {
   const response = await axios.get(

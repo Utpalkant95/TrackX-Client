@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IFitnessStats, IRES, IUserProfile } from "./interfaces/Response";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 export const getUserProfile = async () => {
     const response = await axios.get(`${API_BASE_URL}/user/get-user-profile`, {

@@ -2,8 +2,7 @@ import axios from "axios";
 import { IRES, ITemplateData } from "./interfaces/Response";
 import { ITemplate } from "./interfaces/Project";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "${API_BASE_URL}";
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL 
 export const getTemplates = async () => {
   const response = await axios.get(
     `${API_BASE_URL}/template/get-templates`,
